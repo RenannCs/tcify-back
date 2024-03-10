@@ -1,14 +1,15 @@
-const TCC = require('../Model/Tccs');
+const readAllAdmin = require('../Control/Admin/ReadAllController');
+const singleAdmin = require('../Control/Admin/ReadOneController')
 
-const readAll = require('../Control/Tcc/ReadAllController');
-const single = require('../Control/Tcc/ReadOneController');
+const readAllTcc = require('../Control/Tcc/ReadAllController');
+const singleTcc = require('../Control/Tcc/ReadOneController');
 const readTccByCourse = require('../Control/Tcc/ReadByCourseController');
 const readTccByYear = require('../Control/Tcc/ReadByYearController');
 const deleteTcc = require('../Control/Tcc/DeleteController');
 const updateTcc = require('../Control/Tcc/UpdateController');
 const insertTcc = require('../Control/Tcc/InsertController');
 
-module.exports = function (app, client) {
+module.exports = function (app) {
     const express = require('express');
 
     app.use(express.json())
@@ -17,13 +18,13 @@ module.exports = function (app, client) {
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
-
+    //----------------ROTAS TCC----------------//
 
     //Rota para recuperar todos os TCCs
-    app.get('/repositorios/tcc', readAll.read);
+    app.get('/repositorios/tcc', readAllTcc.read);
 
     //Rota para recuperar um TCC por ID
-    app.get('/repositorios/tcc/:id', single.read);
+    app.get('/repositorios/tcc/:id', singleTcc.read);
 
     //Rota para recuperar todos os TCCs de um curso pelo ID do curso
     app.get('/repositorios/tcc/curso/:id', readTccByCourse.read);
@@ -39,5 +40,14 @@ module.exports = function (app, client) {
 
     //Rota para inserir um TCC
     app.post('/repositorios/tcc', insertTcc.insert);
+
+    
+
+    //----------------ROTAS ADMINS----------------//
+    app.get('/repositorios/admin' , readAllAdmin.read);
+
+    app.get('/repositorios/admin/:id' , singleAdmin.read);
+
+    
 
 }
