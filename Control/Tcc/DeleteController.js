@@ -1,41 +1,48 @@
 const ModelDatabase = require('../../Model/Database');
-const database = new ModelDatabase();
+const ModelTCC = require('../../Model/Tccs');
+const ModelJwtToken = require('../../Model/JwtToken');
 
-const ModelTCC = require('../../Model/Tccs')
-const Tcc =  new ModelTCC(database.connect());
+const Database = new ModelDatabase();
+const Tcc = new ModelTCC(Database.connect());
+const JwtToken = new ModelJwtToken();
 
-const remove = function(request , response){
-    Tcc.deleteOne(request.params.id)
-    .then((resolve) => {
-        if (resolve.deletedCount === 1) {
-            const arr = {
-                status: "SUCESS",
-                dados: resolve,
-                msg: 'TCC excluído com sucesso'
-            }
-            response.status(200).send(arr);
+const remove = function (request, response) {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-        } else {
-
-            const arr = {
-                status: "ERROR",
-                dados: resolve,
-                msg: 'Nenhum TCC encontrado'
-            }
-            response.status(404).send(arr);
-
-        }
-
-    })
-
-    .catch((reject) => {
+    if (tokenValidationResult.status !== "VALID") {
         const arr = {
             status: "ERROR",
-            dados: reject,
-            msg: 'Ocorreu um erro'
-        }
-        response.status(400).send(arr);
-    })
+            message: "Invalid token! Please check your authorization token and try again."
+        };
+        return response.status(401).send(arr);
+    }
+
+    const id = request.params.id;
+
+    Tcc.deleteOne(id)
+        .then((resolve) => {
+            if (resolve.deletedCount === 1) {
+                const arr = {
+                    status: "SUCCESS",
+                    message: 'TCC successfully deleted.'
+                }
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    status: "ERROR",
+                    message: 'No TCC found with the provided ID.'
+                }
+                response.status(404).send(arr);
+            }
+        })
+        .catch((reject) => {
+            const arr = {
+                status: "ERROR",
+                message: 'An error occurred while processing your request. Please try again later.'
+            }
+            response.status(400).send(arr);
+        })
 }
 
 module.exports = {

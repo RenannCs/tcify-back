@@ -26,8 +26,8 @@ module.exports = class Tccs {
             try {
                 const query = { _id: new ObjectId(id) };
 
-                const res = this.collection.findOne(query);
-                resolve(res);
+                const result = this.collection.findOne(query);
+                resolve(result);
 
             } catch (err) {
                 reject(err);

@@ -1,38 +1,52 @@
 const ModelDatabase = require('../../Model/Database');
-const database = new ModelDatabase();
+const ModelTCC = require('../../Model/Tccs');
+const ModelJwtToken = require('../../Model/JwtToken');
 
-const ModelTCC = require('../../Model/Tccs')
-const Tcc =  new ModelTCC(database.connect());
+const Database = new ModelDatabase();
+const Tcc = new ModelTCC(Database.connect());
+const JwtToken = new ModelJwtToken();
 
-const update = function (request , response){
-    Tcc.updateOne(request.params.id , request.body)
-    .then((resolve) => {
-        if (resolve.matchedCount == 1) {
-            const arr = {
-                status: "SUCESS",
-                dados: resolve,
-                msg: "Dados atualizados com sucesso"
-            }
-            response.status(200).send(arr);
-        } else {
-            const arr = {
-                status: "ERROR",
-                dados: resolve,
-                msg: "Nenhum documento foi encontrado"
-            }
-            response.status(404).send(arr);
-        }
-    })
+const update = function (request, response) {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    .catch((reject) => {
-
+    if (tokenValidationResult.status !== "VALID") {
         const arr = {
             status: "ERROR",
-            dados: reject,
-            msg: "Ocorreu um erro"
+            message: "Invalid token! If the problem persists, please contact our technical support."
         };
-        response.status(400).send(arr);
-    })
+        return response.status(401).send(arr);
+    }
+
+    const data = request.body;
+    const id = request.params.id;
+
+    Tcc.updateOne(id, data)
+        .then((resolve) => {
+            if (resolve.matchedCount == 1) {
+                const arr = {
+                    status: "SUCCESS",
+                    data: resolve,
+                    message: "Data updated successfully."
+                }
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    status: "ERROR",
+                    data: resolve,
+                    message: "No document was found with the provided ID."
+                }
+                response.status(404).send(arr);
+            }
+        })
+        .catch((reject) => {
+            const arr = {
+                status: "ERROR",
+                data: reject,
+                message: "An error occurred while processing your request. Please try again later."
+            };
+            response.status(400).send(arr);
+        })
 }
 
 module.exports = {

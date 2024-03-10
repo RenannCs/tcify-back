@@ -1,29 +1,44 @@
 const ModelDatabase = require('../../Model/Database');
-const database = new ModelDatabase();
+const ModelTCC = require('../../Model/Tccs');
+const ModelJwtToken = require('../../Model/JwtToken');
 
-const ModelTCC = require('../../Model/Tccs')
-const Tcc =  new ModelTCC(database.connect());
+const Database = new ModelDatabase();
+const Tcc = new ModelTCC(Database.connect());
+const JwtToken = new ModelJwtToken();
 
-const read = function (request , response){
-    Tcc.readTccByYear(request.params.ano)
-    .then((resolve) => {
-        const arr = {
-            status: "SUCESS",
-            dados: resolve,
-            msg: "Tccs recuperados com sucesso"
-        };
-        response.status(200).send(arr);
-    })
-    .catch((reject) => {
+const read = function (request, response) {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+
+    if (tokenValidationResult.status !== "VALID") {
         const arr = {
             status: "ERROR",
-            dados: reject,
-            msg: "Ocorreu um erro"
+            message: "Invalid token! Please check your authorization token and try again."
         };
-        response.status(400).send(arr);
-    })
-}
+        return response.status(401).send(arr);
+    }
 
-module.exports ={
+    const year = request.params.ano;
+
+    Tcc.readTccByYear(year)
+        .then((resolve) => {
+            const arr = {
+                status: "SUCCESS",
+                data: resolve,
+                message: "TCCs successfully retrieved."
+            };
+            response.status(200).send(arr);
+        })
+        .catch((reject) => {
+            const arr = {
+                status: "ERROR",
+                data: reject,
+                message: "An error occurred while processing your request. Please try again later."
+            };
+            response.status(500).send(arr);
+        });
+};
+
+module.exports = {
     read
-}
+};

@@ -1,15 +1,9 @@
-const Banco = require('./Model/Database');
-
-//Conexão com o banco de dados
-const banco = new Banco();
-const client = banco.connect();
-
 const express = require('express');
 const app = express();
 
-//Inicializa as rotas de TCC, passando como parâmentro o app e o client
-const rotas_TCC = require('./Routes/routes')
-rotas_TCC(app, client);
+
+const routes = require('./Routes/routes')
+routes(app);
 
 app.use(express.json())
 

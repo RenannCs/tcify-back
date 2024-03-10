@@ -6,28 +6,37 @@ const Database = new ModelDatabase();
 const Tcc = new ModelTCC(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response) {
+const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
     if (tokenValidationResult.status !== "VALID") {
         const arr = {
             status: "ERROR",
-            message: "Invalid token! Please check your authorization token and try again."
+            message: "Invalid token! If the problem persists, please contact our technical support."
         };
         return response.status(401).send(arr);
     }
 
-    const data = request.body;
+    const id = request.params.id;
 
-    Tcc.insertOne(data)
+    Tcc.single(id)
         .then((resolve) => {
-            const arr = {
-                status: "SUCCESS",
-                data: resolve,
-                message: "TCC inserted successfully."
-            };
-            response.status(200).send(arr);
+            if (resolve == null) {
+                const arr = {
+                    status: "ERROR",
+                    data: resolve,
+                    message: 'TCC not found.'
+                };
+                response.status(404).send(arr);
+            } else {
+                const arr = {
+                    status: "SUCCESS",
+                    data: resolve,
+                    message: "TCC found."
+                };
+                response.status(200).send(arr);
+            }
         })
         .catch((reject) => {
             const arr = {
@@ -35,10 +44,10 @@ const insert = function (request, response) {
                 data: reject,
                 message: "An error occurred while processing your request. Please try again later."
             };
-            response.status(400).send(arr);
+            response.status(500).send(arr);
         })
-}
+};
 
 module.exports = {
-    insert
-}
+    read
+};

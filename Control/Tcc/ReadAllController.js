@@ -1,30 +1,41 @@
 const ModelDatabase = require('../../Model/Database');
-const database = new ModelDatabase();
+const ModelTCC = require('../../Model/Tccs');
+const ModelJwtToken = require('../../Model/JwtToken');
 
-const ModelTCC = require('../../Model/Tccs')
-const Tcc =  new ModelTCC(database.connect());
+const Database = new ModelDatabase();
+const Tcc = new ModelTCC(Database.connect());
+const JwtToken = new ModelJwtToken();
 
-const read = function (request , response) {
+const read = function (request, response) {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+
+    if (tokenValidationResult.status !== "VALID") {
+        const arr = {
+            status: "ERROR",
+            message: "Invalid token! If the problem persists, please contact our technical support."
+        };
+        return response.status(401).send(arr);
+    }
+
     Tcc.readAll()
-    .then((resolve)=>{
-        const arr = {
-            status:200,
-            dados: resolve,
-            msg: "Dados recuperados com sucesso"
-        };
-        response.status(200).send(arr);
-    })
-    .catch((reject)=>{
-        const arr = {
-            status: 400,
-            dados: reject,
-            msg: "Ocorreu um erro"
-        };
-        response.status(400).status(arr);
-    })
-}
+        .then((resolve) => {
+            const arr = {
+                status: "SUCCESS",
+                data: resolve,
+                message: "Data successfully retrieved."
+            };
+            response.status(200).send(arr);
+        })
+        .catch((reject) => {
+            const arr = {
+                status: "ERROR",
+                message: "An error occurred while fetching data."
+            };
+            response.status(500).send(arr);
+        });
+};
 
-module.exports ={
+module.exports = {
     read
-}
-    
+};

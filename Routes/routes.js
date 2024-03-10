@@ -1,6 +1,5 @@
 const readAllAdmin = require('../Control/Admin/ReadAllController');
 const singleAdmin = require('../Control/Admin/ReadOneController')
-
 const readAllTcc = require('../Control/Tcc/ReadAllController');
 const singleTcc = require('../Control/Tcc/ReadOneController');
 const readTccByCourse = require('../Control/Tcc/ReadByCourseController');
