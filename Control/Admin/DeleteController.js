@@ -1,47 +1,39 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/Tccs');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
+const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const update = function (request, response) {
+const remove = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
     if (tokenValidationResult.status !== "VALID") {
         const arr = {
             status: "ERROR",
-            message: "Invalid token! If the problem persists, please contact our technical support."
+            message: "Invalid token! Please check your authorization token and try again."
         };
         return response.status(401).send(arr);
     }
 
-    const data = request.body;
-    const id = request.params.id;
+    const id = request.params.id
 
-    if (!(Tcc.verifyJsonUpdate(data))){
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid Json format !'
-        };
-        return response.status(400).send(arr);
-    }
-
-    Tcc.updateOne(id, data)
+    Admin.deleteOne(id)
         .then((resolve) => {
-            if (resolve.matchedCount == 1) {
+            if (resolve.deletedCount == 1) {
                 const arr = {
                     status: "SUCCESS",
                     data: resolve,
-                    message: "Data updated successfully."
-                }
+                    message: 'Admin successfully deleted.'
+                };
                 response.status(200).send(arr);
             } else {
                 const arr = {
                     status: "ERROR",
-                    message: "No document was found with the provided ID."
+                    data: resolve,
+                    message: 'No Admin found with the provided ID.'
                 }
                 response.status(404).send(arr);
             }
@@ -49,13 +41,13 @@ const update = function (request, response) {
         .catch((reject) => {
             const arr = {
                 status: "ERROR",
-                data: reject,
-                message: "An error occurred while processing your request. Please try again later."
-            };
+                dados: reject,
+                message: 'An error occurred while processing your request. Please try again later.'
+            }
             response.status(400).send(arr);
         })
 }
 
 module.exports = {
-    update
+    remove
 }

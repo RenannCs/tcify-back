@@ -35,7 +35,7 @@ const read = function (request, response) {
                 data: reject,
                 message: "An error occurred while processing your request. Please try again later."
             };
-            response.status(500).send(arr);
+            response.status(400).send(arr);
         });
 };
 

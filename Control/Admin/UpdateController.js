@@ -1,9 +1,9 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/Tccs');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
+const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const update = function (request, response) {
@@ -18,10 +18,10 @@ const update = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const data = request.body;
     const id = request.params.id;
+    const data = request.body;
 
-    if (!(Tcc.verifyJsonUpdate(data))){
+    if(!(Admin.verifyJsonUpdate(data))){
         const arr = {
             status: 'ERROR',
             message: 'Invalid Json format !'
@@ -29,7 +29,7 @@ const update = function (request, response) {
         return response.status(400).send(arr);
     }
 
-    Tcc.updateOne(id, data)
+    Admin.updateOne(id, data)
         .then((resolve) => {
             if (resolve.matchedCount == 1) {
                 const arr = {

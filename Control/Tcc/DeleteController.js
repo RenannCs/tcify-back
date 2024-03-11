@@ -25,12 +25,14 @@ const remove = function (request, response) {
             if (resolve.deletedCount === 1) {
                 const arr = {
                     status: "SUCCESS",
+                    data: resolve,
                     message: 'TCC successfully deleted.'
                 }
                 response.status(200).send(arr);
             } else {
                 const arr = {
                     status: "ERROR",
+                    data: resolve,
                     message: 'No TCC found with the provided ID.'
                 }
                 response.status(404).send(arr);
@@ -39,6 +41,7 @@ const remove = function (request, response) {
         .catch((reject) => {
             const arr = {
                 status: "ERROR",
+                data: reject,
                 message: 'An error occurred while processing your request. Please try again later.'
             }
             response.status(400).send(arr);

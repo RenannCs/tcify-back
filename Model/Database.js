@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion, ObjectId, ClientEncryption, MongoGridFSChunkError } = require('mongodb');
+const { MongoClient} = require('mongodb');
 require('dotenv').config();
 
 let user = process.env.NODE_USER;
@@ -14,7 +14,7 @@ let user = process.env.NODE_USER;
         const uri = `mongodb+srv://${user}:${password}@repositorio.kr4t3yw.mongodb.net/${dbName}`;
 
         
-module.exports = class Banco {
+module.exports = class Database {
     constructor() {
         try {
             this._client = new MongoClient(uri, {

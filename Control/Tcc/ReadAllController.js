@@ -30,9 +30,10 @@ const read = function (request, response) {
         .catch((reject) => {
             const arr = {
                 status: "ERROR",
+                data: reject,
                 message: "An error occurred while fetching data."
             };
-            response.status(500).send(arr);
+            response.status(400).send(arr);
         });
 };
 

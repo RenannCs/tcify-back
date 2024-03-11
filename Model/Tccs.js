@@ -115,6 +115,44 @@ module.exports = class Tccs {
         return asyncFunction;
     }
 
+    verifyJsonInsert(js){
+        const correctJson = [
+            'id_curso',
+            'nome_tcc',
+            'resumo',
+            'ano',
+            'nota',
+            'orientador',
+            'grupo'
+        ]
+        for (const key of correctJson){
+            if(!(key in js)){
+                return false;
+            }
+        }
+        return true;
+    }
+    verifyJsonUpdate(js){
+        const correctJson = [
+            'id_curso',
+            'nome_tcc',
+            'status',
+            'resumo',
+            'ano',
+            'nota',
+            'orientador',
+            'arquivos',
+            'grupo',
+        ]
+        for (const key in js){
+            if(!(correctJson.includes(key))){
+                
+                return false;
+            }
+        }
+        return true; 
+    }
+
 
 
     set client(client) {

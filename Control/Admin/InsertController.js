@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/Tccs');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
+const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response ) {
+const insert = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -16,21 +16,19 @@ const insert = function (request, response ) {
             message: "Invalid token! Please check your authorization token and try again."
         };
         return response.status(401).send(arr);
-        
     }
 
     const data = request.body;
 
-    if (!(Tcc.verifyJsonInsert(data))){
-        const arr ={
+    if (!(Admin.verifyJsonInsert(data))){
+        const arr = {
             status: "ERROR",
             message: "Invalid Json format !"
         }
         return response.status(400).send(arr);
-        
     }
 
-    Tcc.insertOne(data)
+    Admin.insertOne(data)
         .then((resolve) => {
             const arr = {
                 status: "SUCCESS",
