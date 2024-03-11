@@ -13,6 +13,14 @@ class JwtToken {
         return jwt.sign({ data: payload }, this.secretKey, { expiresIn: this.expireDate });
     }
 
+    
+    createGuestToken() {
+        if (!this.secretKey) {
+            throw new Error("Secret key is not defined!");
+        }
+        return jwt.sign(this.secretKey, { expiresIn: this.expireDate });
+    }
+
     validateToken(jwtToken) {
         try {
             if (!jwtToken) {
