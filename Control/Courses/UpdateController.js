@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Course = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response) {
+const update = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,16 +19,25 @@ const insert = function (request, response) {
         return response.status(401).send(arr);
     }
 
+    const id = request.params.id;
     const data = request.body;
 
-    Admin.insertOne(data)
+    Course.updateOne(id, data)
         .then((resolve) => {
-            const arr = {
-                data: resolve,
-                status: 'SUCCESS',
-                message: 'Administrator created successfully.'
-            };
-            response.status(200).send(arr);
+            if (resolve.matchedCount == 1) {
+                const arr = {
+                    data: resolve,
+                    status: 'SUCCESS',
+                    message: 'Administrator data updated successfully.'
+                }
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    status: 'ERROR',
+                    message: 'No administrator was found with the provided ID.'
+                }
+                response.status(404).send(arr);
+            }
         })
         .catch((reject) => {
             const arr = {
@@ -41,5 +50,5 @@ const insert = function (request, response) {
 }
 
 module.exports = {
-    insert
+    update
 }

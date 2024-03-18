@@ -12,6 +12,13 @@ const deleteTcc = require('../Control/Tcc/DeleteController').remove;
 const updateTcc = require('../Control/Tcc/UpdateController').update;
 const insertTcc = require('../Control/Tcc/InsertController').insert;
 
+const readAllCourses = require('../Control/Courses/ReadAllController').read;
+const InsertCourse = require('../Control/Courses/InsertController').insert;
+const SingleCourse = require('../Control/Courses/SingleController').read;
+const UpdateCourse = require('../Control/Courses/UpdateController').update;
+const DeleteCourse = require('../Control/Courses/DeleteController').remove;
+
+
 module.exports = function (app) {
     const express = require('express');
 
@@ -36,7 +43,7 @@ module.exports = function (app) {
     app.get('/repositorios/tcc/ano/:date', readTccByYear);
 
     //Rota para deletar um TCC 
-    app.delete('/repositorios/tcc/:id' , deleteTcc);
+    app.delete('/repositorios/tcc/:id', deleteTcc);
 
     //Rota para atualizar um TCC por id, usando o Body da requisição como dado
     app.patch('/repositorios/tcc/:id', updateTcc);
@@ -44,22 +51,45 @@ module.exports = function (app) {
     //Rota para inserir um TCC
     app.post('/repositorios/tcc', insertTcc);
 
-    
+
 
     //------------------------ROTAS ADMIN-----------------------//
 
     //Rota para recuperar todos os administradores
-    app.get('/repositorios/admin' , readAllAdmin);
+    app.get('/repositorios/admin', readAllAdmin);
 
     //Rota para recuperar um administrador por ID
-    app.get('/repositorios/admin/:id' , singleAdmin);
+    app.get('/repositorios/admin/:id', singleAdmin);
 
     //Rota para deletar um adminstrador
-    app.delete('/repositorios/admin/:id' , deleteAdmin);
+    app.delete('/repositorios/admin/:id', deleteAdmin);
 
     //Rota para inserir um adminstrador pelos dados recuperados pelo Body
-    app.post('/repositorios/admin' , insertAdmin);
+    app.post('/repositorios/admin', insertAdmin);
 
     //Rota para atualizar um administrador com os dados passados pelo Body
-    app.patch('/repositorios/admin/:id' , updateAdmin); 
+    app.patch('/repositorios/admin/:id', updateAdmin);
+
+
+    //------------------------ROTAS COURSE-----------------------//
+
+    //Rota para recuperar todos os cursos
+    app.get('/cursos', readAllCourses);
+
+    //Rota para recuperar um curso por ID
+    app.get('/cursos/:id', SingleCourse);
+
+    //Rota para deletar um curso
+    app.delete('/cursos/:id', DeleteCourse);
+
+    //Rota para inserir um curso pelos dados recuperados pelo Body
+    app.post('/cursos', InsertCourse);
+
+    //Rota para atualizar um curso com os dados passados pelo Body
+    app.patch('/cursos/:id', UpdateCourse);
+
+
+
+
+
 }

@@ -13,7 +13,8 @@ const update = function (request, response) {
     if (tokenValidationResult.status !== true) {
         const arr = {
             status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.'
+            message: 'Invalid token! If the problem persists, please contact our technical support.',
+            error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
     }
@@ -25,13 +26,14 @@ const update = function (request, response) {
         .then((resolve) => {
             if (resolve.matchedCount == 1) {
                 const arr = {
-                    status: "SUCCESS",
                     data: resolve,
+                    status: "SUCCESS",
                     message: "TCC updated successfully."
                 }
                 response.status(200).send(arr);
             } else {
                 const arr = {
+                    data: resolve,
                     status: "ERROR",
                     message: "No document was found with the provided ID."
                 }
@@ -40,8 +42,8 @@ const update = function (request, response) {
         })
         .catch((reject) => {
             const arr = {
-                status: "ERROR",
                 data: reject,
+                status: "ERROR",
                 message: "An error occurred while processing your request. Please try again later."
             };
             response.status(400).send(arr);

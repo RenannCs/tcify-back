@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Course = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response) {
+const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,14 +19,12 @@ const insert = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const data = request.body;
-
-    Admin.insertOne(data)
+    Course.readAll()
         .then((resolve) => {
             const arr = {
                 data: resolve,
                 status: 'SUCCESS',
-                message: 'Administrator created successfully.'
+                message: 'Courses successfully retrieved.'
             };
             response.status(200).send(arr);
         })
@@ -37,9 +35,9 @@ const insert = function (request, response) {
                 message: 'An error occurred while processing your request. Please try again later.'
             };
             response.status(400).send(arr);
-        })
-}
+        });
+};
 
 module.exports = {
-    insert
-}
+    read
+};

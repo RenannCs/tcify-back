@@ -13,7 +13,8 @@ const read = function (request, response) {
     if (tokenValidationResult.status !== true) {
         const arr = {
             status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.'
+            message: 'Invalid token! If the problem persists, please contact our technical support.',
+            error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
     }
@@ -24,15 +25,15 @@ const read = function (request, response) {
         .then((resolve) => {
             if (resolve == null) {
                 const arr = {
-                    status: "ERROR",
                     data: resolve,
+                    status: "ERROR",
                     message: 'No document was found with the provided ID.'
                 };
                 response.status(404).send(arr);
             } else {
                 const arr = {
-                    status: "SUCCESS",
                     data: resolve,
+                    status: "SUCCESS",
                     message: "TCC successfully retrieved."
                 };
                 response.status(200).send(arr);

@@ -14,7 +14,8 @@ const insert = function (request, response ) {
     if (tokenValidationResult.status !== true) {
         const arr = {
             status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.'
+            message: 'Invalid token! If the problem persists, please contact our technical support.',
+            error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
     }
@@ -26,16 +27,16 @@ const insert = function (request, response ) {
     Tcc.insertOne(data)
         .then((resolve) => {
             const arr = {
-                status: 'SUCCESS',
                 data: resolve,
+                status: 'SUCCESS',
                 message: 'TCC inserted successfully.'
             };
             response.status(200).send(arr);
         })
         .catch((reject) => {
             const arr = {
-                status: 'ERROR',
                 data: reject,
+                status: 'ERROR',
                 message: 'An error occurred while processing your request. Please try again later.'
             };
             response.status(400).send(arr);

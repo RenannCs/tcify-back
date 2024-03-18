@@ -13,7 +13,7 @@ class JwtToken {
         return jwt.sign({ data: payload }, this.secretKey, { expiresIn: this.expireDate });
     }
 
-    
+
     createGuestToken() {
         if (!this.secretKey) {
             throw new Error("Secret key is not defined!");
@@ -29,7 +29,7 @@ class JwtToken {
 
             const tokenArray = jwtToken.split(" ");
 
-            if (tokenArray.length !== 2) {
+            if (tokenArray.length !== 2 || tokenArray[0].toLowerCase() !== "bearer") {
                 throw new Error("Invalid token: invalid format!");
             }
 
@@ -39,14 +39,11 @@ class JwtToken {
 
             return {
                 status: true,
-                data: decoded,
-                message: "Valid token."
             };
         } catch (error) {
             return {
                 status: false,
-                data: null,
-                message: `Token validation failed: ${error.message}`
+                error: error.message
             };
         }
     }

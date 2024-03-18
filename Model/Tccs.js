@@ -9,9 +9,9 @@ module.exports = class Tccs {
 
 
     async readAll() {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
-                const result = await this.collection.find({}).toArray();
+                const result = this.collection.find({}).toArray();
 
                 resolve(result);
             } catch (err) {
@@ -21,21 +21,22 @@ module.exports = class Tccs {
     }
 
     async single(id) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
-
-                const result = await this.collection.findOne(query);
+                const result = this.collection.findOne(query);
+                
                 resolve(result);
 
             } catch (err) {
                 reject(err);
+                
             }
         });
     }
 
     async readTccByYear(year) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 const startDate = new Date(year, 0, 1);
                 const endDate = new Date(year, 11, 31);
@@ -46,7 +47,7 @@ module.exports = class Tccs {
                     }
                 };
 
-                const result = await this.collection.find(query).toArray();
+                const result = this.collection.find(query).toArray();
                 resolve(result);
             } catch (err) {
                 reject(err);
@@ -55,11 +56,11 @@ module.exports = class Tccs {
     }
 
     async readTccByCourse(course) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 const query = { course_id: course };
 
-                const result = await this.collection.find(query).toArray();
+                const result = this.collection.find(query).toArray();
 
                 resolve(result);
             } catch (err) {
@@ -71,10 +72,10 @@ module.exports = class Tccs {
 
 
     async deleteOne(id) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
-                const result = await this.collection.deleteOne(query);
+                const result = this.collection.deleteOne(query);
 
                 resolve(result);
             } catch (err) {
@@ -86,7 +87,7 @@ module.exports = class Tccs {
 
 
     async updateOne(id, data) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
 
@@ -94,7 +95,7 @@ module.exports = class Tccs {
                     $set: data
                 };
 
-                const result = await this.collection.updateOne(query, json_ap);
+                const result = this.collection.updateOne(query, json_ap);
                 resolve(result);
             } catch (err) {
                 if (err instanceof BSON.BSONError) {
@@ -107,9 +108,9 @@ module.exports = class Tccs {
     }
 
     async insertOne(data) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             try {
-                const result = await this.collection.insertOne(data);
+                const result = this.collection.insertOne(data);
                 resolve(result);
             } catch (err) {
                 reject(err);

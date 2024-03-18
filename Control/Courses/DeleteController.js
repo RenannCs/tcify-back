@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Course = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response) {
+const remove = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,27 +19,36 @@ const insert = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const data = request.body;
+    const id = request.params.id
 
-    Admin.insertOne(data)
+    Course.deleteOne(id)
         .then((resolve) => {
-            const arr = {
-                data: resolve,
-                status: 'SUCCESS',
-                message: 'Administrator created successfully.'
-            };
-            response.status(200).send(arr);
+            if (resolve.deletedCount == 1) {
+                const arr = {
+                    data: resolve,
+                    status: 'SUCCESS',
+                    message: 'Administrator successfully deleted.'
+                };
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    data: resolve,
+                    status: 'ERROR',
+                    message: 'No Administrator found with the provided ID.'
+                }
+                response.status(404).send(arr);
+            }
         })
         .catch((reject) => {
             const arr = {
-                data: reject,
+                dados: reject,
                 status: 'ERROR',
                 message: 'An error occurred while processing your request. Please try again later.'
-            };
+            }
             response.status(400).send(arr);
         })
 }
 
 module.exports = {
-    insert
+    remove
 }

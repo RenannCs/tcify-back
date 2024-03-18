@@ -1,9 +1,9 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Course = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const read = function (request, response) {
@@ -19,25 +19,39 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    Admin.readAll()
+    const id = request.params.id;
+
+    Course.single(id)
         .then((resolve) => {
-            const arr = {
-                dados: resolve,
-                status: 'SUCESS',
-                msg: 'Administrators successfully recovered.'
+            if (resolve == null) {
+                const arr = {
+                    data: resolve,
+                    status: "ERROR",
+                    message: 'No document was found with the provided ID.'
+           
+                };
+                response.status(404).send(arr);
+            } else {
+                const arr = {
+                    data: resolve,
+                    status: "SUCCESS",
+                    message: "Course successfully retrieved."
+          
+                };
+                response.status(200).send(arr);
             }
-            response.status(200).send(arr);
         })
         .catch((reject) => {
             const arr = {
-                dados: reject,
-                status: 'ERROR',
-                msg: 'An error occurred while processing your request. Please try again later.'
+                data: reject,
+                status: "ERROR",
+                message: "An error occurred while processing your request. Please try again later."
+
             };
             response.status(400).send(arr);
         })
-}
+};
 
 module.exports = {
     read
-}
+};

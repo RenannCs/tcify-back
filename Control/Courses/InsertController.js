@@ -1,10 +1,11 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Courses = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
+
 
 const insert = function (request, response) {
     const authorizationHeader = request.headers.authorization;
@@ -21,12 +22,12 @@ const insert = function (request, response) {
 
     const data = request.body;
 
-    Admin.insertOne(data)
+    Courses.insertOne(data)
         .then((resolve) => {
             const arr = {
                 data: resolve,
                 status: 'SUCCESS',
-                message: 'Administrator created successfully.'
+                message: 'Course inserted successfully.'
             };
             response.status(200).send(arr);
         })

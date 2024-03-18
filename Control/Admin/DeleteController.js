@@ -13,7 +13,8 @@ const remove = function (request, response) {
     if (tokenValidationResult.status !== true) {
         const arr = {
             status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.'
+            message: 'Invalid token! If the problem persists, please contact our technical support.',
+            error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
     }
@@ -24,15 +25,15 @@ const remove = function (request, response) {
         .then((resolve) => {
             if (resolve.deletedCount == 1) {
                 const arr = {
-                    status: 'SUCCESS',
                     data: resolve,
+                    status: 'SUCCESS',
                     message: 'Administrator successfully deleted.'
                 };
                 response.status(200).send(arr);
             } else {
                 const arr = {
-                    status: 'ERROR',
                     data: resolve,
+                    status: 'ERROR',
                     message: 'No Administrator found with the provided ID.'
                 }
                 response.status(404).send(arr);
@@ -40,8 +41,8 @@ const remove = function (request, response) {
         })
         .catch((reject) => {
             const arr = {
-                status: 'ERROR',
                 dados: reject,
+                status: 'ERROR',
                 message: 'An error occurred while processing your request. Please try again later.'
             }
             response.status(400).send(arr);
