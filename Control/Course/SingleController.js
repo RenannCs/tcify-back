@@ -27,7 +27,7 @@ const read = function (request, response) {
                 const arr = {
                     data: resolve,
                     status: "ERROR",
-                    message: 'No document was found with the provided ID.'
+                    message: 'No course was found with the provided ID.'
            
                 };
                 response.status(404).send(arr);

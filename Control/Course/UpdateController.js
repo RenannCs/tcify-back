@@ -28,13 +28,13 @@ const update = function (request, response) {
                 const arr = {
                     data: resolve,
                     status: 'SUCCESS',
-                    message: 'Administrator data updated successfully.'
+                    message: 'Course data updated successfully.'
                 }
                 response.status(200).send(arr);
             } else {
                 const arr = {
                     status: 'ERROR',
-                    message: 'No administrator was found with the provided ID.'
+                    message: 'No course was found with the provided ID.'
                 }
                 response.status(404).send(arr);
             }

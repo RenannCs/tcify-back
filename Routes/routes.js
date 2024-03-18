@@ -76,7 +76,7 @@ module.exports = function (app) {
     app.get('/repository/courses', readAllCourses);
 
     // Rota para recuperar um curso por ID
-    app.get('/repository/courses/:id', singleCourse);
+    app.get('/repository/course/:id', singleCourse);
 
     // Rota para inserir um curso pelos dados recuperados pelo Body
     app.post('/repository/course', insertCourse);

@@ -27,14 +27,14 @@ const remove = function (request, response) {
                 const arr = {
                     data: resolve,
                     status: 'SUCCESS',
-                    message: 'Administrator successfully deleted.'
+                    message: 'Course successfully deleted.'
                 };
                 response.status(200).send(arr);
             } else {
                 const arr = {
                     data: resolve,
                     status: 'ERROR',
-                    message: 'No Administrator found with the provided ID.'
+                    message: 'No course found with the provided ID.'
                 }
                 response.status(404).send(arr);
             }
