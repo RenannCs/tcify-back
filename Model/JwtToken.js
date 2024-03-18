@@ -38,13 +38,13 @@ class JwtToken {
             const decoded = jwt.verify(token, this.secretKey);
 
             return {
-                status: "VALID",
+                status: true,
                 data: decoded,
                 message: "Valid token."
             };
         } catch (error) {
             return {
-                status: "INVALID",
+                status: false,
                 data: null,
                 message: `Token validation failed: ${error.message}`
             };

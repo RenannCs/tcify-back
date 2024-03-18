@@ -10,24 +10,34 @@ const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== "VALID") {
+    if (tokenValidationResult.status !== true) {
         const arr = {
-            status: "ERROR",
-            message: "Invalid token! Please check your authorization token and try again."
+            status: 'ERROR',
+            message: 'Invalid token! If the problem persists, please contact our technical support.'
         };
         return response.status(401).send(arr);
     }
 
-    const year = request.params.ano;
+    const date = new Date(request.params.date);
+    const year = date.getUTCFullYear();
 
     Tcc.readTccByYear(year)
         .then((resolve) => {
-            const arr = {
-                status: "SUCCESS",
-                data: resolve,
-                message: "TCCs successfully retrieved."
-            };
-            response.status(200).send(arr);
+            if (resolve && resolve.length > 0) {
+                const arr = {
+                    status: "SUCCESS",
+                    data: resolve,
+                    message: "TCCs successfully retrieved."
+                };
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    status: "SUCCESS",
+                    data: {},
+                    message: "No TCCs in the requested year."
+                };
+                response.status(200).send(arr);
+            }
         })
         .catch((reject) => {
             const arr = {
@@ -37,6 +47,7 @@ const read = function (request, response) {
             };
             response.status(400).send(arr);
         });
+
 };
 
 module.exports = {

@@ -10,24 +10,16 @@ const update = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== "VALID") {
+    if (tokenValidationResult.status !== true) {
         const arr = {
-            status: "ERROR",
-            message: "Invalid token! If the problem persists, please contact our technical support."
+            status: 'ERROR',
+            message: 'Invalid token! If the problem persists, please contact our technical support.'
         };
         return response.status(401).send(arr);
     }
-
+    
     const data = request.body;
     const id = request.params.id;
-
-    if (!(Tcc.verifyJsonUpdate(data))){
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid Json format !'
-        };
-        return response.status(400).send(arr);
-    }
 
     Tcc.updateOne(id, data)
         .then((resolve) => {
@@ -35,7 +27,7 @@ const update = function (request, response) {
                 const arr = {
                     status: "SUCCESS",
                     data: resolve,
-                    message: "Data updated successfully."
+                    message: "TCC updated successfully."
                 }
                 response.status(200).send(arr);
             } else {

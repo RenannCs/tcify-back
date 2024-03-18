@@ -33,7 +33,7 @@ module.exports = function (app) {
     app.get('/repositorios/tcc/curso/:id', readTccByCourse);
 
     //Recupera os TCCs de um determinado ano
-    app.get('/repositorios/tcc/ano/:ano', readTccByYear);
+    app.get('/repositorios/tcc/ano/:date', readTccByYear);
 
     //Rota para deletar um TCC 
     app.delete('/repositorios/tcc/:id' , deleteTcc);

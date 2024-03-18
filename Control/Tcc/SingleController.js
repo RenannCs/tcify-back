@@ -10,10 +10,10 @@ const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== "VALID") {
+    if (tokenValidationResult.status !== true) {
         const arr = {
-            status: "ERROR",
-            message: "Invalid token! If the problem persists, please contact our technical support."
+            status: 'ERROR',
+            message: 'Invalid token! If the problem persists, please contact our technical support.'
         };
         return response.status(401).send(arr);
     }
@@ -26,14 +26,14 @@ const read = function (request, response) {
                 const arr = {
                     status: "ERROR",
                     data: resolve,
-                    message: 'TCC not found.'
+                    message: 'No document was found with the provided ID.'
                 };
                 response.status(404).send(arr);
             } else {
                 const arr = {
                     status: "SUCCESS",
                     data: resolve,
-                    message: "TCC found."
+                    message: "TCC successfully retrieved."
                 };
                 response.status(200).send(arr);
             }

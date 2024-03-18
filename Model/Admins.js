@@ -3,78 +3,74 @@ const { insert } = require("../Control/Tcc/InsertController");
 const { json } = require("express");
 
 module.exports = class Admins {
-    constructor(client){
+    constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
         this._collection = this.database.collection('Administradores');
     }
 
-    async readAll(){
-        const asyncFunction = new Promise((resolve , reject)=>{
-            try{
-                const result = this.collection.find({});
+    async readAll() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await this.collection.find({});
 
                 resolve(result.toArray());
-            }catch (err){
+            } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async single(id){
-        const asyncFunction = new Promise((resolve , reject)=>{
-            try{
-                const query = {_id: new ObjectId(id)};
+    async single(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = { _id: new ObjectId(id) };
 
-                const result = this.collection.findOne(query);
+                const result = await this.collection.findOne(query);
 
                 resolve(result);
-            }catch (err){
+            } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async deleteOne(id){
-        const asyncFunction = new Promise((resolve , reject)=>{
-            try{
-                const query = {_id: new ObjectId(id)};
+    async deleteOne(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = { _id: new ObjectId(id) };
 
-                const result = this.collection.deleteOne(query);
+                const result = await this.collection.deleteOne(query);
                 resolve(result);
-            }catch (err){
+            } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async insertOne(js){
-        const asyncFunction = new Promise((resolve , reject)=>{
-            try{
-                const result = this.collection.insertOne(js);
+    async insertOne(data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await this.collection.insertOne(data);
                 resolve(result);
-            }catch (err){
+            } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async updateOne(id , js){
-        const asyncFunction = new Promise((resolve , reject)=>{
-            try{
-                const query = {_id: new ObjectId(id)};
+    async updateOne(id, data) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = { _id: new ObjectId(id) };
 
-                const json_ap ={
-                    $set: js
+                const json_ap = {
+                    $set: data
                 }
 
-                const result = this.collection.updateOne(query , json_ap);
+                const result = await this.collection.updateOne(query, json_ap);
                 resolve(result);
-            }catch (err){
+            } catch (err) {
                 if (err instanceof BSON.BSONError) {
                     reject("ID Inválido");
                 } else {
@@ -82,10 +78,10 @@ module.exports = class Admins {
                 }
             }
         })
-        return asyncFunction;
     }
-
-    verifyJsonInsert(js){
+    
+    /*
+    verifyJsonInsert(js) {
         const correctJson = [
             'nome',
             'registro',
@@ -94,14 +90,14 @@ module.exports = class Admins {
             'senha',
             'curso'
         ]
-        for (const key of correctJson){
-            if(!(key in js)){
+        for (const key of correctJson) {
+            if (!(key in js)) {
                 return false;
             }
         }
         return true;
     }
-    verifyJsonUpdate(js){
+    verifyJsonUpdate(js) {
         const correctJson = [
             'nome',
             'registro',
@@ -110,31 +106,32 @@ module.exports = class Admins {
             'senha',
             'curso'
         ]
-        for (const key in js){
-            if(!(correctJson.includes(key))){
-                
+        for (const key in js) {
+            if (!(correctJson.includes(key))) {
+
                 return false;
             }
         }
-        return true; 
+        return true;
     }
+    */
 
-    set client(client){
+    set client(client) {
         this._client = client;
     }
-    get client(){
+    get client() {
         return this._client;
     }
-    set database(db){
+    set database(db) {
         this._database = db;
     }
-    get database(){
+    get database() {
         return this._database;
     }
-    set collection(cl){
+    set collection(cl) {
         this._collection = cl;
     }
-    get collection(){
+    get collection() {
         return this._collection;
     }
 }

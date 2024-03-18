@@ -10,10 +10,10 @@ const update = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== "VALID") {
+    if (tokenValidationResult.status !== true) {
         const arr = {
-            status: "ERROR",
-            message: "Invalid token! If the problem persists, please contact our technical support."
+            status: 'ERROR',
+            message: 'Invalid token! If the problem persists, please contact our technical support.'
         };
         return response.status(401).send(arr);
     }
@@ -21,36 +21,28 @@ const update = function (request, response) {
     const id = request.params.id;
     const data = request.body;
 
-    if(!(Admin.verifyJsonUpdate(data))){
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid Json format !'
-        };
-        return response.status(400).send(arr);
-    }
-
     Admin.updateOne(id, data)
         .then((resolve) => {
             if (resolve.matchedCount == 1) {
                 const arr = {
-                    status: "SUCCESS",
+                    status: 'SUCCESS',
                     data: resolve,
-                    message: "Data updated successfully."
+                    message: 'Administrator data updated successfully.'
                 }
                 response.status(200).send(arr);
             } else {
                 const arr = {
-                    status: "ERROR",
-                    message: "No document was found with the provided ID."
+                    status: 'ERROR',
+                    message: 'No administrator was found with the provided ID.'
                 }
                 response.status(404).send(arr);
             }
         })
         .catch((reject) => {
             const arr = {
-                status: "ERROR",
+                status: 'ERROR',
                 data: reject,
-                message: "An error occurred while processing your request. Please try again later."
+                message: 'An error occurred while processing your request. Please try again later.'
             };
             response.status(400).send(arr);
         })

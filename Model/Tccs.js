@@ -4,93 +4,97 @@ module.exports = class Tccs {
     constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
-        this._collection = this.database.collection('Repositorio');
+        this._collection = this.database.collection('TCCs');
     }
 
 
     async readAll() {
-        const asyncFunction = new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                const result = this.collection.find({});
+                const result = await this.collection.find({}).toArray();
 
-                resolve(result.toArray());
+                resolve(result);
             } catch (err) {
                 reject(err);
             }
         });
-        return asyncFunction;
     }
 
     async single(id) {
-        const asyncFunction = new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
 
-                const result = this.collection.findOne(query);
+                const result = await this.collection.findOne(query);
                 resolve(result);
 
             } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async readTccByYear(ano) {
-        const asyncFunction = new Promise((resolve, reject) => {
+    async readTccByYear(year) {
+        return new Promise(async (resolve, reject) => {
             try {
-                const query = { "ano": ano };
+                const startDate = new Date(year, 0, 1);
+                const endDate = new Date(year, 11, 31);
+                const query = {
+                    "date": {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                };
 
-                const result = this.collection.find(query);
-                resolve(result.toArray());
+                const result = await this.collection.find(query).toArray();
+                resolve(result);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    async readTccByCourse(course) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const query = { course_id: course };
+
+                const result = await this.collection.find(query).toArray();
+
+                resolve(result);
             } catch (err) {
                 reject(err);
             }
         })
-        return asyncFunction;
     }
 
-    async readTccByCourse(curso) {
-        const asyncFunction = new Promise((resolve, reject) => {
-            try {
-                const query = { id_curso: curso };
 
-                const result = this.collection.find(query);
-
-                resolve(result.toArray());
-            } catch (err) {
-                reject(err);
-            }
-        })
-        return asyncFunction;
-    }
 
     async deleteOne(id) {
-        const asyncFunction = new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
-                const result = this.collection.deleteOne(query);
+                const result = await this.collection.deleteOne(query);
 
                 resolve(result);
             } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
 
 
-    async updateOne(id, js) {
-        const asyncFunction = new Promise((resolve, reject) => {
+    async updateOne(id, data) {
+        return new Promise(async (resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
 
                 const json_ap = {
-                    $set: js
+                    $set: data
                 };
 
-                const result = this.collection.updateOne(query, json_ap);
+                const result = await this.collection.updateOne(query, json_ap);
                 resolve(result);
             } catch (err) {
                 if (err instanceof BSON.BSONError) {
@@ -99,23 +103,22 @@ module.exports = class Tccs {
                     reject(err);
                 }
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    async insertOne(js) {
-        const asyncFunction = new Promise((resolve, reject) => {
+    async insertOne(data) {
+        return new Promise(async (resolve, reject) => {
             try {
-                const result = this.collection.insertOne(js);
+                const result = await this.collection.insertOne(data);
                 resolve(result);
             } catch (err) {
                 reject(err);
             }
-        })
-        return asyncFunction;
+        });
     }
 
-    verifyJsonInsert(js){
+    /*
+    verifyJsonInsert(js) {
         const correctJson = [
             'id_curso',
             'nome_tcc',
@@ -125,14 +128,14 @@ module.exports = class Tccs {
             'orientador',
             'grupo'
         ]
-        for (const key of correctJson){
-            if(!(key in js)){
+        for (const key of correctJson) {
+            if (!(key in js)) {
                 return false;
             }
         }
         return true;
     }
-    verifyJsonUpdate(js){
+    verifyJsonUpdate(js) {
         const correctJson = [
             'id_curso',
             'nome_tcc',
@@ -144,14 +147,15 @@ module.exports = class Tccs {
             'arquivos',
             'grupo',
         ]
-        for (const key in js){
-            if(!(correctJson.includes(key))){
-                
+        for (const key in js) {
+            if (!(correctJson.includes(key))) {
+
                 return false;
             }
         }
-        return true; 
+        return true;
     }
+    */
 
 
 
