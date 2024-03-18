@@ -1,19 +1,19 @@
 const { ObjectId, BSON } = require("mongodb");
+const { json } = require("express");
 
-module.exports = class Courses {
+module.exports = class Admins {
     constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
-        this._collection = this.database.collection('Cursos');
+        this._collection = this.database.collection('Users');
     }
-
 
     async readAll() {
         return new Promise((resolve, reject) => {
             try {
-                const result = this.collection.find({}).toArray();
+                const result = this.collection.find({});
 
-                resolve(result);
+                resolve(result.toArray());
             } catch (err) {
                 reject(err);
             }
@@ -26,82 +26,23 @@ module.exports = class Courses {
                 const query = { _id: new ObjectId(id) };
 
                 const result = this.collection.findOne(query);
-                resolve(result);
 
-            } catch (err) {
-                reject(err);
-            }
-        });
-    }
-
-    async readTccByYear(year) {
-        return new Promise((resolve, reject) => {
-            try {
-                const startDate = new Date(year, 0, 1);
-                const endDate = new Date(year, 11, 31);
-                const query = {
-                    "date": {
-                        $gte: startDate,
-                        $lte: endDate
-                    }
-                };
-
-                const result = this.collection.find(query).toArray();
                 resolve(result);
             } catch (err) {
                 reject(err);
             }
         });
     }
-
-    async readTccByCourse(course) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { course_id: course };
-
-                const result = this.collection.find(query).toArray();
-
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        })
-    }
-
-
 
     async deleteOne(id) {
         return new Promise((resolve, reject) => {
             try {
-                const query = {_id: new ObjectId(id) };
-                const result = this.collection.deleteOne(query);
+                const query = { _id: new ObjectId(id) };
 
+                const result = this.collection.deleteOne(query);
                 resolve(result);
             } catch (err) {
                 reject(err);
-            }
-        });
-    }
-
-
-
-    async updateOne(id, data) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { _id: new ObjectId(id) };
-
-                const json_ap = {
-                    $set: data
-                };
-
-                const result = this.collection.updateOne(query, json_ap);
-                resolve(result);
-            } catch (err) {
-                if (err instanceof BSON.BSONError) {
-                    reject("ID Inválido");
-                } else {
-                    reject(err);
-                }
             }
         });
     }
@@ -117,16 +58,36 @@ module.exports = class Courses {
         });
     }
 
+    async updateOne(id, data) {
+        return new Promise((resolve, reject) => {
+            try {
+                const query = { _id: new ObjectId(id) };
+
+                const json_ap = {
+                    $set: data
+                }
+
+                const result = this.collection.updateOne(query, json_ap);
+                resolve(result);
+            } catch (err) {
+                if (err instanceof BSON.BSONError) {
+                    reject("ID Inválido");
+                } else {
+                    reject(err);
+                }
+            }
+        })
+    }
+    
     /*
     verifyJsonInsert(js) {
         const correctJson = [
-            'id_curso',
-            'nome_tcc',
-            'resumo',
-            'ano',
-            'nota',
-            'orientador',
-            'grupo'
+            'nome',
+            'registro',
+            'data_nascimento',
+            'email',
+            'senha',
+            'curso'
         ]
         for (const key of correctJson) {
             if (!(key in js)) {
@@ -137,15 +98,12 @@ module.exports = class Courses {
     }
     verifyJsonUpdate(js) {
         const correctJson = [
-            'id_curso',
-            'nome_tcc',
-            'status',
-            'resumo',
-            'ano',
-            'nota',
-            'orientador',
-            'arquivos',
-            'grupo',
+            'nome',
+            'registro',
+            'data_nascimento',
+            'email',
+            'senha',
+            'curso'
         ]
         for (const key in js) {
             if (!(correctJson.includes(key))) {
@@ -157,16 +115,14 @@ module.exports = class Courses {
     }
     */
 
-
-
     set client(client) {
         this._client = client;
     }
     get client() {
         return this._client;
     }
-    set database(database) {
-        this._database = database;
+    set database(db) {
+        this._database = db;
     }
     get database() {
         return this._database;
@@ -178,3 +134,4 @@ module.exports = class Courses {
         return this._collection;
     }
 }
+

@@ -1,10 +1,10 @@
 const { ObjectId, BSON } = require("mongodb");
 
-module.exports = class Tccs {
+module.exports = class Course {
     constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
-        this._collection = this.database.collection('TCCs');
+        this._collection = this.database.collection('Courses');
     }
 
 
@@ -24,13 +24,12 @@ module.exports = class Tccs {
         return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
+
                 const result = this.collection.findOne(query);
-                
                 resolve(result);
 
             } catch (err) {
                 reject(err);
-                
             }
         });
     }
@@ -74,7 +73,7 @@ module.exports = class Tccs {
     async deleteOne(id) {
         return new Promise((resolve, reject) => {
             try {
-                const query = { _id: new ObjectId(id) };
+                const query = {_id: new ObjectId(id) };
                 const result = this.collection.deleteOne(query);
 
                 resolve(result);

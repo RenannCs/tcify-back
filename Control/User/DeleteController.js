@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelAdmins = require('../../Model/User');
 
 const Database = new ModelDatabase();
-const Course = new ModelCourse(Database.connect());
+const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const read = function (request, response) {
+const remove = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,25 +19,36 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    Course.readAll()
+    const id = request.params.id
+
+    Admin.deleteOne(id)
         .then((resolve) => {
-            const arr = {
-                data: resolve,
-                status: 'SUCCESS',
-                message: 'Courses successfully retrieved.'
-            };
-            response.status(200).send(arr);
+            if (resolve.deletedCount == 1) {
+                const arr = {
+                    data: resolve,
+                    status: 'SUCCESS',
+                    message: 'User successfully deleted.'
+                };
+                response.status(200).send(arr);
+            } else {
+                const arr = {
+                    data: resolve,
+                    status: 'ERROR',
+                    message: 'No user found with the provided ID.'
+                }
+                response.status(404).send(arr);
+            }
         })
         .catch((reject) => {
             const arr = {
-                data: reject,
+                dados: reject,
                 status: 'ERROR',
                 message: 'An error occurred while processing your request. Please try again later.'
-            };
+            }
             response.status(400).send(arr);
-        });
-};
+        })
+}
 
 module.exports = {
-    read
-};
+    remove
+}

@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelCourse = require('../../Model/Courses');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelAdmins = require('../../Model/User');
 
 const Database = new ModelDatabase();
-const Course = new ModelCourse(Database.connect());
+const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const remove = function (request, response) {
+const update = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,36 +19,36 @@ const remove = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id
+    const id = request.params.id;
+    const data = request.body;
 
-    Course.deleteOne(id)
+    Admin.updateOne(id, data)
         .then((resolve) => {
-            if (resolve.deletedCount == 1) {
+            if (resolve.matchedCount == 1) {
                 const arr = {
                     data: resolve,
                     status: 'SUCCESS',
-                    message: 'Administrator successfully deleted.'
-                };
+                    message: 'User data updated successfully.'
+                }
                 response.status(200).send(arr);
             } else {
                 const arr = {
-                    data: resolve,
                     status: 'ERROR',
-                    message: 'No Administrator found with the provided ID.'
+                    message: 'No User was found with the provided ID.'
                 }
                 response.status(404).send(arr);
             }
         })
         .catch((reject) => {
             const arr = {
-                dados: reject,
+                data: reject,
                 status: 'ERROR',
                 message: 'An error occurred while processing your request. Please try again later.'
-            }
+            };
             response.status(400).send(arr);
         })
 }
 
 module.exports = {
-    remove
+    update
 }

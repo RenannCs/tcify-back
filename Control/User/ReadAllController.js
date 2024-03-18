@@ -1,6 +1,6 @@
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
+const ModelAdmins = require('../../Model/User');
 
 const Database = new ModelDatabase();
 const Admin = new ModelAdmins(Database.connect());
@@ -19,31 +19,20 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id;
-
-    Admin.single(id)
+    Admin.readAll()
         .then((resolve) => {
-            if (resolve == null) {
-                const arr = {
-                    dados: resolve,
-                    status: 'ERROR',
-                    msg: 'No Administrator found with the provided ID.'
-                };
-                response.status(404).send(arr);
-            } else {
-                const arr = {
-                    dados: resolve,
-                    status: 'SUCESS',
-                    msg: 'Administrator successfully recovered.'
-                };
-                response.status(200).send(arr);
+            const arr = {
+                dados: resolve,
+                status: 'SUCESS',
+                message: 'User successfully recovered.'
             }
+            response.status(200).send(arr);
         })
         .catch((reject) => {
             const arr = {
                 dados: reject,
                 status: 'ERROR',
-                msg: 'An error occurred while processing your request. Please try again later.'
+                message: 'An error occurred while processing your request. Please try again later.'
             };
             response.status(400).send(arr);
         })

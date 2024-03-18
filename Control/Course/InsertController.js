@@ -1,5 +1,5 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelCourse = require('../../Model/Courses');
+const ModelCourse = require('../../Model/Course');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const Database = new ModelDatabase();

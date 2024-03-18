@@ -1,6 +1,6 @@
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
+const ModelAdmins = require('../../Model/User');
 
 const Database = new ModelDatabase();
 const Admin = new ModelAdmins(Database.connect());
@@ -19,14 +19,25 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    Admin.readAll()
+    const id = request.params.id;
+
+    Admin.single(id)
         .then((resolve) => {
-            const arr = {
-                dados: resolve,
-                status: 'SUCESS',
-                msg: 'Administrators successfully recovered.'
+            if (resolve == null) {
+                const arr = {
+                    dados: resolve,
+                    status: 'ERROR',
+                    msg: 'No user found with the provided ID.'
+                };
+                response.status(404).send(arr);
+            } else {
+                const arr = {
+                    dados: resolve,
+                    status: 'SUCESS',
+                    msg: 'User successfully recovered.'
+                };
+                response.status(200).send(arr);
             }
-            response.status(200).send(arr);
         })
         .catch((reject) => {
             const arr = {

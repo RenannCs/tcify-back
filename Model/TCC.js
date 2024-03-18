@@ -1,20 +1,19 @@
 const { ObjectId, BSON } = require("mongodb");
-const { insert } = require("../Control/Tcc/InsertController");
-const { json } = require("express");
 
-module.exports = class Admins {
+module.exports = class Tccs {
     constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
-        this._collection = this.database.collection('Administradores');
+        this._collection = this.database.collection('TCCs');
     }
+
 
     async readAll() {
         return new Promise((resolve, reject) => {
             try {
-                const result = this.collection.find({});
+                const result = this.collection.find({}).toArray();
 
-                resolve(result.toArray());
+                resolve(result);
             } catch (err) {
                 reject(err);
             }
@@ -25,8 +24,58 @@ module.exports = class Admins {
         return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
-
                 const result = this.collection.findOne(query);
+                
+                resolve(result);
+
+            } catch (err) {
+                reject(err);
+                
+            }
+        });
+    }
+
+    async readTccByYear(year) {
+        return new Promise((resolve, reject) => {
+            try {
+                const startDate = new Date(year, 0, 1);
+                const endDate = new Date(year, 11, 31);
+                const query = {
+                    "date": {
+                        $gte: startDate,
+                        $lte: endDate
+                    }
+                };
+
+                const result = this.collection.find(query).toArray();
+                resolve(result);
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    async readTccByCourse(course) {
+        return new Promise((resolve, reject) => {
+            try {
+                const query = { course_id: course };
+
+                const result = this.collection.find(query).toArray();
+
+                resolve(result);
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }
+
+
+
+    async deleteOne(id) {
+        return new Promise((resolve, reject) => {
+            try {
+                const query = { _id: new ObjectId(id) };
+                const result = this.collection.deleteOne(query);
 
                 resolve(result);
             } catch (err) {
@@ -35,15 +84,25 @@ module.exports = class Admins {
         });
     }
 
-    async deleteOne(id) {
+
+
+    async updateOne(id, data) {
         return new Promise((resolve, reject) => {
             try {
                 const query = { _id: new ObjectId(id) };
 
-                const result = this.collection.deleteOne(query);
+                const json_ap = {
+                    $set: data
+                };
+
+                const result = this.collection.updateOne(query, json_ap);
                 resolve(result);
             } catch (err) {
-                reject(err);
+                if (err instanceof BSON.BSONError) {
+                    reject("ID Inválido");
+                } else {
+                    reject(err);
+                }
             }
         });
     }
@@ -59,36 +118,27 @@ module.exports = class Admins {
         });
     }
 
-    async updateOne(id, data) {
+    async Register(data) {
         return new Promise((resolve, reject) => {
             try {
-                const query = { _id: new ObjectId(id) };
-
-                const json_ap = {
-                    $set: data
-                }
-
-                const result = this.collection.updateOne(query, json_ap);
+                const result = this.collection.insertOne(data);
                 resolve(result);
             } catch (err) {
-                if (err instanceof BSON.BSONError) {
-                    reject("ID Inválido");
-                } else {
-                    reject(err);
-                }
+                reject(err);
             }
-        })
+        });
     }
-    
+
     /*
     verifyJsonInsert(js) {
         const correctJson = [
-            'nome',
-            'registro',
-            'data_nascimento',
-            'email',
-            'senha',
-            'curso'
+            'id_curso',
+            'nome_tcc',
+            'resumo',
+            'ano',
+            'nota',
+            'orientador',
+            'grupo'
         ]
         for (const key of correctJson) {
             if (!(key in js)) {
@@ -99,12 +149,15 @@ module.exports = class Admins {
     }
     verifyJsonUpdate(js) {
         const correctJson = [
-            'nome',
-            'registro',
-            'data_nascimento',
-            'email',
-            'senha',
-            'curso'
+            'id_curso',
+            'nome_tcc',
+            'status',
+            'resumo',
+            'ano',
+            'nota',
+            'orientador',
+            'arquivos',
+            'grupo',
         ]
         for (const key in js) {
             if (!(correctJson.includes(key))) {
@@ -116,14 +169,16 @@ module.exports = class Admins {
     }
     */
 
+
+
     set client(client) {
         this._client = client;
     }
     get client() {
         return this._client;
     }
-    set database(db) {
-        this._database = db;
+    set database(database) {
+        this._database = database;
     }
     get database() {
         return this._database;
@@ -135,4 +190,3 @@ module.exports = class Admins {
         return this._collection;
     }
 }
-

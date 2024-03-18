@@ -1,5 +1,5 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/Tccs');
+const ModelTCC = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const Database = new ModelDatabase();

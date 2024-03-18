@@ -1,23 +1,22 @@
-const readAllAdmin = require('../Control/Admin/ReadAllController').read;
-const singleAdmin = require('../Control/Admin/SingleController').read;
-const deleteAdmin = require('../Control/Admin/DeleteController').remove;
-const insertAdmin = require('../Control/Admin/InsertController').insert;
-const updateAdmin = require('../Control/Admin/UpdateController').update;
+const readAllTCCs = require('../Control/TCC/ReadAllController').read;
+const readTCCsByCourse = require('../Control/TCC/ReadByCourseController').read;
+const readTCCsByYear = require('../Control/TCC/ReadByYearController').read;
+const singleTCC = require('../Control/TCC/SingleController').read;
+const insertTCC = require('../Control/TCC/InsertController').insert;
+const updateTCC = require('../Control/TCC/UpdateController').update;
+const deleteTCC = require('../Control/TCC/DeleteController').remove;
 
-const readAllTcc = require('../Control/Tcc/ReadAllController').read;
-const singleTcc = require('../Control/Tcc/SingleController').read;
-const readTccByCourse = require('../Control/Tcc/ReadByCourseController').read;
-const readTccByYear = require('../Control/Tcc/ReadByYearController').read;
-const deleteTcc = require('../Control/Tcc/DeleteController').remove;
-const updateTcc = require('../Control/Tcc/UpdateController').update;
-const insertTcc = require('../Control/Tcc/InsertController').insert;
+const readAllUsers = require('../Control/User/ReadAllController').read;
+const singleUser = require('../Control/User/SingleController').read;
+const insertUser = require('../Control/User/InsertController').insert;
+const updateUser = require('../Control/User/UpdateController').update;
+const deleteUser = require('../Control/User/DeleteController').remove;
 
-const readAllCourses = require('../Control/Courses/ReadAllController').read;
-const InsertCourse = require('../Control/Courses/InsertController').insert;
-const SingleCourse = require('../Control/Courses/SingleController').read;
-const UpdateCourse = require('../Control/Courses/UpdateController').update;
-const DeleteCourse = require('../Control/Courses/DeleteController').remove;
-
+const readAllCourses = require('../Control/Course/ReadAllController').read;
+const singleCourse = require('../Control/Course/SingleController').read;
+const insertCourse = require('../Control/Course/InsertController').insert;
+const updateCourse = require('../Control/Course/UpdateController').update;
+const deleteCourse = require('../Control/Course/DeleteController').remove;
 
 module.exports = function (app) {
     const express = require('express');
@@ -28,67 +27,65 @@ module.exports = function (app) {
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
+
     //------------------------ROTAS TCC-----------------------//
 
-    //Rota para recuperar todos os TCCs
-    app.get('/repositorios/tcc', readAllTcc);
+    // Rota para recuperar todos os TCCs
+    app.get('/repository/tccs', readAllTCCs);
 
-    //Rota para recuperar um TCC por ID
-    app.get('/repositorios/tcc/:id', singleTcc);
+    // Rota para recuperar todos os TCCs de um curso pelo ID do curso
+    app.get('/repository/tccs/course/:id', readTCCsByCourse);
 
-    //Rota para recuperar todos os TCCs de um curso pelo ID do curso
-    app.get('/repositorios/tcc/curso/:id', readTccByCourse);
+    // Recupera os TCCs de um determinado ano
+    app.get('/repository/tccs/year/:date', readTCCsByYear);
 
-    //Recupera os TCCs de um determinado ano
-    app.get('/repositorios/tcc/ano/:date', readTccByYear);
+    // Rota para recuperar um TCC por ID
+    app.get('/repository/tcc/:id', singleTCC);
 
-    //Rota para deletar um TCC 
-    app.delete('/repositorios/tcc/:id', deleteTcc);
+    // Rota para inserir um TCC
+    app.post('/repository/tcc', insertTCC);
 
-    //Rota para atualizar um TCC por id, usando o Body da requisição como dado
-    app.patch('/repositorios/tcc/:id', updateTcc);
+    // Rota para atualizar um TCC por id, usando o Body da requisição como dado
+    app.patch('/repository/tcc/:id', updateTCC);
 
-    //Rota para inserir um TCC
-    app.post('/repositorios/tcc', insertTcc);
+    // Rota para deletar um TCC 
+    app.delete('/repository/tcc/:id', deleteTCC);
 
 
+    //------------------------ROTAS USERS-----------------------//
 
-    //------------------------ROTAS ADMIN-----------------------//
+    // Rota para recuperar todos os usuários
+    app.get('/repository/users', readAllUsers);
 
-    //Rota para recuperar todos os administradores
-    app.get('/repositorios/admin', readAllAdmin);
+    // Rota para recuperar um usuário por ID
+    app.get('/repository/user/:id', singleUser);
 
-    //Rota para recuperar um administrador por ID
-    app.get('/repositorios/admin/:id', singleAdmin);
+    // Rota para inserir um usuário pelos dados recuperados pelo Body
+    app.post('/repository/user', insertUser);
 
-    //Rota para deletar um adminstrador
-    app.delete('/repositorios/admin/:id', deleteAdmin);
+    // Rota para atualizar um usuário com os dados passados pelo Body
+    app.patch('/repository/user/:id', updateUser);
 
-    //Rota para inserir um adminstrador pelos dados recuperados pelo Body
-    app.post('/repositorios/admin', insertAdmin);
-
-    //Rota para atualizar um administrador com os dados passados pelo Body
-    app.patch('/repositorios/admin/:id', updateAdmin);
+    // Rota para deletar um usuário
+    app.delete('/repository/user/:id', deleteUser);
 
 
     //------------------------ROTAS COURSE-----------------------//
 
-    //Rota para recuperar todos os cursos
-    app.get('/cursos', readAllCourses);
+    // Rota para recuperar todos os cursos
+    app.get('/repository/courses', readAllCourses);
 
-    //Rota para recuperar um curso por ID
-    app.get('/cursos/:id', SingleCourse);
+    // Rota para recuperar um curso por ID
+    app.get('/repository/courses/:id', singleCourse);
 
-    //Rota para deletar um curso
-    app.delete('/cursos/:id', DeleteCourse);
+    // Rota para inserir um curso pelos dados recuperados pelo Body
+    app.post('/repository/course', insertCourse);
 
-    //Rota para inserir um curso pelos dados recuperados pelo Body
-    app.post('/cursos', InsertCourse);
+    // Rota para atualizar um curso com os dados passados pelo Body
+    app.patch('/repository/course/:id', updateCourse);
 
-    //Rota para atualizar um curso com os dados passados pelo Body
-    app.patch('/cursos/:id', UpdateCourse);
-
-
+    // Rota para deletar um curso
+    app.delete('/repository/course/:id', deleteCourse);
 
 
 

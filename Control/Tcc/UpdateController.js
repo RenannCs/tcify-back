@@ -1,10 +1,11 @@
 const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/Tccs');
+const ModelTCC = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const Database = new ModelDatabase();
 const Tcc = new ModelTCC(Database.connect());
 const JwtToken = new ModelJwtToken();
+
 
 const update = function (request, response) {
     const authorizationHeader = request.headers.authorization;

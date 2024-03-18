@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
+const ModelCourse = require('../../Model/Course');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Admins');
 
 const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+const Course = new ModelCourse(Database.connect());
 const JwtToken = new ModelJwtToken();
 
-const remove = function (request, response) {
+const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,36 +19,39 @@ const remove = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id
+    const id = request.params.id;
 
-    Admin.deleteOne(id)
+    Course.single(id)
         .then((resolve) => {
-            if (resolve.deletedCount == 1) {
+            if (resolve == null) {
                 const arr = {
                     data: resolve,
-                    status: 'SUCCESS',
-                    message: 'Administrator successfully deleted.'
+                    status: "ERROR",
+                    message: 'No document was found with the provided ID.'
+           
                 };
-                response.status(200).send(arr);
+                response.status(404).send(arr);
             } else {
                 const arr = {
                     data: resolve,
-                    status: 'ERROR',
-                    message: 'No Administrator found with the provided ID.'
-                }
-                response.status(404).send(arr);
+                    status: "SUCCESS",
+                    message: "Course successfully retrieved."
+          
+                };
+                response.status(200).send(arr);
             }
         })
         .catch((reject) => {
             const arr = {
-                dados: reject,
-                status: 'ERROR',
-                message: 'An error occurred while processing your request. Please try again later.'
-            }
+                data: reject,
+                status: "ERROR",
+                message: "An error occurred while processing your request. Please try again later."
+
+            };
             response.status(400).send(arr);
         })
-}
+};
 
 module.exports = {
-    remove
-}
+    read
+};
