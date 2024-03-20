@@ -21,7 +21,9 @@ const insert = function (request, response ) {
     }
 
     const data = request.body;
+    /*
     data.date = new Date();
+    */
     data.status = false;
     
     Tcc.insertOne(data)

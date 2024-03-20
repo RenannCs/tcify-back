@@ -19,10 +19,7 @@ const read = function (request, response) {
         };
         return response.status(401).send(arr);
     }
-
-    const year = request.params.year;
-   
-    Tcc.readAll(year)
+    Tcc.readDistinctDates()
         .then((resolve) => {
             const arr = {
                 data: resolve,

@@ -20,8 +20,8 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const date = new Date(request.params.date);
-    const year = date.getUTCFullYear();
+    const year = new Date(request.params.year).getUTCFullYear();
+
 
     Tcc.readTccByYear(year)
         .then((resolve) => {

@@ -6,6 +6,8 @@ const insertTCC = require('../Control/TCC/InsertController').insert;
 const updateTCC = require('../Control/TCC/UpdateController').update;
 const deleteTCC = require('../Control/TCC/DeleteController').remove;
 
+const readDistinctDatesTCC = require('../Control/TCC/ReadDistinctDatesController').read;
+
 const readAllUsers = require('../Control/User/ReadAllController').read;
 const singleUser = require('../Control/User/SingleController').read;
 const insertUser = require('../Control/User/InsertController').insert;
@@ -37,7 +39,7 @@ module.exports = function (app) {
     app.get('/repository/tccs/course/:id', readTCCsByCourse);
 
     // Recupera os TCCs de um determinado ano
-    app.get('/repository/tccs/year/:date', readTCCsByYear);
+    app.get('/repository/tccs/year/:year', readTCCsByYear);
 
     // Rota para recuperar um TCC por ID
     app.get('/repository/tcc/:id', singleTCC);
@@ -86,6 +88,9 @@ module.exports = function (app) {
 
     // Rota para deletar um curso
     app.delete('/repository/course/:id', deleteCourse);
+
+    app.get('/repository/tccs/dates', readDistinctDatesTCC);
+
 
 
 

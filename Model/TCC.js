@@ -25,35 +25,38 @@ module.exports = class Tccs {
             try {
                 const query = { _id: new ObjectId(id) };
                 const result = this.collection.findOne(query);
-                
+
                 resolve(result);
 
             } catch (err) {
                 reject(err);
-                
+
             }
         });
     }
 
     async readTccByYear(year) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                const startDate = new Date(year, 0, 1);
-                const endDate = new Date(year, 11, 31);
+                const regex = new RegExp("^" + year);
+    
                 const query = {
                     "date": {
-                        $gte: startDate,
-                        $lte: endDate
+                        $regex: regex
                     }
                 };
-
-                const result = this.collection.find(query).toArray();
+    
+                // Executar a consulta e converter o resultado em uma matriz
+                const result = await this.collection.find(query).toArray();
                 resolve(result);
             } catch (err) {
                 reject(err);
             }
         });
     }
+    
+    
+
 
     async readTccByCourse(course) {
         return new Promise((resolve, reject) => {
@@ -128,6 +131,23 @@ module.exports = class Tccs {
             }
         });
     }
+
+    async readDistinctDates() {
+        return new Promise((resolve, reject) => {
+            this.collection.find({}).toArray()
+                .then(documents => {
+                    const distinctYears = [...new Set(documents.map(doc => new Date(doc.date).getFullYear()))];
+                    resolve(distinctYears);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
+
+
+
+
 
     /*
     verifyJsonInsert(js) {
