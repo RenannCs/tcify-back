@@ -1,9 +1,6 @@
-const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/TCC');
+const ModelTcc = require('../../Model/TCCmongoose').tccModel;
 const ModelJwtToken = require('../../Model/JwtToken');
 
-const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const read = function (request, response) {
@@ -21,7 +18,7 @@ const read = function (request, response) {
 
     const id = request.params.id;
 
-    Tcc.single(id)
+    ModelTcc.findById(id).exec()
         .then((resolve) => {
             if (resolve == null) {
                 const arr = {

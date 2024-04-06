@@ -1,9 +1,7 @@
-const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/TCC');
+const ModelTcc = require('../../Model/TCCmongoose').tccModel;
 const ModelJwtToken = require('../../Model/JwtToken');
 
-const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
+
 const JwtToken = new ModelJwtToken();
 
 
@@ -19,10 +17,18 @@ const read = function (request, response) {
         };
         return response.status(401).send(arr);
     }
-    Tcc.readDistinctDates()
+
+
+    ModelTcc.find().select("date").exec()
         .then((resolve) => {
+            const arrayDates = [];
+
+            for(const date of resolve ){
+                arrayDates.push(date.date);
+            }
+            const newArray = [...new Set(arrayDates)];
             const arr = {
-                data: resolve,
+                data: newArray,
                 status: 'SUCCESS',
                 message: 'TCCs successfully retrieved.'
             };

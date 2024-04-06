@@ -1,9 +1,5 @@
-const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/TCC');
+const ModelTcc = require('../../Model/TCCmongoose').tccModel;
 const ModelJwtToken = require('../../Model/JwtToken');
-
-const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const read = function (request, response) {
@@ -21,7 +17,11 @@ const read = function (request, response) {
 
     const id = request.params.id;
 
-    Tcc.readTccByCourse(id)
+    const arrayData = [
+        "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
+    ];
+
+    ModelTcc.where("course_id").equals(id).select(arrayData).exec()
         .then((resolve) => {
             if (resolve && resolve.length > 0) {
                 const arr = {

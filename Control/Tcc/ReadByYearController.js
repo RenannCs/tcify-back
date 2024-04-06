@@ -1,11 +1,6 @@
-const ModelDatabase = require('../../Model/Database');
-const ModelTCC = require('../../Model/TCC');
+const ModelTcc = require('../../Model/TCCmongoose').tccModel;
 const ModelJwtToken = require('../../Model/JwtToken');
-
-const Database = new ModelDatabase();
-const Tcc = new ModelTCC(Database.connect());
 const JwtToken = new ModelJwtToken();
-
 
 const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
@@ -20,10 +15,13 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const year = new Date(request.params.year).getUTCFullYear();
+    const year = request.params.year
 
+    const arrayData = [
+        "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
+    ];
 
-    Tcc.readTccByYear(year)
+    ModelTcc.where("date").equals(year).select(arrayData).exec()
         .then((resolve) => {
             if (resolve && resolve.length > 0) {
                 const arr = {

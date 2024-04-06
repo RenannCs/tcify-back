@@ -20,9 +20,12 @@ const insertCourse = require('../Control/Course/InsertController').insert;
 const updateCourse = require('../Control/Course/UpdateController').update;
 const deleteCourse = require('../Control/Course/DeleteController').remove;
 
+
 module.exports = function (app) {
     const express = require('express');
-
+    const multer = require('multer');
+    
+    const uploadLocal = multer({ dest: 'Uploads/' });
     app.use(express.json())
 
     app.use((req, res, next) => {
@@ -45,14 +48,18 @@ module.exports = function (app) {
     app.get('/repository/tcc/:id', singleTCC);
 
     // Rota para inserir um TCC
-    app.post('/repository/tcc', insertTCC);
+    app.post('/repository/tcc', uploadLocal.fields([
+        {name: "image" , maxCount: 1},
+        {name: "document" , maxCount: 1},
+        {name: "monography" , maxCount: 1},
+        {name: "zip" , maxCount: 1}
+    ]) ,  insertTCC);
 
     // Rota para atualizar um TCC por id, usando o Body da requisição como dado
     app.patch('/repository/tcc/:id', updateTCC);
 
     // Rota para deletar um TCC 
     app.delete('/repository/tcc/:id', deleteTCC);
-
 
     //------------------------ROTAS USERS-----------------------//
 
