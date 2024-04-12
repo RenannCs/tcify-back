@@ -1,9 +1,7 @@
-const ModelDatabase = require('../../Model/Database');
+const ModelDatabase = require('../../Model/DatabaseMongoose');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/User');
+const ModelUser = require('../../Model/User');
 
-const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const remove = function (request, response) {
@@ -19,25 +17,28 @@ const remove = function (request, response) {
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id
+    const database = new ModelDatabase();
+    database.conect();
 
-    Admin.deleteOne(id)
+    const id = request.params.id
+    const user =  new ModelUser(id);
+
+    user.delete(id)
         .then((resolve) => {
-            if (resolve.deletedCount == 1) {
-                const arr = {
-                    data: resolve,
-                    status: 'SUCCESS',
-                    message: 'User successfully deleted.'
-                };
-                response.status(200).send(arr);
-            } else {
+            if(resolve == null){
                 const arr = {
                     data: resolve,
                     status: 'ERROR',
-                    message: 'No user found with the provided ID.'
+                    message: 'No User found with the provided ID.'
                 }
-                response.status(404).send(arr);
+                return response.status(404).send(arr);
             }
+            const arr = {
+                data: resolve,
+                status: 'SUCCESS',
+                message: 'User successfully deleted.'
+            }
+            response.status(200).send(arr);
         })
         .catch((reject) => {
             const arr = {

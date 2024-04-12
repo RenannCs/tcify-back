@@ -1,9 +1,7 @@
-const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/User');
+const ModelUser = require('../../Model/User');
+const ModelDatabase = require('../../Model/DatabaseMongoose');
 
-const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
 const JwtToken = new ModelJwtToken();
 
 const read = function (request, response) {
@@ -18,8 +16,13 @@ const read = function (request, response) {
         };
         return response.status(401).send(arr);
     }
+    
+    const database = new ModelDatabase();
+    database.conect();
 
-    Admin.readAll()
+    const user = new ModelUser();
+    
+    user.readAll()
         .then((resolve) => {
             const arr = {
                 dados: resolve,

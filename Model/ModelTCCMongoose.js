@@ -7,10 +7,8 @@ const tccSchema = new mongoose.Schema({
     supervisor: String,
     date: String,
     status: Boolean,
-    file: {document: String , monography: String , zip: String},
-    group: { 
-        students: Array
-    },
+    files: Object,
+    group: Object,
     course_id: String,
     course_name: String,
     image: String
@@ -18,6 +16,4 @@ const tccSchema = new mongoose.Schema({
 
 const tccModel = mongoose.model("TCC" , tccSchema , "TCCs");
 
-module.exports = {
-    tccModel
-}
+module.exports =  tccModel;

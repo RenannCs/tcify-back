@@ -10,9 +10,10 @@ const readDistinctDatesTCC = require('../Control/TCC/ReadDistinctDatesController
 
 const readAllUsers = require('../Control/User/ReadAllController').read;
 const singleUser = require('../Control/User/SingleController').read;
-const insertUser = require('../Control/User/InsertController').insert;
+const insertUser = require('../Control/User/InsertController');
 const updateUser = require('../Control/User/UpdateController').update;
 const deleteUser = require('../Control/User/DeleteController').remove;
+const loginUser = require('../Control/User/LoginController');
 
 const readAllCourses = require('../Control/Course/ReadAllController').read;
 const singleCourse = require('../Control/Course/SingleController').read;
@@ -70,13 +71,15 @@ module.exports = function (app) {
     app.get('/repository/user/:id', singleUser);
 
     // Rota para inserir um usuário pelos dados recuperados pelo Body
-    app.post('/repository/user', insertUser);
+    app.post('/repository/user', uploadLocal.any() , insertUser);
 
     // Rota para atualizar um usuário com os dados passados pelo Body
     app.patch('/repository/user/:id', updateUser);
 
     // Rota para deletar um usuário
     app.delete('/repository/user/:id', deleteUser);
+
+    app.post('/repository/user/login' , loginUser);
 
 
     //------------------------ROTAS COURSE-----------------------//

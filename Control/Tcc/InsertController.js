@@ -1,5 +1,5 @@
-const ModelTcc = require('../../Model/TCCmongoose').tccModel;
-
+const ModelDatabase = require('../../Model/DatabaseMongoose');
+const TCC = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const fs = require('fs');
@@ -20,92 +20,59 @@ const insert = async (request, response) =>{
         return response.status(401).send(arr);
     }
     
-    const tcc = new ModelTcc();
     
-
+    
+    const files = {}
 
     const image = request.files["image"];
-    
+    let imageBase64 = undefined
     if(image != undefined){
-        let imageBase64 = await promisify(fs.readFile)(image[0].path, { encoding: 'base64' });
+        imageBase64 = await promisify(fs.readFile)(image[0].path, { encoding: 'base64' });
         const type = image[0].mimetype;
         imageBase64 = "data:" + type + ";base64," + imageBase64;
         await promisify(fs.unlink)(image[0].path);
-        tcc.image = imageBase64;
     }
 
     const monography = request.files["monography"];
     
     if(monography != undefined){
         fs.rename(monography[0].path , "Uploads/Monographys/" + monography[0].filename , (erro)=> {});
-        tcc.file.monography = "Uploads/Monographys/" + monography[0].filename;
+        files.monography = "Uploads/Monographys/" + monography[0].filename;
     }
     
     const document = request.files["document"];
 
     if (document != undefined){
         fs.rename(document[0].path , "Uploads/Documents/" + document[0].filename , (erro)=>{});
-        tcc.file.document = "Uploads/Documents/" + document[0].filename;
+        files.document = "Uploads/Documents/" + document[0].filename;
     }
 
     const zip = request.files["zip"];
 
     if (zip != undefined){
         fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename , (erro)=>{});
-        tcc.file.zip = "Uploads/Zips/" + zip[0].filename;
-    }
-
-
-    const title = request.body.title;
-    const summary = request.body.summary;
-    const grade = request.body.grade;
-    const supervisor = request.body.supervisor;
-    const date = request.body. date;
-    const students = request.body.students;
-    const course_id = request.body.course_id;
-    const course_name = request.body.course_name;
-
-    
-    if(title != undefined){
-        tcc.title = title;
+        files.zip = "Uploads/Zips/" + zip[0].filename;
     }
     
-    if(summary != undefined){
-        tcc.summary = summary;
-    }
+    const students = request.body.students != undefined ? JSON.parse(request.body.students): undefined;
+    const tcc = new TCC(
+            request.body.id,
+            request.body.title,
+            request.body.summary,
+            request.body.grade,
+            request.body.supervisor,
+            request.body.date,
+            false,
+            files,
+            students,
+            request.body.course_id,
+            request.body.course_name,
+            imageBase64
+        )
 
-    
-    if(grade != undefined){
-        tcc.grade = grade;
-    }
-
-    
-    if(supervisor != undefined){
-        tcc.supervisor = supervisor;
-    }
-
-    
-    if(date != undefined){
-        tcc.date = date;
-    }
-
-    
-    if(students != undefined){
-        tcc.group.students = JSON.parse(students);
-    }
-
-    
-    if(course_id != undefined){
-        tcc.course_id = course_id;
-    }
-
-    if(course_name != undefined){
-        tcc.course_name = course_name;
-    }
-    
-
-
-    tcc.save()
+    const database = new ModelDatabase();
+    database.conect();
+    tcc.insert()
     .then((resolve)=>{
         const arr = {
             data: resolve,
@@ -122,11 +89,6 @@ const insert = async (request, response) =>{
         };
         response.status(400).send(arr);
     })
-    
-
-    
-
-
     
 }
 

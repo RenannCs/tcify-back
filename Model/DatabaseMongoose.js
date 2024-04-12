@@ -15,8 +15,12 @@ const uri = `mongodb+srv://${user}:${password}@repositorio.kr4t3yw.mongodb.net/$
 
 module.exports = class Database{
     constructor(){
+        this.uri = uri;
+    }
+
+    conect(){
         try{
-            mongoose.connect(uri , {
+            mongoose.connect(this.uri , {
                 dbName: "Repositorio_TCC"
             })
         }catch(err){

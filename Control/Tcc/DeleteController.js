@@ -1,6 +1,6 @@
-const ModelTcc = require('../../Model/TCCmongoose').tccModel;
+const ModelTcc = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
-
+const ModelDatabase = require('../../Model/DatabaseMongoose');
 const JwtToken = new ModelJwtToken();
 
 
@@ -16,26 +16,31 @@ const remove = function (request, response) {
         };
         return response.status(401).send(arr);
     }
+    const database = new ModelDatabase();
+    database.conect();
 
     const id = request.params.id;
+    const tcc = new ModelTcc(id);
 
-    ModelTcc.findByIdAndDelete(id).exec()
+    tcc.delete()
         .then((resolve) => {
-            if (resolve.deletedCount === 1) {
-                const arr = {
-                    data: resolve,
-                    status: 'SUCCESS',
-                    message: 'TCC successfully deleted.'
-                }
-                response.status(200).send(arr);
-            } else {
+
+            if(resolve == null){
                 const arr = {
                     data: resolve,
                     status: 'ERROR',
                     message: 'No TCC found with the provided ID.'
                 }
-                response.status(404).send(arr);
+                return response.status(404).send(arr);
             }
+            const arr = {
+                data: resolve,
+                status: 'SUCCESS',
+                message: 'TCC successfully deleted.'
+            }
+            response.status(200).send(arr);
+            
+            
         })
         .catch((reject) => {
             const arr = {

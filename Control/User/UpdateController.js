@@ -1,6 +1,6 @@
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/User');
+const ModelAdmins = require('../../Model/Userantigo');
 
 const Database = new ModelDatabase();
 const Admin = new ModelAdmins(Database.connect());

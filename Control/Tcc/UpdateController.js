@@ -1,4 +1,5 @@
-const ModelTcc = require('../../Model/TCCmongoose').tccModel;
+const ModelTcc = require('../../Model/ModelTCCMongoose');
+const ModelDatabase = require('../../Model/DatabaseMongoose');
 
 const ModelJwtToken = require('../../Model/JwtToken');
 
@@ -22,7 +23,8 @@ const update = async (request, response) =>{
     const id = request.params.id;
 
 
-
+    const database = new ModelDatabase();
+    database.conect();
 
     const tcc = await ModelTcc.findById(id);
     

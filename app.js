@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const DatabaseMongoose = require('../tcify_back/Model/DatabaseMongoose')
-const db =  new DatabaseMongoose();
+
+
 
 const routes = require('./Routes/routes')
 const cors = require('cors');

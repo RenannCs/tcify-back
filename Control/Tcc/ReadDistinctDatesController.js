@@ -1,7 +1,6 @@
-const ModelTcc = require('../../Model/TCCmongoose').tccModel;
+const ModelTcc = require('../../Model/ModelTCCMongoose').tccModel;
 const ModelJwtToken = require('../../Model/JwtToken');
-
-
+const ModelDatabase = require('../../Model/DatabaseMongoose');
 const JwtToken = new ModelJwtToken();
 
 
@@ -17,7 +16,8 @@ const read = function (request, response) {
         };
         return response.status(401).send(arr);
     }
-
+    const database = new ModelDatabase();
+    database.conect();
 
     ModelTcc.find().select("date").exec()
         .then((resolve) => {

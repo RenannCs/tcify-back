@@ -1,12 +1,14 @@
-const ModelTcc = require('../../Model/TCCmongoose').tccModel
+const ModelTcc = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
+const ModelDatabase = require('../../Model/DatabaseMongoose');
+
+
 
 const JwtToken = new ModelJwtToken();
 
 const read = function (request, response) {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
 
     if (tokenValidationResult.status !== true) {
         const arr = {
@@ -16,19 +18,18 @@ const read = function (request, response) {
         };
         return response.status(401).send(arr);
     }
-
-    const arrayData = [
-        "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
-    ];
+    const database = new ModelDatabase();
+    database.conect();
+    const tcc = new ModelTcc();
       
-    ModelTcc.find().select(arrayData).exec()
+    tcc.readAll()
     .then((resolve)=>{
         const arr = {
             data: resolve,
             status: 'SUCCESS',
             message: 'TCCs successfully retrieved.'
         };
-    
+        
         response.status(200).send(arr);
     })
     .catch((reject)=>{

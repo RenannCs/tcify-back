@@ -1,212 +1,157 @@
-const { ObjectId, BSON } = require("mongodb");
+const ModelTcc = require("./ModelTCCMongoose");
 
-module.exports = class Tccs {
-    constructor(client) {
-        this._client = client;
-        this._database = this.client.db('Repositorio_TCC');
-        this._collection = this.database.collection('TCCs');
+module.exports = class TCC {
+    constructor(
+        id = undefined,
+        title = undefined,
+        summary = undefined,
+        grade = undefined,
+        supervisor = undefined,
+        date = undefined,
+        status = undefined,
+        files = undefined,
+        group = undefined,
+        course_id = undefined,
+        course_name = undefined,
+        image = undefined
+    ) {
+        this.modelTcc = new ModelTcc();
+        this.id = id;
+        this.title = title;
+        this.summary = summary;
+        this.grade = grade;
+        this.supervisor = supervisor;
+        this.date = date;
+        this.status = status;
+        this.files = files;
+        this.group = group;
+        this.course_id = course_id;
+        this.course_name = course_name;
+        this.image = image;
     }
 
+    async insert() {
+        this.modelTcc.title = this.title;
+        this.modelTcc.summary = this.summary;
+        this.modelTcc.grade = this.grade;
+        this.modelTcc.supervisor = this.supervisor;
+        this.modelTcc.date = this.date;
+        this.modelTcc.status = this.status;
+        this.modelTcc.files = this.files;
+        this.modelTcc.group = this.group;
+        this.modelTcc.course_id = this.course_id;
+        this.modelTcc.course_name = this.course_name;
+        this.modelTcc.image = this.image;
 
-    async readAll() {
-        return new Promise((resolve, reject) => {
-            try {
-                const result = this.collection.find({}).toArray();
-
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        });
+        return this.modelTcc.save();
     }
 
-    async single(id) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { _id: new ObjectId(id) };
-                const result = this.collection.findOne(query);
+    async readAll(){
+        const arrayData = [
+            "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
+        ];
 
-                resolve(result);
-
-            } catch (err) {
-                reject(err);
-
-            }
-        });
+        return ModelTcc.find().select(arrayData).exec()
     }
 
-    async readTccByYear(year) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const regex = new RegExp("^" + year);
+    async readByYear(){
+        const arrayData = [
+            "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
+        ];
+        
+        return ModelTcc.where("date").equals(this.date).select(arrayData).exec();
+    }
+
+    async single(){
+        return ModelTcc.findById(this.id).exec();
+    }
+
+    async readByCourse(){
+        const arrayData = [
+            "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
+        ];
+        return ModelTcc.where("course_id").equals(this.course_id).select(arrayData).exec()
+    }
+
+    async delete(){
+        return ModelTcc.findByIdAndDelete(this.id).exec();
+    }
     
-                const query = {
-                    "date": {
-                        $regex: regex
-                    }
-                };
-    
-                // Executar a consulta e converter o resultado em uma matriz
-                const result = await this.collection.find(query).toArray();
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        });
+    get id() {
+        return this._id;
     }
-    
-    
-
-
-    async readTccByCourse(course) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { course_id: course };
-
-                const result = this.collection.find(query).toArray();
-
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        })
+    get title() {
+        return this._title;
     }
-
-
-
-    async deleteOne(id) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { _id: new ObjectId(id) };
-                const result = this.collection.deleteOne(query);
-
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        });
+    get summary() {
+        return this._summary;
     }
-
-
-
-    async updateOne(id, data) {
-        return new Promise((resolve, reject) => {
-            try {
-                const query = { _id: new ObjectId(id) };
-
-                const json_ap = {
-                    $set: data
-                };
-
-                const result = this.collection.updateOne(query, json_ap);
-                resolve(result);
-            } catch (err) {
-                if (err instanceof BSON.BSONError) {
-                    reject("ID Inválido");
-                } else {
-                    reject(err);
-                }
-            }
-        });
+    get grade() {
+        return this._grade;
     }
-
-    async insertOne(data) {
-        return new Promise((resolve, reject) => {
-            try {
-                const result = this.collection.insertOne(data);
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        });
+    get supervisor() {
+        return this._supervisor;
     }
-
-    async Register(data) {
-        return new Promise((resolve, reject) => {
-            try {
-                const result = this.collection.insertOne(data);
-                resolve(result);
-            } catch (err) {
-                reject(err);
-            }
-        });
+    get date() {
+        return this._date;
     }
-
-    async readDistinctDates() {
-        return new Promise((resolve, reject) => {
-            this.collection.find({}).toArray()
-                .then(documents => {
-                    const distinctYears = [...new Set(documents.map(doc => new Date(doc.date).getFullYear()))];
-                    resolve(distinctYears);
-                })
-                .catch(err => {
-                    reject(err);
-                });
-        });
+    get status() {
+        return this._status;
     }
-
-
-
-
-
-    /*
-    verifyJsonInsert(js) {
-        const correctJson = [
-            'id_curso',
-            'nome_tcc',
-            'resumo',
-            'ano',
-            'nota',
-            'orientador',
-            'grupo'
-        ]
-        for (const key of correctJson) {
-            if (!(key in js)) {
-                return false;
-            }
-        }
-        return true;
+    get file() {
+        return this._file;
     }
-    verifyJsonUpdate(js) {
-        const correctJson = [
-            'id_curso',
-            'nome_tcc',
-            'status',
-            'resumo',
-            'ano',
-            'nota',
-            'orientador',
-            'arquivos',
-            'grupo',
-        ]
-        for (const key in js) {
-            if (!(correctJson.includes(key))) {
-
-                return false;
-            }
-        }
-        return true;
+    get group() {
+        return this._group;
     }
-    */
-
-
-
-    set client(client) {
-        this._client = client;
+    get course_id() {
+        return this._course_id;
     }
-    get client() {
-        return this._client;
+    get course_name() {
+        return this._course_name;
     }
-    set database(database) {
-        this._database = database;
+    get image() {
+        return this._image;
     }
-    get database() {
-        return this._database;
+    // Setters
+    set id(value) {
+        this._id = value;
     }
-    set collection(cl) {
-        this._collection = cl;
+    set title(value) {
+        this._title = value;
     }
-    get collection() {
-        return this._collection;
+    set summary(value) {
+        this._summary = value;
+    }
+    set grade(value) {
+        this._grade = value;
+    }
+    set supervisor(value) {
+        this._supervisor = value;
+    }
+    set date(value) {
+        this._date = value;
+    }
+    set status(value) {
+        this._status = value;
+    }
+    set file(value) {
+        this._file = value;
+    }
+    set group(value) {
+        this._group = value;
+    }
+    set course_id(value) {
+        this._course_id = value;
+    }
+    set course_name(value) {
+        this._course_name = value;
+    }
+    set image(value) {
+        this._image = value;
     }
 }
+
+
+
+
