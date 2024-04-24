@@ -1,12 +1,13 @@
-const ModelTcc = require('../../Model/ModelTCCMongoose');
+const ModelTcc = require('../../Model/TCC');
 const ModelDatabase = require('../../Model/DatabaseMongoose');
 
 const ModelJwtToken = require('../../Model/JwtToken');
 
+
 const JwtToken = new ModelJwtToken();
 
 
-const update = async (request, response) =>{
+const update = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -18,77 +19,53 @@ const update = async (request, response) =>{
         };
         return response.status(401).send(arr);
     }
-    
-    
+
+
     const id = request.params.id;
 
 
     const database = new ModelDatabase();
     database.conect();
 
-    const tcc = await ModelTcc.findById(id);
-    
-    if (tcc == null){
+    const tcc = new ModelTcc();
+    tcc.id = id;
+    const res = await tcc.exist()
+    if (!res) {
         const arr = {
             status: "ERROR",
-            message: "No document was found with the provided ID."
+            message: "TCC não existe"
         }
         return response.status(404).send(arr);
     }
+
 
     const title = request.body.title;
     const summary = request.body.summary;
     const grade = request.body.grade;
     const supervisor = request.body.supervisor;
-    const date = request.body. date;
+    const date = request.body.date;
     const students = request.body.students;
     const course_id = request.body.course_id;
     const course_name = request.body.course_name;
 
-    
-    if(title != undefined){
-        tcc.title = title;
-    }
-    
-    if(summary != undefined){
-        tcc.summary = summary;
-    }
+    tcc.title = title;
+    tcc.summary = summary;
+    tcc.grade = grade;
+    tcc.supervisor = supervisor;
+    tcc.date = date;
 
+    tcc.group = students != undefined ? JSON.parse(students):undefined;
     
-    if(grade != undefined){
-        tcc.grade = grade;
-    }
+    tcc.course_id = course_id;
+    tcc.course_name = course_name;
 
-    
-    if(supervisor != undefined){
-        tcc.supervisor = supervisor;
-    }
 
-    
-    if(date != undefined){
-        tcc.date = date;
-    }
-
-    
-    if(students != undefined){
-        tcc.group.students = JSON.parse(students);
-    }
-
-    
-    if(course_id != undefined){
-        tcc.course_id = course_id;
-    }
-
-    if(course_name != undefined){
-        tcc.course_name = course_name;
-    }
-
-    tcc.save()
+    tcc.update()
         .then((resolve) => {
             const arr = {
                 data: resolve,
                 status: "SUCCESS",
-                 message: "TCC updated successfully."
+                message: "TCC updated successfully."
             }
             response.status(200).send(arr);
         })
@@ -100,8 +77,8 @@ const update = async (request, response) =>{
             };
             response.status(400).send(arr);
         })
+
 }
 
-module.exports = {
-    update
-}
+module.exports = update;
+

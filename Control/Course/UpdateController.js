@@ -49,6 +49,4 @@ const update = function (request, response) {
         })
 }
 
-module.exports = {
-    update
-}
+module.exports = update;

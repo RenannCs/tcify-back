@@ -3,7 +3,6 @@ const TCC = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const fs = require('fs');
-const { promisify } = require('util');
 
 const JwtToken = new ModelJwtToken();
 
@@ -20,38 +19,35 @@ const insert = async (request, response) =>{
         return response.status(401).send(arr);
     }
     
-    
-    
-    const files = {}
 
     const image = request.files["image"];
-    let imageBase64 = undefined
+    let imagePath = undefined
+    
     if(image != undefined){
-        imageBase64 = await promisify(fs.readFile)(image[0].path, { encoding: 'base64' });
-        const type = image[0].mimetype;
-        imageBase64 = "data:" + type + ";base64," + imageBase64;
-        await promisify(fs.unlink)(image[0].path);
+        fs.rename(image[0].path , "Uploads/Images/" + image[0].filename + ".jpg" , (erro)=> {});
+        imagePath = "Uploads/Monographys/" + image[0].filename + ".jpg";
     }
 
     const monography = request.files["monography"];
+    let monographyPath = undefined;
     
     if(monography != undefined){
-        fs.rename(monography[0].path , "Uploads/Monographys/" + monography[0].filename , (erro)=> {});
-        files.monography = "Uploads/Monographys/" + monography[0].filename;
+        fs.rename(monography[0].path , "Uploads/Monographys/" + monography[0].filename + ".pdf" , (erro)=> {});
+        monographyPath = "Uploads/Monographys/" + monography[0].filename + ".pdf";
     }
     
     const document = request.files["document"];
-
+    let documentPath = undefined
     if (document != undefined){
-        fs.rename(document[0].path , "Uploads/Documents/" + document[0].filename , (erro)=>{});
-        files.document = "Uploads/Documents/" + document[0].filename;
+        fs.rename(document[0].path , "Uploads/Documents/" + document[0].filename + ".pdf" , (erro)=>{});
+        documentPath = "Uploads/Documents/" + document[0].filename + ".pdf";
     }
 
     const zip = request.files["zip"];
-
+    let zipPath = undefined
     if (zip != undefined){
-        fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename , (erro)=>{});
-        files.zip = "Uploads/Zips/" + zip[0].filename;
+        fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
+        zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
     
     const students = request.body.students != undefined ? JSON.parse(request.body.students): undefined;
@@ -63,11 +59,13 @@ const insert = async (request, response) =>{
             request.body.supervisor,
             request.body.date,
             false,
-            files,
+            monographyPath,
+            documentPath,
+            zipPath,
             students,
             request.body.course_id,
             request.body.course_name,
-            imageBase64
+            imagePath
         )
 
     const database = new ModelDatabase();
@@ -92,6 +90,5 @@ const insert = async (request, response) =>{
     
 }
 
-module.exports = {
-    insert
-}
+module.exports = insert;
+

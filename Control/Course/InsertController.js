@@ -41,6 +41,5 @@ const insert = function (request, response) {
         })
 }
 
-module.exports = {
-    insert
-}
+module.exports = insert;
+

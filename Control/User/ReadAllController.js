@@ -41,6 +41,4 @@ const read = function (request, response) {
         })
 }
 
-module.exports = {
-    read
-}
+module.exports = read;

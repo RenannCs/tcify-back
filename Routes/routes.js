@@ -1,25 +1,26 @@
-const readAllTCCs = require('../Control/TCC/ReadAllController').read;
-const readTCCsByCourse = require('../Control/TCC/ReadByCourseController').read;
-const readTCCsByYear = require('../Control/TCC/ReadByYearController').read;
-const singleTCC = require('../Control/TCC/SingleController').read;
-const insertTCC = require('../Control/TCC/InsertController').insert;
-const updateTCC = require('../Control/TCC/UpdateController').update;
-const deleteTCC = require('../Control/TCC/DeleteController').remove;
+const readAllTCCs = require('../Control/TCC/ReadAllController');
+const readTCCsByCourse = require('../Control/TCC/ReadByCourseController');
+const readTCCsByYear = require('../Control/TCC/ReadByYearController');
+const singleTCC = require('../Control/TCC/SingleController');
+const insertTCC = require('../Control/TCC/InsertController');
+const updateTCC = require('../Control/TCC/UpdateController');
+const deleteTCC = require('../Control/TCC/DeleteController');
+const insertImageTcc = require('../Control/Tcc/ImageInsertController');
 
-const readDistinctDatesTCC = require('../Control/TCC/ReadDistinctDatesController').read;
+const readDistinctDatesTCC = require('../Control/TCC/ReadDistinctDatesController');
 
-const readAllUsers = require('../Control/User/ReadAllController').read;
-const singleUser = require('../Control/User/SingleController').read;
+const readAllUsers = require('../Control/User/ReadAllController');
+const singleUser = require('../Control/User/SingleController');
 const insertUser = require('../Control/User/InsertController');
-const updateUser = require('../Control/User/UpdateController').update;
-const deleteUser = require('../Control/User/DeleteController').remove;
+const updateUser = require('../Control/User/UpdateController');
+const deleteUser = require('../Control/User/DeleteController');
 const loginUser = require('../Control/User/LoginController');
 
-const readAllCourses = require('../Control/Course/ReadAllController').read;
-const singleCourse = require('../Control/Course/SingleController').read;
-const insertCourse = require('../Control/Course/InsertController').insert;
-const updateCourse = require('../Control/Course/UpdateController').update;
-const deleteCourse = require('../Control/Course/DeleteController').remove;
+const readAllCourses = require('../Control/Course/ReadAllController');
+const singleCourse = require('../Control/Course/SingleController');
+const insertCourse = require('../Control/Course/InsertController');
+const updateCourse = require('../Control/Course/UpdateController');
+const deleteCourse = require('../Control/Course/DeleteController');
 
 
 module.exports = function (app) {
@@ -57,10 +58,14 @@ module.exports = function (app) {
     ]) ,  insertTCC);
 
     // Rota para atualizar um TCC por id, usando o Body da requisição como dado
-    app.patch('/repository/tcc/:id', updateTCC);
+    app.patch('/repository/tcc/:id', uploadLocal.any() ,updateTCC);
 
     // Rota para deletar um TCC 
     app.delete('/repository/tcc/:id', deleteTCC);
+
+    app.post('/repository/tcc/image/:id' , uploadLocal.fields([
+        {name: "image" , maxCount: 1}])
+        , insertImageTcc)
 
     //------------------------ROTAS USERS-----------------------//
 

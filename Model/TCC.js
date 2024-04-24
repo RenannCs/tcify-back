@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const ModelTcc = require("./ModelTCCMongoose");
 
 module.exports = class TCC {
@@ -9,13 +10,14 @@ module.exports = class TCC {
         supervisor = undefined,
         date = undefined,
         status = undefined,
-        files = undefined,
+        monography = undefined,
+        document = undefined,
+        zip = undefined,
         group = undefined,
         course_id = undefined,
         course_name = undefined,
         image = undefined
     ) {
-        this.modelTcc = new ModelTcc();
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -23,7 +25,9 @@ module.exports = class TCC {
         this.supervisor = supervisor;
         this.date = date;
         this.status = status;
-        this.files = files;
+        this.monography = monography;
+        this.document = document;
+        this.zip = zip;
         this.group = group;
         this.course_id = course_id;
         this.course_name = course_name;
@@ -31,21 +35,31 @@ module.exports = class TCC {
     }
 
     async insert() {
-        this.modelTcc.title = this.title;
-        this.modelTcc.summary = this.summary;
-        this.modelTcc.grade = this.grade;
-        this.modelTcc.supervisor = this.supervisor;
-        this.modelTcc.date = this.date;
-        this.modelTcc.status = this.status;
-        this.modelTcc.files = this.files;
-        this.modelTcc.group = this.group;
-        this.modelTcc.course_id = this.course_id;
-        this.modelTcc.course_name = this.course_name;
-        this.modelTcc.image = this.image;
+        const tcc = new ModelTcc();        
+        tcc.title = this.title;
+        tcc.summary = this.summary;
+        tcc.grade = this.grade;
+        tcc.supervisor = this.supervisor;
+        tcc.date = this.date;
+        tcc.status = this.status;
+        tcc.monography = this.monography;
+        tcc.document = this.document;
+        tcc.zip = this.zip;
+        tcc.group = this.group;
+        tcc.course_id = this.course_id;
+        tcc.course_name = this.course_name;
+        tcc.image = this.image;
 
-        return this.modelTcc.save();
+        return tcc.save();
     }
 
+    async exist(){
+        const res = await ModelTcc.exists({"_id": new ObjectId(this.id)});
+        if (res != null){
+            return true;
+        }
+        return false;    
+    }
     async readAll(){
         const arrayData = [
             "_id" , "title" , "summary" , "grade" , "supervisor" , "date" , "status" , "files" , "group" , "course_id" , "course_name"
@@ -76,7 +90,60 @@ module.exports = class TCC {
     async delete(){
         return ModelTcc.findByIdAndDelete(this.id).exec();
     }
+
+    async update(){
+        const tcc = await ModelTcc.findById(this.id);
+        
+        if(this.title != undefined){
+            tcc.title = this.title;
+        }
+        
+        if(this.summary != undefined){
+            tcc.summary = this.summary;
+        }
+        
+        if(this.grade != undefined){
+            tcc.grade = this.grade;
+        }
     
+        if(this.supervisor != undefined){
+            console.log("aqui")
+            tcc.supervisor = this.supervisor;
+        }
+    
+        
+        if(this.date != undefined){
+            tcc.date = this.date;
+        }
+        
+        if(this.status != undefined){
+            tcc.status = this.status;
+        }
+        
+        if(this.group != undefined){
+            tcc.group = this.group;
+        }
+        
+        if(this.course_id != undefined){
+            tcc.course_id = this.course_id;
+        }
+    
+        if(this.course_name != undefined){
+            tcc.course_name = this.course_name;
+        }
+        
+        return tcc.save();
+        
+    }
+    get zip(){
+        return this._zip;
+    }
+    get document(){
+        return this._document;
+    }
+    get monography(){
+        return this._monography
+    }
     get id() {
         return this._id;
     }
@@ -98,9 +165,7 @@ module.exports = class TCC {
     get status() {
         return this._status;
     }
-    get file() {
-        return this._file;
-    }
+    
     get group() {
         return this._group;
     }
@@ -114,6 +179,15 @@ module.exports = class TCC {
         return this._image;
     }
     // Setters
+    set zip(value){
+        this._zip = value;
+    }
+    set document(value){
+        this._document = value;
+    }
+    set monography(value){
+        this._monography = value;
+    }
     set id(value) {
         this._id = value;
     }
@@ -135,9 +209,7 @@ module.exports = class TCC {
     set status(value) {
         this._status = value;
     }
-    set file(value) {
-        this._file = value;
-    }
+    
     set group(value) {
         this._group = value;
     }

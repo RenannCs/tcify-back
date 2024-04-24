@@ -50,6 +50,4 @@ const remove = function (request, response) {
         })
 }
 
-module.exports = {
-    remove
-}
+module.exports = remove;
