@@ -1,12 +1,12 @@
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelAdmins = require('../../Model/Userantigo');
+const ModelUser = require('../../Model/User');
 
-const Database = new ModelDatabase();
-const Admin = new ModelAdmins(Database.connect());
+
+
 const JwtToken = new ModelJwtToken();
 
-const update = function (request, response) {
+module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -20,33 +20,26 @@ const update = function (request, response) {
     }
 
     const id = request.params.id;
-    const data = request.body;
+    
 
-    Admin.updateOne(id, data)
-        .then((resolve) => {
-            if (resolve.matchedCount == 1) {
-                const arr = {
-                    data: resolve,
-                    status: 'SUCCESS',
-                    message: 'User data updated successfully.'
-                }
-                response.status(200).send(arr);
-            } else {
-                const arr = {
-                    status: 'ERROR',
-                    message: 'No User was found with the provided ID.'
-                }
-                response.status(404).send(arr);
-            }
-        })
-        .catch((reject) => {
-            const arr = {
-                data: reject,
-                status: 'ERROR',
-                message: 'An error occurred while processing your request. Please try again later.'
-            };
-            response.status(400).send(arr);
-        })
+    const database = new ModelDatabase();
+    await database.conect();
+
+    const user = new ModelUser();
+    user.id = id;
+
+    const res = await user.exist();
+    if(!res){
+        database.desconnect();
+        const arr = {
+            status: "ERROR",
+            message: "TCC não existe"
+        }
+        return response.status(404).send(arr);
+    }
+
+    /**
+     * Fazer update de user
+     */
+    
 }
-
-module.exports = update;

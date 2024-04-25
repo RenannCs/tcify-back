@@ -1,13 +1,16 @@
+/**
+ * Faz update de título, sumário, nota, supervisor, data e curso.
+ * 
+ * --Adicionar controle para atualizar grupo, imagens e arquivos.
+ */
+
 const ModelTcc = require('../../Model/TCC');
-const ModelDatabase = require('../../Model/DatabaseMongoose');
-
+const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-
-
 const JwtToken = new ModelJwtToken();
 
 
-const update = async (request, response) => {
+module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,13 +22,11 @@ const update = async (request, response) => {
         };
         return response.status(401).send(arr);
     }
-
-
     const id = request.params.id;
 
 
     const database = new ModelDatabase();
-    database.conect();
+    await database.conect();
 
     const tcc = new ModelTcc();
     tcc.id = id;
@@ -44,7 +45,7 @@ const update = async (request, response) => {
     const grade = request.body.grade;
     const supervisor = request.body.supervisor;
     const date = request.body.date;
-    const students = request.body.students;
+
     const course_id = request.body.course_id;
     const course_name = request.body.course_name;
 
@@ -53,9 +54,6 @@ const update = async (request, response) => {
     tcc.grade = grade;
     tcc.supervisor = supervisor;
     tcc.date = date;
-
-    tcc.group = students != undefined ? JSON.parse(students):undefined;
-    
     tcc.course_id = course_id;
     tcc.course_name = course_name;
 
@@ -77,8 +75,8 @@ const update = async (request, response) => {
             };
             response.status(400).send(arr);
         })
+        .finally(() => {
+            database.desconnect();
+        })
 
 }
-
-module.exports = update;
-

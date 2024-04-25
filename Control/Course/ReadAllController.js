@@ -1,4 +1,4 @@
-const ModelDatabase = require('../../Model/Database');
+const ModelDatabase = require('../../Model/DatabaseAntigo');
 const ModelCourse = require('../../Model/Course');
 const ModelJwtToken = require('../../Model/JwtToken');
 

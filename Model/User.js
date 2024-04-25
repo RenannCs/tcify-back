@@ -1,4 +1,6 @@
+const { Model } = require("mongoose");
 const ModelUser = require("./ModeUserMongoose");
+const { ObjectId } = require("mongodb");
 
 module.exports = class User{
     constructor(
@@ -14,7 +16,7 @@ module.exports = class User{
         user_type = undefined,
         register = undefined
     ){
-        this.modelUser = new ModelUser();
+        
         
         this._id = id;
         this._name = name;
@@ -30,24 +32,32 @@ module.exports = class User{
     }
 
     async insert(){
-        this.modelUser.name = this._name;
-        
-        this.modelUser.course_name = this._course_name;
-        this.modelUser.course_id = this._course_id;
-        this.modelUser.email = this._email;
-        this.modelUser.password = this._password;
-        this.modelUser.phone_number = this._phone_number;
-        this.modelUser.github = this._github;
-        this.modelUser.linkedin = this._linkedin;
-        this.modelUser.user_type = this._user_type;
-        this.modelUser.register = this._register;
 
-        return this.modelUser.save();
+        const user = new ModelUser();
+        user.name = this._name;
+        user.course_name = this._course_name;
+        user.course_id = this._course_id;
+        user.email = this._email;
+        user.password = this._password;
+        user.phone_number = this._phone_number;
+        user.github = this._github;
+        user.linkedin = this._linkedin;
+        user.user_type = this._user_type;
+        user.register = this._register;
+
+        return user.save();
     }
     async readAll(){
         return ModelUser.find().exec();
     }
 
+    async singleFilterByRegister(){
+        const arrayData = ["name" , "course_name" , "email" , "github" , "linkedin"];
+        return ModelUser.findOne().where("register").equals(this.register).select(arrayData).exec();
+    }
+    async singleByRegister(){
+        return ModelUser.findOne().where("register").equals(this.register).exec();
+    }
     async single(){
         return ModelUser.findById(this.id).exec();
     }
@@ -58,6 +68,59 @@ module.exports = class User{
 
     async login(){
         return ModelUser.findOne({"register": this.register , "password": this.password}).exec()
+    }
+
+    async exist(){
+        const res = ModelUser.exists({"_id": new ObjectId(this.id)});
+        if (res!= null){
+            return true;
+        }
+        return false;
+    }
+
+    async update(){
+        const user = await ModelUser.findById(this.id);
+        if(this.name != undefined){
+            user.name = this.name;
+        }
+
+        if(this.course_name != undefined){
+            user.course_name = this.course_name;
+        }
+
+        if(this.course_id != undefined){
+            user.course_id = this.course_id;
+        }
+
+        if(this.email != undefined){
+            user.email = this.email;
+        }
+
+        if(this.password != undefined){
+            user.password = this.password;
+        }
+
+        if(this.phone_number != undefined){
+            user.phone_number = this.phone_number;
+        }
+
+        if(this.github != undefined){
+            user.github = this.github;
+        }
+
+        if(this.linkedin != undefined){
+            user.linkedin = this.linkedin;
+        }
+
+        if(this.user_type != undefined){
+            user.user_type = this.user_type
+        }
+
+        if(this.register != undefined){
+            user.register = this.register;
+        }
+
+        return user.save();
     }
 
 

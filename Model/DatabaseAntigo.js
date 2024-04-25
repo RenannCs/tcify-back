@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 let user = process.env.NODE_USER;
@@ -13,18 +13,27 @@ if (process.env.NODE_ENV === 'development') {
 }
 const uri = `mongodb+srv://${user}:${password}@repositorio.kr4t3yw.mongodb.net/${dbName}`;
 
-module.exports = class Database{
-    constructor(){
-        this.uri = uri;
-    }
 
-    conect(){
-        try{
-            mongoose.connect(this.uri , {
-                dbName: "Repositorio_TCC"
+module.exports = class Database {
+    constructor() {
+        try {
+            this._client = new MongoClient(uri, {
+                maxPoolSize: 1000,
             })
-        }catch(err){
+        } catch (err) {
             throw err;
         }
+
+    }
+
+    connect() {
+        return this.client;
+    }
+
+    set client(client) {
+        this._client = client;
+    }
+    get client() {
+        return this._client;
     }
 }

@@ -1,9 +1,9 @@
 const ModelTcc = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
 
-const read = function (request, response) {
+module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -17,7 +17,7 @@ const read = function (request, response) {
     }
 
     const database = new ModelDatabase();
-    database.conect();
+    await database.conect();
     const id = request.params.id;
     const tcc = new ModelTcc();
     tcc.course_id = id;
@@ -48,9 +48,9 @@ const read = function (request, response) {
                 message: "An error occurred while processing your request. Please try again later."
             };
             response.status(400).send(arr);
-        });
+        })
+        .finally(()=>{
+            database.desconnect();
+        })
 
 }
-
-module.exports = read;
-

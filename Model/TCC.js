@@ -94,6 +94,10 @@ module.exports = class TCC {
     async update(){
         const tcc = await ModelTcc.findById(this.id);
         
+        if(this.image != undefined){
+            tcc.image = this.image;
+        }
+
         if(this.title != undefined){
             tcc.title = this.title;
         }
@@ -107,7 +111,6 @@ module.exports = class TCC {
         }
     
         if(this.supervisor != undefined){
-            console.log("aqui")
             tcc.supervisor = this.supervisor;
         }
     

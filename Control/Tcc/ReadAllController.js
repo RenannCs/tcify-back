@@ -1,12 +1,10 @@
 const ModelTcc = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelDatabase = require('../../Model/DatabaseMongoose');
-
-
+const ModelDatabase = require('../../Model/Database');
 
 const JwtToken = new ModelJwtToken();
 
-const read = function (request, response) {
+module.exports = async (request, response) =>{
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,7 +17,7 @@ const read = function (request, response) {
         return response.status(401).send(arr);
     }
     const database = new ModelDatabase();
-    database.conect();
+    await database.conect();
     const tcc = new ModelTcc();
       
     tcc.readAll()
@@ -41,8 +39,8 @@ const read = function (request, response) {
         
         response.status(400).send(arr);
     })
-
+    .finally(()=>{
+        database.desconnect();
+    })
     
 };
-
-module.exports = read;

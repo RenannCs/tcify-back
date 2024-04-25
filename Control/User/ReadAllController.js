@@ -1,10 +1,10 @@
 const ModelJwtToken = require('../../Model/JwtToken');
 const ModelUser = require('../../Model/User');
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+const ModelDatabase = require('../../Model/Database');
 
 const JwtToken = new ModelJwtToken();
 
-const read = function (request, response) {
+module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -18,7 +18,7 @@ const read = function (request, response) {
     }
     
     const database = new ModelDatabase();
-    database.conect();
+    await database.conect();
 
     const user = new ModelUser();
     
@@ -39,6 +39,7 @@ const read = function (request, response) {
             };
             response.status(400).send(arr);
         })
+        .finally(()=>{
+            database.desconnect();
+        })
 }
-
-module.exports = read;

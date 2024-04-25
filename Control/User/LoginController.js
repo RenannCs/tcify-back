@@ -1,16 +1,18 @@
 const ModelUser = require("../../Model/User");
+const ModelDatabase = require("../../Model/Database");
 const ModelJwtToken = require('../../Model/JwtToken');
 
-
-
-const login = async (request , response)=>{
+module.exports = async (request , response)=>{
     const register = request.body.register;
     const password = request.body.password;
 
+    const database = new ModelDatabase();
+    await database.conect();
     const user = new ModelUser();
     user.register = register;
     user.password = password;
     
+
     user.login()
     .then((resolve)=>{
         if(resolve==null){
@@ -45,9 +47,7 @@ const login = async (request , response)=>{
         };
         response.status(400).send(arr);
     })
-    
-    
-    
+    .finally(()=>{
+        database.desconnect();
+    })   
 }
-
-module.exports = login;

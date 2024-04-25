@@ -1,4 +1,4 @@
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
 const ModelUser = require('../../Model/User');
 

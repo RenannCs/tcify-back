@@ -5,7 +5,7 @@ const singleTCC = require('../Control/TCC/SingleController');
 const insertTCC = require('../Control/TCC/InsertController');
 const updateTCC = require('../Control/TCC/UpdateController');
 const deleteTCC = require('../Control/TCC/DeleteController');
-const insertImageTcc = require('../Control/Tcc/ImageInsertController');
+const updateImageTcc = require('../Control/Tcc/ImageUpdateController');
 
 const readDistinctDatesTCC = require('../Control/TCC/ReadDistinctDatesController');
 
@@ -65,7 +65,7 @@ module.exports = function (app) {
 
     app.post('/repository/tcc/image/:id' , uploadLocal.fields([
         {name: "image" , maxCount: 1}])
-        , insertImageTcc)
+        , updateImageTcc)
 
     //------------------------ROTAS USERS-----------------------//
 

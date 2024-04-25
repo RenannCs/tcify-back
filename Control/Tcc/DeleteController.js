@@ -1,10 +1,10 @@
 const ModelTcc = require('../../Model/TCC');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
 
 
-const remove = function (request, response) {
+module.exports = async  (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
     
@@ -17,14 +17,13 @@ const remove = function (request, response) {
         return response.status(401).send(arr);
     }
     const database = new ModelDatabase();
-    database.conect();
+    await database.conect();
 
     const id = request.params.id;
     const tcc = new ModelTcc(id);
 
     tcc.delete()
         .then((resolve) => {
-
             if(resolve == null){
                 const arr = {
                     data: resolve,
@@ -39,8 +38,6 @@ const remove = function (request, response) {
                 message: 'TCC successfully deleted.'
             }
             response.status(200).send(arr);
-            
-            
         })
         .catch((reject) => {
             const arr = {
@@ -50,7 +47,9 @@ const remove = function (request, response) {
             }
             response.status(400).send(arr);
         })
+        .finally(()=>{
+            database.desconnect();
+        })
 }
 
-module.exports = remove;
 

@@ -1,4 +1,4 @@
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
 
 const ModelUser = require('../../Model/User');
@@ -6,7 +6,7 @@ const ModelUser = require('../../Model/User');
 
 const JwtToken = new ModelJwtToken();
 
-const insert = function (request, response) {
+module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -19,8 +19,9 @@ const insert = function (request, response) {
         return response.status(401).send(arr);
     }
     const database = new ModelDatabase();
-    database.conect();
-    const id = request.body.id;
+    await database.conect();
+
+    
     const name = request.body.name;
     const course_name = request.body.course_name;
     const course_id = request.body.course_id;
@@ -33,7 +34,7 @@ const insert = function (request, response) {
     const register = request.body.register;
 
     const user = new ModelUser(
-        id,
+        undefined,
         name,
         course_name,
         course_id,
@@ -63,6 +64,7 @@ const insert = function (request, response) {
             };
             response.status(400).send(arr);
         })
+        .finally(()=>{
+            database.desconnect();
+        })
 }
-
-module.exports = insert;

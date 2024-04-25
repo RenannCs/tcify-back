@@ -1,12 +1,22 @@
-const ModelDatabase = require('../../Model/DatabaseMongoose');
+/**
+ * INSERIR TCC
+ *  
+ * Adiciona um novo TCC com base nas informações passadas.
+ * 
+ * Só adiciona título, sumário, supervisor, data, estudantes, id_curso, nome curso.
+ * 
+ */
+
+const ModelDatabase = require('../../Model/Database');
 const TCC = require('../../Model/TCC');
+const User = require('../../Model/User');
 const ModelJwtToken = require('../../Model/JwtToken');
-
+/*
 const fs = require('fs');
-
+*/
 const JwtToken = new ModelJwtToken();
 
-const insert = async (request, response) =>{
+module.exports =  async (request, response) =>{
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -18,16 +28,7 @@ const insert = async (request, response) =>{
         };
         return response.status(401).send(arr);
     }
-    
-
-    const image = request.files["image"];
-    let imagePath = undefined
-    
-    if(image != undefined){
-        fs.rename(image[0].path , "Uploads/Images/" + image[0].filename + ".jpg" , (erro)=> {});
-        imagePath = "Uploads/Monographys/" + image[0].filename + ".jpg";
-    }
-
+    /*
     const monography = request.files["monography"];
     let monographyPath = undefined;
     
@@ -49,27 +50,54 @@ const insert = async (request, response) =>{
         fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
         zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
+    */
+    const database = new ModelDatabase();
+    await database.conect();
     
-    const students = request.body.students != undefined ? JSON.parse(request.body.students): undefined;
+    let studentsArray = [];
+    const student1Id = request.body.student1;
+    const student2Id = request.body.student2;
+    const student3Id = request.body.student3;
+
+    if(student1Id != undefined){
+        const student1 = new User();
+        student1.register = student1Id;
+        const student1Data = await student1.singleFilterByRegister();
+        studentsArray.push(student1Data);
+    }
+    
+    if(student2Id != undefined){
+        const student2 = new User();
+        student2.register = student2Id
+        const student2Data = await student2.singleFilterByRegister();
+        studentsArray.push(student2Data);
+    }
+    
+    if(student3Id != undefined){
+        const student3 = new User();
+        student3.register = student3Id;
+        const student3Data = await student3.singleFilterByRegister();
+        studentsArray.push(student3Data);
+    }
+    
     const tcc = new TCC(
-            request.body.id,
+            undefined,
             request.body.title,
             request.body.summary,
-            request.body.grade,
+            undefined,
             request.body.supervisor,
             request.body.date,
             false,
-            monographyPath,
-            documentPath,
-            zipPath,
-            students,
+            undefined,
+            undefined,
+            undefined,
+            studentsArray,
             request.body.course_id,
             request.body.course_name,
-            imagePath
+            undefined
         )
 
-    const database = new ModelDatabase();
-    database.conect();
+    
     tcc.insert()
     .then((resolve)=>{
         const arr = {
@@ -87,8 +115,8 @@ const insert = async (request, response) =>{
         };
         response.status(400).send(arr);
     })
+    .finally(()=>{
+        database.desconnect();
+    })
     
 }
-
-module.exports = insert;
-
