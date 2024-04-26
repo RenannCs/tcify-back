@@ -67,7 +67,13 @@ module.exports = class User{
     }
 
     async login(){
-        return ModelUser.findOne({"register": this.register , "password": this.password}).exec()
+        return ModelUser.findOne({
+            $or: [
+                { "register": this.register },
+                { "email": this.register }
+            ],
+            "password": this.password
+        }).exec()
     }
 
     async exist(){

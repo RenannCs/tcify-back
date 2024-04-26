@@ -9,9 +9,7 @@ routes(app);
 
 app.use(express.json())
 
-app.use(cors({
-  origin: ['http://localhost:5173/']
-}));
+app.use(cors());
 
 
 app.listen(3000, function () {
