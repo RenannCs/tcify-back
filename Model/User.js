@@ -1,7 +1,6 @@
-const { Model } = require("mongoose");
 const ModelUser = require("./ModeUserMongoose");
 const { ObjectId } = require("mongodb");
-
+const md5 = require("md5");
 module.exports = class User{
     constructor(
         id = undefined,
@@ -34,16 +33,45 @@ module.exports = class User{
     async insert(){
 
         const user = new ModelUser();
-        user.name = this._name;
-        user.course_name = this._course_name;
-        user.course_id = this._course_id;
-        user.email = this._email;
-        user.password = this._password;
-        user.phone_number = this._phone_number;
-        user.github = this._github;
-        user.linkedin = this._linkedin;
-        user.user_type = this._user_type;
-        user.register = this._register;
+        if(this.name != undefined){
+            user.name = this.name.trim();
+        }
+
+        if(this.course_name != undefined){
+            user.course_name = this.course_name.trim();
+        }
+
+        if(this.course_id != undefined){
+            user.course_id = this.course_id.trim();
+        }
+
+        if(this.email != undefined){
+            user.email = this.email.trim();
+        }
+
+        if(this.password != undefined){
+            const newPassword = md5(this.password.trim());
+            user.password = newPassword;
+        }
+
+        if(this.phone_number != undefined){
+            user.phone_number = this.phone_number.trim();
+        }
+        if(this.github != undefined){
+            user.github = this.github.trim();
+        }
+
+        if(this.linkedin != undefined){
+            user.linkedin = this.linkedin.trim();
+        }
+
+        if(this.user_type != undefined){
+            user.user_type = this.user_type.trim();
+        }
+
+        if(this.register != undefined){
+            user.register = this.register.trim();
+        }
 
         return user.save();
     }
@@ -67,11 +95,16 @@ module.exports = class User{
     }
 
     async login(){
-        return ModelUser.findOne({"register": this.register , "password": this.password}).exec()
+
+        const newPassword = md5(this.password);
+        return ModelUser.findOne({
+            "$or":[{"register": this.register}, {"email": this.register}], 
+            "password": newPassword})
+            .exec()
     }
 
     async exist(){
-        const res = ModelUser.exists({"_id": new ObjectId(this.id)});
+        const res = await ModelUser.exists({"$or":[{"_id": new ObjectId(this.id)} , {"email": this.email} , {"register": this.register}]});
         if (res!= null){
             return true;
         }
@@ -81,43 +114,43 @@ module.exports = class User{
     async update(){
         const user = await ModelUser.findById(this.id);
         if(this.name != undefined){
-            user.name = this.name;
+            user.name = this.name.trim();
         }
 
         if(this.course_name != undefined){
-            user.course_name = this.course_name;
+            user.course_name = this.course_name.trim();
         }
 
         if(this.course_id != undefined){
-            user.course_id = this.course_id;
+            user.course_id = this.course_id.trim();
         }
 
         if(this.email != undefined){
-            user.email = this.email;
+            user.email = this.email.trim();
         }
 
         if(this.password != undefined){
-            user.password = this.password;
+            user.password = this.password.trim();
         }
 
         if(this.phone_number != undefined){
-            user.phone_number = this.phone_number;
+            user.phone_number = this.phone_number.trim();
         }
 
         if(this.github != undefined){
-            user.github = this.github;
+            user.github = this.github.trim();
         }
 
         if(this.linkedin != undefined){
-            user.linkedin = this.linkedin;
+            user.linkedin = this.linkedin.trim();
         }
 
         if(this.user_type != undefined){
-            user.user_type = this.user_type
+            user.user_type = this.user_type.trim();
         }
 
         if(this.register != undefined){
-            user.register = this.register;
+            user.register = this.register.trim();
         }
 
         return user.save();
@@ -148,18 +181,18 @@ module.exports = class User{
 
     // Getter e setter para 'courseName'
     get course_name() {
-        return this._courseName;
+        return this._course_name;
     }
     set course_name(value) {
-        this._courseName = value;
+        this._course_name = value;
     }
 
     // Getter e setter para 'courseId'
     get course_id() {
-        return this._courseId;
+        return this._course_id;
     }
     set course_id(value) {
-        this._courseId = value;
+        this._course_id = value;
     }
 
     // Getter e setter para 'email'
@@ -180,10 +213,10 @@ module.exports = class User{
 
     // Getter e setter para 'phoneNumber'
     get phone_number() {
-        return this._phoneNumber;
+        return this._phone_number;
     }
     set phone_number(value) {
-        this._phoneNumber = value;
+        this._phone_number = value;
     }
 
     // Getter e setter para 'github'
@@ -204,9 +237,9 @@ module.exports = class User{
 
     // Getter e setter para 'userType'
     get user_type() {
-        return this._userType;
+        return this._user_type;
     }
     set user_type(value) {
-        this._userType = value;
+        this._user_type = value;
     }
 }

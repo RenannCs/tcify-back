@@ -6,8 +6,10 @@ module.exports = async (request , response)=>{
     const register = request.body.register;
     const password = request.body.password;
 
+    /*
     const database = new ModelDatabase();
-    await database.conect();
+    await database.conect(); 
+    */
     const user = new ModelUser();
     user.register = register;
     user.password = password;
@@ -18,10 +20,10 @@ module.exports = async (request , response)=>{
         if(resolve==null){
             const arr = {
                 data: resolve,
-                status:"ERROR",
+                status:"SUCESS",
                 message: "Registro ou senha incorretos"
             }
-            return response.status(400).send(arr);
+            return response.status(401).send(arr);
         }
         const JwtToken = new ModelJwtToken();
 
@@ -47,7 +49,8 @@ module.exports = async (request , response)=>{
         };
         response.status(400).send(arr);
     })
+    /*
     .finally(()=>{
         database.desconnect();
-    })   
+    })*/   
 }

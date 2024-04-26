@@ -24,10 +24,10 @@ module.exports = async (request, response) => {
     }
     const id = request.params.id;
 
-
+    /*
     const database = new ModelDatabase();
     await database.conect();
-
+    */
     const tcc = new ModelTcc();
     tcc.id = id;
     const res = await tcc.exist()
@@ -45,7 +45,6 @@ module.exports = async (request, response) => {
     const grade = request.body.grade;
     const supervisor = request.body.supervisor;
     const date = request.body.date;
-
     const course_id = request.body.course_id;
     const course_name = request.body.course_name;
 
@@ -75,8 +74,9 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
+        /*
         .finally(() => {
             database.desconnect();
-        })
+        })*/
 
 }

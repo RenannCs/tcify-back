@@ -79,7 +79,7 @@ module.exports = function (app) {
     app.post('/repository/user', uploadLocal.any() , insertUser);
 
     // Rota para atualizar um usuário com os dados passados pelo Body
-    app.patch('/repository/user/:id', updateUser);
+    app.patch('/repository/user/:id', uploadLocal.any() , updateUser);
 
     // Rota para deletar um usuário
     app.delete('/repository/user/:id', deleteUser);

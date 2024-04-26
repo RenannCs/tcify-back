@@ -16,9 +16,10 @@ module.exports = async (request, response) => {
         };
         return response.status(401).send(arr);
     }
+    /*
     const database = new ModelDatabase();
     await database.conect();
-
+    */
     ModelTcc.find().select("date").exec()
         .then((resolve) => {
             const arrayDates = [];
@@ -42,7 +43,8 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
+        /*
         .finally(()=>{
             database.desconnect();
-        })
+        })*/
 };

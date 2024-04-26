@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const Database = require("../tcify_back/Model/Database");
 
 
 const routes = require('./Routes/routes')
@@ -8,6 +8,9 @@ const cors = require('cors');
 routes(app);
 
 app.use(express.json())
+
+const database = new Database();
+database.conect();
 
 app.use(cors({
   origin: ['http://localhost:5173/']

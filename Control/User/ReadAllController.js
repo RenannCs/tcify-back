@@ -16,10 +16,10 @@ module.exports = async (request, response) => {
         };
         return response.status(401).send(arr);
     }
-    
+    /*
     const database = new ModelDatabase();
     await database.conect();
-
+    */
     const user = new ModelUser();
     
     user.readAll()
@@ -39,7 +39,9 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
+        /*
         .finally(()=>{
             database.desconnect();
         })
+        */
 }

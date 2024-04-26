@@ -51,8 +51,8 @@ module.exports =  async (request, response) =>{
         zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
     */
-    const database = new ModelDatabase();
-    await database.conect();
+    //const database = new ModelDatabase();
+    //await database.conect();
     
     let studentsArray = [];
     const student1Id = request.body.student1;
@@ -115,8 +115,9 @@ module.exports =  async (request, response) =>{
         };
         response.status(400).send(arr);
     })
+    /*
     .finally(()=>{
         database.desconnect();
     })
-    
+    */
 }

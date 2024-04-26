@@ -29,14 +29,14 @@ module.exports =  async (request, response) =>{
     
     const id = request.params.id;
 
-    const database = new ModelDatabase();
-    await database.conect();
+    //const database = new ModelDatabase();
+    //await database.conect();
 
     const tcc = new ModelTcc();
     tcc.id = id;
     const res = await tcc.exist()
     if (!res) {
-        database.desconnect()
+        //database.desconnect()
         const arr = {
             status: "ERROR",
             message: "TCC não existe!"
@@ -48,7 +48,7 @@ module.exports =  async (request, response) =>{
     const image = request.files["image"];
 
     if (image == undefined){
-        database.desconnect();
+        //database.desconnect();
         const arr = {
             status: "ERROR",
             message: "Nenhuma imagem foi enviada!"
@@ -57,7 +57,7 @@ module.exports =  async (request, response) =>{
     }
 
     if(image[0].size > tamanhoMax){
-        database.desconnect();
+        //database.desconnect();
         const arr = {
             status: "ERROR",
             message: "Imagem muito grande!"
@@ -72,7 +72,7 @@ module.exports =  async (request, response) =>{
     const { width, height } = dimensions;
     
     if (width > 5000 || height > 5000) {
-        database.desconnect();
+        //database.desconnect();
         const arr = {
             status: "ERROR",
             message: "As dimensões da imagem são muito grandes!"
@@ -88,14 +88,14 @@ module.exports =  async (request, response) =>{
             tcc.image = "Uploads/Images/" + id + ".jpg";
             try{
                 await tcc.update();
-                database.desconnect();
+                //database.desconnect();
                 const arr = {
                     status: "SUCESS",
                     message: "Imagem inserida com sucesso"
                 }
                 return response.status(200).send(arr);
             }catch(err){
-                database.desconnect();
+                //database.desconnect();
                 const arr = {
                     status: "ERROR",
                     message: "Ocorreu um erro ao processar a imagem!",
@@ -111,14 +111,14 @@ module.exports =  async (request, response) =>{
             tcc.image = "Uploads/Images/" + id + ".jpg";
             try{
                 await tcc.update();
-                database.desconnect();
+                //database.desconnect();
                 const arr = {
                     status: "SUCESS",
                     message: "Imagem atualizada com sucesso"
                 }
                 return response.status(200).send(arr);
             }catch(err){
-                database.desconnect();
+                //database.desconnect();
                 const arr = {
                     status: "ERROR",
                     message: "Ocorreu um erro ao processar a imagem!",

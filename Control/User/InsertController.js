@@ -1,9 +1,6 @@
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
-
 const ModelUser = require('../../Model/User');
-
-
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -18,9 +15,10 @@ module.exports = async (request, response) => {
         };
         return response.status(401).send(arr);
     }
+    /*
     const database = new ModelDatabase();
     await database.conect();
-
+    */
     
     const name = request.body.name;
     const course_name = request.body.course_name;
@@ -32,7 +30,7 @@ module.exports = async (request, response) => {
     const linkedin = request.body.linkedin;
     const user_type = request.body.user_type;
     const register = request.body.register;
-
+    
     const user = new ModelUser(
         undefined,
         name,
@@ -46,6 +44,16 @@ module.exports = async (request, response) => {
         user_type,
         register
     );
+
+    const resp = await user.exist();
+    if(resp){
+        //database.desconnect();
+        const arr = {
+            status: "ERROR",
+            message: "Registro ou email já em uso!"
+        }
+        return response.status(409).send(arr);
+    }
 
     user.insert()
         .then((resolve) => {
@@ -64,7 +72,8 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
+        /*
         .finally(()=>{
             database.desconnect();
-        })
+        })*/
 }
