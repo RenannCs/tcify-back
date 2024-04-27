@@ -5,14 +5,7 @@ const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) =>{
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }
+
     /*
 
     const database = new ModelDatabase();
