@@ -95,12 +95,12 @@ module.exports = class User{
     }
 
     async login(){
-
         const newPassword = md5(this.password);
         return ModelUser.findOne({
             "$or":[{"register": this.register}, {"email": this.register}], 
             "password": newPassword})
             .exec()
+
     }
 
     async exist(){

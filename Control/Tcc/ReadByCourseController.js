@@ -16,6 +16,7 @@ module.exports = async (request, response) => {
         return response.status(401).send(arr);
     }
     /*
+
     const database = new ModelDatabase();
     await database.conect();
     */

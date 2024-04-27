@@ -9,6 +9,7 @@ routes(app);
 
 app.use(express.json())
 
+
 const database = new Database();
 database.conect();
 
