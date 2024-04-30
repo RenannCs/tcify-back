@@ -7,6 +7,7 @@ const JwtToken = new ModelJwtToken();
 module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+    
 
     if (tokenValidationResult.status !== true) {
         const arr = {
@@ -24,6 +25,8 @@ module.exports = async (request, response) => {
     const id = request.params.id;
     const user = new ModelUser(id);
 
+
+
     user.single(id)
         .then((resolve) => {
             if (resolve == null) {
@@ -35,7 +38,7 @@ module.exports = async (request, response) => {
                 response.status(404).send(arr);
             } else {
                 const arr = {
-                    dados: resolve,
+                    data: resolve,
                     status: 'SUCESS',
                     msg: 'User successfully recovered.'
                 };
@@ -44,7 +47,7 @@ module.exports = async (request, response) => {
         })
         .catch((reject) => {
             const arr = {
-                dados: reject,
+                data: reject,
                 status: 'ERROR',
                 msg: 'An error occurred while processing your request. Please try again later.'
             };

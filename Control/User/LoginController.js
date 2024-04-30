@@ -21,7 +21,7 @@ module.exports = async (request , response)=>{
             const arr = {
                 data: resolve,
                 status:"ERROR",
-                message: "Registro ou senha incorretos"
+                message: "Registro ou Senha incorretos!"
             }
             return response.status(200).send(arr);
         }
@@ -37,7 +37,7 @@ module.exports = async (request , response)=>{
             data: resolve,
             token: token,
             status: "SUCESS",
-            message: "Usuário logado com sucesso"
+            message: "Usuário logado com sucesso!"
         };
 
         return response.status(200).send(arr);
