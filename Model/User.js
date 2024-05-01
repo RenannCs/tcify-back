@@ -104,7 +104,7 @@ module.exports = class User{
     }
 
     async exist(){
-        const res = await ModelUser.exists({"$or":[{"_id": new ObjectId(this.id)} , {"email": this.email} , {"register": this.register}]});
+        const res =  await ModelUser.exists({"$or":[{"_id": new ObjectId(this.id)} , {"email": this.email} , {"register": this.register}]});
         if (res!= null){
             return true;
         }

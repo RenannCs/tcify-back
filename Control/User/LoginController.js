@@ -29,7 +29,7 @@ module.exports = async (request , response)=>{
 
         const token = JwtToken.createToken({
             "register": register,
-            "password": password
+            "user_type": user.user_type
         });
 
         const arr = {

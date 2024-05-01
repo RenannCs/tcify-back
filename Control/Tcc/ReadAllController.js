@@ -5,6 +5,7 @@ const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) =>{
+    /*
     if (tokenValidationResult.status !== true) {
         const arr = {
             status: 'ERROR',
@@ -12,7 +13,7 @@ module.exports = async (request, response) =>{
             error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
-    }
+    }*/
     /*
 
     const database = new ModelDatabase();

@@ -7,7 +7,8 @@ const routes = require('./Routes/routes')
 const cors = require('cors');
 routes(app);
 
-app.use(express.json())
+app.use(express.json());
+app.use('/Uploads', express.static('Uploads'));
 
 
 const database = new Database();

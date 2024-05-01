@@ -15,6 +15,7 @@ const insertUser = require('../Control/User/InsertController');
 const updateUser = require('../Control/User/UpdateController');
 const deleteUser = require('../Control/User/DeleteController');
 const loginUser = require('../Control/User/LoginController');
+const csvUser = require("../Control/User/CsvController");
 
 const readAllCourses = require('../Control/Course/ReadAllController');
 const singleCourse = require('../Control/Course/SingleController');
@@ -85,6 +86,10 @@ module.exports = function (app) {
     app.delete('/repository/user/:id', deleteUser);
 
     app.post('/repository/user/login' , loginUser);
+
+    app.post('/repository/users/csv' , uploadLocal.fields([
+        {"name": "data" , "maxCount": 1}
+    ]) , csvUser);
 
 
     //------------------------ROTAS COURSE-----------------------//
