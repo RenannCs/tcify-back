@@ -72,6 +72,7 @@ module.exports = class User {
 
     return user.save();
   }
+
   async readAll() {
     return ModelUser.find().exec();
   }
