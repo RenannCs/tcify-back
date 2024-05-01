@@ -20,11 +20,12 @@ module.exports = async (request , response)=>{
         if(resolve==null){
             const arr = {
                 data: resolve,
-                status:"SUCESS",
-                message: "Registro ou senha incorretos"
+                status:"ERROR",
+                message: "Registro ou Senha incorretos!"
             }
-            return response.status(401).send(arr);
+            return response.status(200).send(arr);
         }
+        
         const JwtToken = new ModelJwtToken();
 
         const token = JwtToken.createToken({
@@ -36,7 +37,7 @@ module.exports = async (request , response)=>{
             data: resolve,
             token: token,
             status: "SUCESS",
-            message: "Usuário logado com sucesso"
+            message: "Usuário logado com sucesso!"
         };
 
         return response.status(200).send(arr);
