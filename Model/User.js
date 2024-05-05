@@ -88,8 +88,8 @@ module.exports = class User {
   async singleByRegister() {
     return ModelUser.findOne().where("register").equals(this.register).exec();
   }
-  async single() {
-    return ModelUser.findById(this.id).exec();
+  async single(fields) {
+    return ModelUser.findById(this.id).select(fields).exec();
   }
 
   async delete() {

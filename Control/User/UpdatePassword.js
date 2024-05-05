@@ -23,24 +23,25 @@ module.exports = async (request, response) => {
   const password = md5(request.body.password);
   const newPassword = md5(request.body.newPassword);
 
-
+  const fields = ["password"];
 
   const user = new ModelUser(id);
 
-  const userData = await user.single(id);
+  const userData = await user.single(fields);
 
-  if (!userData) {
-    const arr = {
-      status: "ERROR",
-      message: "Usuário não encontrado!",
-    };
-    return response.status(404).send(arr);
-  }
 
   if (userData.password !== password) {
     const arr = {
       status: "ERROR",
       message: "Senha incorreta!",
+    };
+    return response.status(401).send(arr);
+  }
+
+  if (userData.password == newPassword) {
+    const arr = {
+      status: "ERROR",
+      message: "Senha já cadastrada!",
     };
     return response.status(401).send(arr);
   }
