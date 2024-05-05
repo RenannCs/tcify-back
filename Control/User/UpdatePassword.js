@@ -23,6 +23,8 @@ module.exports = async (request, response) => {
   const password = md5(request.body.password);
   const newPassword = md5(request.body.newPassword);
 
+
+
   const user = new ModelUser(id);
 
   const userData = await user.single(id);

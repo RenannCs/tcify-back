@@ -6,7 +6,7 @@ const tccSchema = new mongoose.Schema({
     grade: Number,
     supervisor: String,
     date: String,
-    status: Boolean,
+    status: Number,
     document: String,
     monography: String,
     zip: String,

@@ -28,6 +28,8 @@ module.exports = async (request , response)=>{
         
         const JwtToken = new ModelJwtToken();
 
+        console.log(resolve)
+
         const token = JwtToken.createToken({
             "id": resolve.id,
             "userType": resolve.user_type,
