@@ -66,7 +66,7 @@ module.exports = class TCC {
   }
 
   async readByYear() {
-    const arrayData = [
+    const arrayData = [ 
       "_id",
       "title",
       "summary",

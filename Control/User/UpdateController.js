@@ -32,6 +32,7 @@ module.exports = async (request, response) => {
     user.id = id;
 
     const res = await user.exist();
+    
     if(!res){
         //database.desconnect();
         const arr = {
@@ -47,6 +48,7 @@ module.exports = async (request, response) => {
     const github = request.body.github;
     const linkedin = request.body.linkedin;
     const user_type = request.body.user_type;
+    const email = request.body.email;
     
     user.name = name;
     user.password = password;
@@ -54,6 +56,7 @@ module.exports = async (request, response) => {
     user.github = github;
     user.linkedin = linkedin;
     user.user_type = user_type;
+    user.email = email;
     
     user.update()
         .then((resolve)=>{

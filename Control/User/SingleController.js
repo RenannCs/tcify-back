@@ -22,7 +22,6 @@ module.exports = async (request, response) => {
     "linkedin",
     "phone_number",
     "user_type",
-    "password"
   ];
 
   user
