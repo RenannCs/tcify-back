@@ -103,7 +103,7 @@ module.exports = class User {
   async login() {
     const newPassword = md5(this.password);
     return ModelUser.findOne({
-      $or: [{ register: this.register }, { email: this.register }],
+      $or: [{ register: this.register }, { email: this.email }],
       password: newPassword,
     })
       .select("_id user_type")
