@@ -11,6 +11,7 @@ const updateImageTcc = require("../Control/Tcc/UpdateImg");
 const readDistinctDatesTCC = require("../Control/Tcc/DistinctDates");
 
 const readAllUsers = require("../Control/User/ReadAllController");
+const allTableUsers = require("../Control/User/AllTable");
 const singleUser = require("../Control/User/SingleController");
 const insertUser = require("../Control/User/InsertController");
 const updateUser = require("../Control/User/UpdateController");
@@ -81,6 +82,9 @@ module.exports = function (app) {
   // Rota para recuperar todos os usuários
   app.get("/repository/users", readAllUsers);
 
+  app.get("/repository/users/table", allTableUsers);
+
+  
   // Rota para recuperar um usuário por ID
   app.get("/repository/user/:id", singleUser);
 

@@ -31,14 +31,14 @@ module.exports = async (request, response) => {
         const arr = {
           dados: resolve,
           status: "ERROR",
-          msg: "No user found with the provided ID.",
+          message: "No user found with the provided ID.",
         };
         response.status(404).send(arr);
       } else {
         const arr = {
           data: resolve,
           status: "SUCESS",
-          msg: "User successfully recovered.",
+          message: "User successfully recovered.",
         };
         response.status(200).send(arr);
       }

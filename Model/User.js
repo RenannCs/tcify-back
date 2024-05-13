@@ -77,6 +77,10 @@ module.exports = class User {
     return ModelUser.find().exec();
   }
 
+  async readAll(fields) {
+    return ModelUser.find().select(fields).exec();
+  }
+
   async singleFilterByRegister() {
     const arrayData = ["name", "course_name", "email", "github", "linkedin"];
     return ModelUser.findOne()

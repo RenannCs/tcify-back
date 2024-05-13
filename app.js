@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const Database = require("../tcify_back/Model/Database");
+const Database = require("../tcify-back/Model/Database");
 
 
 const routes = require('./Routes/routes')
