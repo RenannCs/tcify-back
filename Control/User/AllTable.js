@@ -8,8 +8,6 @@ module.exports = async (request, response) => {
   const authorizationHeader = request.headers.authorization;
   const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  console.log(authorizationHeader);
-  console.log(tokenValidationResult);
   if (tokenValidationResult.status !== true) {
     const arr = {
       status: "ERROR",

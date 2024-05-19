@@ -14,7 +14,6 @@ module.exports = async (request, response) => {
   user.register = register;
   user.password = password;
 
-  console.log(register);
 
   user
     .login()
