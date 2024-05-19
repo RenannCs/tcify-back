@@ -28,7 +28,6 @@ module.exports = async (request, response) => {
   const fields = [
     "register",
     "name",
-    "course_name",
     "email",
     "phone_number",
     "user_type",

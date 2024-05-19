@@ -4,7 +4,7 @@
  * --Adicionar controle para atualizar grupo, imagens e arquivos.
  */
 
-const ModelTcc = require('../../Model/TCC');
+const ModelTcc = require('../../Model/Tcc');
 const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();

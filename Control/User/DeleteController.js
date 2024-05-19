@@ -21,10 +21,11 @@ module.exports = async (request, response) =>{
     const database = new ModelDatabase();
     await database.conect();
     */
+   
     const id = request.params.id
     const user =  new ModelUser(id);
 
-    user.delete(id)
+    user.delete()
         .then((resolve) => {
             if(resolve == null){
                 const arr = {

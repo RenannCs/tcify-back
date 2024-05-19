@@ -8,8 +8,6 @@ const updateTCC = require("../Control/Tcc/Update");
 const deleteTCC = require("../Control/Tcc/Delete");
 const updateImageTcc = require("../Control/Tcc/UpdateImg");
 
-const readDistinctDatesTCC = require("../Control/Tcc/DistinctDates");
-
 const readAllUsers = require("../Control/User/ReadAllController");
 const allTableUsers = require("../Control/User/AllTable");
 const singleUser = require("../Control/User/SingleController");
@@ -120,5 +118,5 @@ module.exports = function (app) {
   // Rota para deletar um curso
   app.delete("/repository/course/:id", deleteCourse);
 
-  app.get("/repository/tccs/dates", readDistinctDatesTCC);
+
 };

@@ -8,7 +8,7 @@
  */
 
 const ModelDatabase = require('../../Model/Database');
-const TCC = require('../../Model/TCC');
+const TCC = require('../../Model/Tcc');
 const User = require('../../Model/User');
 const ModelJwtToken = require('../../Model/JwtToken');
 /*

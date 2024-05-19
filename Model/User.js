@@ -1,5 +1,7 @@
-const ModelUser = require("./ModeUserMongoose");
+const ModelUser = require("../Schemas/User");
+const ModelCourse = require("../Schemas/Course"); //
 const { ObjectId } = require("mongodb");
+
 const md5 = require("md5");
 module.exports = class User {
   constructor(
@@ -63,7 +65,7 @@ module.exports = class User {
     }
 
     if (this.user_type != undefined) {
-      user.user_type = this.user_type.trim();
+      user.user_type = this.user_type;
     }
 
     if (this.register != undefined) {
@@ -78,7 +80,32 @@ module.exports = class User {
   }
 
   async readAll(fields) {
-    return ModelUser.find().select(fields).exec();
+    try {
+      const users = await ModelUser.find()
+        .select(fields)
+        .populate({
+          path: "course_id", 
+          model: "Course", 
+          select: "name", 
+        })
+        .exec();
+
+      const formattedUsers = users.map((user) => ({
+        _id: user._id,
+        name: user.name,
+        course_id: user.course_id ? user.course_id._id : null, 
+        course_name: user.course_id ? user.course_id.name : null, 
+        email: user.email,
+        phone_number: user.phone_number,
+        user_type: user.user_type,
+        register: user.register,
+      }));
+
+      return formattedUsers;
+    } catch (err) {
+      console.error("Erro ao buscar usuários:", err);
+      throw err;
+    }
   }
 
   async singleFilterByRegister() {

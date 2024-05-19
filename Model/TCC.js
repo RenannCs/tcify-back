@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
-const ModelTcc = require("./ModelTCCMongoose");
+const Schema = require("../Schemas/Tcc");
+
 
 module.exports = class TCC {
   constructor(
@@ -35,7 +36,7 @@ module.exports = class TCC {
   }
 
   async insert() {
-    const tcc = new ModelTcc();
+    const tcc = new Schema();
     tcc.title = this.title;
     tcc.summary = this.summary;
     tcc.grade = this.grade;
@@ -54,7 +55,7 @@ module.exports = class TCC {
   }
 
   async exist() {
-    const res = await ModelTcc.exists({ _id: new ObjectId(this.id) });
+    const res = await Schema.exists({ _id: new ObjectId(this.id) });
     if (res != null) {
       return true;
     }
@@ -62,7 +63,7 @@ module.exports = class TCC {
   }
 
   async readAll(fields) {
-    return ModelTcc.find({ status: 2 }).select(fields).exec();
+    return Schema.find({ status: 2 }).select(fields).exec();
   }
 
   async readByYear() {
@@ -80,11 +81,11 @@ module.exports = class TCC {
       "course_name",
     ];
 
-    return ModelTcc.where("date").equals(this.date).select(arrayData).exec();
+    return Schema.where("date").equals(this.date).select(arrayData).exec();
   }
 
   async single() {
-    return ModelTcc.findById(this.id).exec();
+    return Schema.findById(this.id).exec();
   }
 
   async readByCourse() {
@@ -101,18 +102,18 @@ module.exports = class TCC {
       "course_id",
       "course_name",
     ];
-    return ModelTcc.where("course_id")
+    return Schema.where("course_id")
       .equals(this.course_id)
       .select(arrayData)
       .exec();
   }
 
   async delete() {
-    return ModelTcc.findByIdAndDelete(this.id).exec();
+    return Schema.findByIdAndDelete(this.id).exec();
   }
 
   async update() {
-    const tcc = await ModelTcc.findById(this.id);
+    const tcc = await Schema.findById(this.id);
 
     if (this.image != undefined) {
       tcc.image = this.image;

@@ -6,7 +6,7 @@
  */
 
 const ModelDatabase = require("../../Model/Database");
-const ModelTcc = require("../../Model/TCC");
+const ModelTcc = require("../../Model/Tcc");
 const ModelJwtToken = require('../../Model/JwtToken');
 const imageSize = require('image-size');
 const fs = require('fs');

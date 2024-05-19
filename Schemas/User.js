@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     name: String,
-    course_name: String,
-    course_id: String,
+    course_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Courses"  // Correção: Referência à coleção "Courses"
+    },
     register: String,
     email: String,
     password: String,
@@ -11,8 +13,8 @@ const userSchema = new mongoose.Schema({
     github: String,
     linkedin: String,
     user_type: String,
-})
+});
 
-const ModelUser = mongoose.model("User" , userSchema , "Users");
+const ModelUser = mongoose.model("User", userSchema, "Users");
 
 module.exports = ModelUser;
