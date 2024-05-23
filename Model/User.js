@@ -103,7 +103,7 @@ module.exports = class User {
     return formattedUsers;
   }
 
-  async singleFilterByRegister() {
+  singleFilterByRegister() {
     const arrayData = ["name", "register" , "course_name", "email", "phone_number" ,"github", "linkedin" ];
     return ModelUser.findOne()
       .where("register")

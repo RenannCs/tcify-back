@@ -4,7 +4,7 @@ const JwtToken = new ModelJwtToken();
 const ModelGroup = require("../../Model/Group");
 const ModelUser = require("../../Model/User");
 
-module.exports = async (request , response)=>{
+module.exports =  async (request , response)=>{
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -32,23 +32,44 @@ module.exports = async (request , response)=>{
     const student3 = new ModelUser();
     student3.register = student3Id;
     
-    if(await student1.exist()){
-        //console.log(group.existByUserRegister());
+    if(student1.exist()){
         const student1Data = await student1.singleFilterByRegister();
         group.student1 = student1Data;
+        
+        if(await group.existByUserRegister(student1.register) != null){
+            const arr = {
+                status: "ERROR",
+                msg: "Aluno " + student1Data.name + " já adicionado a um grupo",
+            }
+            return response.status(400).send(arr);
+        }
     }
-
-    if(await student2.exist()){
+ 
+    if(student2.exist() && student2Id != undefined){
         const student2Data = await student2.singleFilterByRegister();
         group.student2 = student2Data;
+
+        if(await group.existByUserRegister(student2.register) != null){
+            const arr = {
+                status: "ERROR",
+                msg: "Aluno " + student2Data.name + " já adicionado a um grupo"
+            }
+            return response.status(400).send(arr);
+        }
     }
 
-    if(await student3.exist()){
+    if(student3.exist() && student3Id != undefined){
         const student3Data = await student3.singleFilterByRegister();
         group.student3 = student3Data;
-    }
 
-    
+        if(await group.existByUserRegister(student3.register) != null){
+            const arr = {
+                status: "ERROR",
+                msg: "Aluno " + student3Data.name + " já adicionado a um grupo"
+            }
+            return response.status(400).send(arr);
+        }
+    }
 
     group.insert()
         .then((resolve)=>{

@@ -24,8 +24,6 @@ const updateCourse = require("../Control/Course/UpdateController");
 const deleteCourse = require("../Control/Course/DeleteController");
 
 
-
-
 const insertGroup = require("../Control/Group/Insert");
 
 module.exports = function (app) {
@@ -80,7 +78,6 @@ module.exports = function (app) {
     updateImageTcc
   );
 
-  app.get("/repository/tcc/user" , readTCCByUser);
 
   //------------------------ROTAS USERS-----------------------//
 
@@ -108,9 +105,9 @@ module.exports = function (app) {
   // Rota para alterar a senha de um usuário
   app.put("/repository/user/password", updatePasswordUser);
 
-  app.post("/repository/users/csv" , uploadLocal.fields([
+  /*app.post("/repository/users/csv" , uploadLocal.fields([
     {name: "data" , maxCount: 1}])
-    , csvUser)
+    , csvUser)*/
 
   //------------------------ROTAS COURSE-----------------------//
 
@@ -130,4 +127,6 @@ module.exports = function (app) {
   app.delete("/repository/course/:id", deleteCourse);
 
 
+
+  app.post("/repository/group" , insertGroup);
 };

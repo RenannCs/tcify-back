@@ -16,10 +16,10 @@ module.exports = class Group{
     }
 
     
-    async insert(){
+    insert(){
         const group = new ModelGroup();
         if (this.student1 != undefined){    
-            group.student1._id = new ObjectId (this.student1._id);
+            group.student1._id = this.student1.id;
             group.student1.course_name = this.student1.course_name;
             group.student1.email = this.student1.email;
             group.student1.github = this.student1.github;
@@ -28,7 +28,6 @@ module.exports = class Group{
             group.student1.phone_number = this.student1.phone_number;
             group.student1.register = this.student1.register;
         }
-        
         
         if (this.student2 != undefined){
             group.student2._id = this.student2.id;
@@ -54,11 +53,13 @@ module.exports = class Group{
         return group.save();
     }
 
-    async existByUserRegister(){
-        const resp = await ModelGroup.findOne({"$or":[
-            {"student1.register": this.student1.register}
+    existByUserRegister(register){
+        const resp = ModelGroup.exists({"$or":[
+            {"student1.register": register},
+            {"student2.register": register},
+            {"student3.register": register}
         ]})
-
+        
         return resp;
     }
     get student1(){
