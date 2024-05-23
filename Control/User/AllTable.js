@@ -23,13 +23,7 @@ module.exports = async (request, response) => {
     */
   const user = new ModelUser();
 
-  const fields = [
-    "register",
-    "name",
-    "email",
-    "phone_number",
-    "user_type",
-  ];
+  const fields = ["register", "name", "email", "phone_number", "user_type"];
 
   user
     .readAll(fields)
@@ -37,7 +31,7 @@ module.exports = async (request, response) => {
       const arr = {
         data: resolve,
         status: "SUCESS",
-        message: "User successfully recovered.",
+        message: "Dados recuperados com sucesso!",
       };
       response.status(200).send(arr);
     })
@@ -45,8 +39,7 @@ module.exports = async (request, response) => {
       const arr = {
         dados: reject,
         status: "ERROR",
-        message:
-          "An error occurred while processing your request. Please try again later.",
+        message: "Erro ao excluir usuário!",
       };
       response.status(400).send(arr);
     });

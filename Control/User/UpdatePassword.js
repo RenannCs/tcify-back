@@ -52,13 +52,13 @@ module.exports = async (request, response) => {
     await user.update();
     const arr = {
       status: "SUCCESS",
-      message: "Usuário atualizado com sucesso!",
+      message: "Senha atualizada com sucesso!",
     };
     return response.status(200).send(arr);
   } catch (error) {
     const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao atualizar o usuário!",
+      message: "Erro ao atualizar o senha!",
     };
     return response.status(500).send(arr);
   }

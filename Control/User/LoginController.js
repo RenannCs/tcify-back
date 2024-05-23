@@ -48,7 +48,7 @@ module.exports = async (request, response) => {
         status: "ERROR",
         data: reject,
         message:
-          "An error occurred while processing your request. Please try again later.",
+          "Erro ao fazer login!",
       };
       response.status(400).send(arr);
     });

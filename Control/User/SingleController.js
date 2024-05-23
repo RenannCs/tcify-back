@@ -31,14 +31,14 @@ module.exports = async (request, response) => {
         const arr = {
           dados: resolve,
           status: "ERROR",
-          message: "No user found with the provided ID.",
+          message: "Nenhum dado encontrado!",
         };
         response.status(404).send(arr);
       } else {
         const arr = {
           data: resolve,
           status: "SUCESS",
-          message: "User successfully recovered.",
+          message: 'Dados recuperados com sucesso!'
         };
         response.status(200).send(arr);
       }
@@ -47,7 +47,7 @@ module.exports = async (request, response) => {
       const arr = {
         data: reject,
         status: "ERROR",
-        msg: "An error occurred while processing your request. Please try again later.",
+        message: "Erro ao recuperar dados!",
       };
       response.status(400).send(arr);
     });
