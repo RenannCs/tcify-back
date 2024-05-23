@@ -1,46 +1,30 @@
-const ModelTcc = require('../../Model/TCC');
+const ModelTcc = require('../../Model/Tcc');
 const ModelJwtToken = require('../../Model/JwtToken');
 const ModelDatabase = require('../../Model/Database');
+
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
     /*
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }
-    */
-    /*
-
     const database = new ModelDatabase();
     await database.conect();
     */
     const id = request.params.id;
-    const tcc = new ModelTcc();
-    tcc.course_id = id;
-    
-
-    tcc.readByCourse()
+    const tcc = new ModelTcc(id);
+    tcc.single()
         .then((resolve) => {
-            if (resolve && resolve.length > 0) {
+            if (resolve == null) {
                 const arr = {
                     data: resolve,
-                    status: "SUCCESS",
-                    message: "TCCs successfully retrieved."
+                    status: "ERROR",
+                    message: 'No document was found with the provided ID.'
                 };
-                response.status(200).send(arr);
+                response.status(404).send(arr);
             } else {
                 const arr = {
                     data: resolve,
                     status: "SUCCESS",
-                    message: "No TCCs with the provided course ID."
+                    message: "TCC successfully retrieved."
                 };
                 response.status(200).send(arr);
             }
@@ -53,8 +37,10 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
-        /*.finally(()=>{
+        /*
+        .finally(()=>{
             database.desconnect();
         })*/
+};
 
-}
+

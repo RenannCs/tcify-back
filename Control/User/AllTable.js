@@ -1,6 +1,6 @@
-const ModelDatabase = require("../../Model/Database");
 const ModelJwtToken = require("../../Model/JwtToken");
 const ModelUser = require("../../Model/User");
+const ModelDatabase = require("../../Model/Database");
 
 const JwtToken = new ModelJwtToken();
 
@@ -17,30 +17,21 @@ module.exports = async (request, response) => {
     };
     return response.status(401).send(arr);
   }
-
   /*
     const database = new ModelDatabase();
     await database.conect();
     */
+  const user = new ModelUser();
 
-  const id = request.params.id;
-  const user = new ModelUser(id);
+  const fields = ["register", "name", "email", "phone_number", "user_type"];
 
   user
-    .delete()
+    .readAll(fields)
     .then((resolve) => {
-      if (resolve == null) {
-        const arr = {
-          data: resolve,
-          status: "ERROR",
-          message: "Nenhum dado encontrado!",
-        };
-        return response.status(404).send(arr);
-      }
       const arr = {
         data: resolve,
-        status: "SUCCESS",
-        message: "Usuário excluído com sucesso!",
+        status: "SUCESS",
+        message: "Dados recuperados com sucesso!",
       };
       response.status(200).send(arr);
     })
@@ -48,13 +39,13 @@ module.exports = async (request, response) => {
       const arr = {
         dados: reject,
         status: "ERROR",
-        message:
-          "An error occurred while processing your request. Please try again later.",
+        message: "Erro ao excluir usuário!",
       };
       response.status(400).send(arr);
     });
   /*
         .finally(()=>{
             database.desconnect();
-        })*/
+        })
+        */
 };

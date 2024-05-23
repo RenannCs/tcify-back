@@ -1,7 +1,6 @@
-const ModelTcc = require('../../Model/TCC');
+const ModelTcc = require('../../Model/Tcc');
 const ModelJwtToken = require('../../Model/JwtToken');
 const ModelDatabase = require('../../Model/Database');
-
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -19,25 +18,29 @@ module.exports = async (request, response) => {
     }
     */
     /*
+
     const database = new ModelDatabase();
     await database.conect();
     */
     const id = request.params.id;
-    const tcc = new ModelTcc(id);
-    tcc.single()
+    const tcc = new ModelTcc();
+    tcc.course_id = id;
+    
+
+    tcc.readByCourse()
         .then((resolve) => {
-            if (resolve == null) {
+            if (resolve && resolve.length > 0) {
                 const arr = {
                     data: resolve,
-                    status: "ERROR",
-                    message: 'No document was found with the provided ID.'
+                    status: "SUCCESS",
+                    message: "TCCs successfully retrieved."
                 };
-                response.status(404).send(arr);
+                response.status(200).send(arr);
             } else {
                 const arr = {
                     data: resolve,
                     status: "SUCCESS",
-                    message: "TCC successfully retrieved."
+                    message: "No TCCs with the provided course ID."
                 };
                 response.status(200).send(arr);
             }
@@ -50,10 +53,8 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
-        /*
-        .finally(()=>{
+        /*.finally(()=>{
             database.desconnect();
         })*/
-};
 
-
+}
