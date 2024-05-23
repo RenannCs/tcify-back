@@ -91,6 +91,10 @@ module.exports = class TCC {
         return ModelTcc.findByIdAndDelete(this.id).exec();
     }
 
+    async readByUser(id){
+        return ModelTcc.findOne({"group._id": new ObjectId(id)});
+    }
+
     async update(){
         const tcc = await ModelTcc.findById(this.id);
         

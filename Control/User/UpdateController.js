@@ -1,7 +1,7 @@
 /**
  * ATUALIZAR USUÁRIO
  * 
- * Pode alterar nome, senha, número de telefone, github, linkedin e tipo de usuário.
+ * Pode alterar nome, número de telefone, github, linkedin.
  */
 
 const ModelDatabase = require('../../Model/Database');
@@ -42,18 +42,15 @@ module.exports = async (request, response) => {
     }
 
     const name = request.body.name;
-    const password = request.body.password;
     const phone_number = request.body.phone_number;
     const github = request.body.github;
     const linkedin = request.body.linkedin;
-    const user_type = request.body.user_type;
     
     user.name = name;
-    user.password = password;
     user.phone_number = phone_number;
     user.github = github;
     user.linkedin = linkedin;
-    user.user_type = user_type;
+    
     
     user.update()
         .then((resolve)=>{

@@ -6,6 +6,7 @@ const insertTCC = require("../Control/TCC/InsertController");
 const updateTCC = require("../Control/TCC/UpdateController");
 const deleteTCC = require("../Control/TCC/DeleteController");
 const updateImageTcc = require("../Control/Tcc/ImageUpdateController");
+const readTCCByUser = require("../Control/Tcc/ReadByUserController");
 
 const readDistinctDatesTCC = require("../Control/TCC/ReadDistinctDatesController");
 
@@ -16,7 +17,7 @@ const updateUser = require('../Control/User/UpdateController');
 const deleteUser = require('../Control/User/DeleteController');
 const loginUser = require('../Control/User/LoginController');
 
-const csvUser = require("../Control/User/CsvController");
+const csvUser = require("../Control/User/CsvStudentController");
 const updatePasswordUser = require("../Control/User/updatePassword");
 
 const readAllCourses = require("../Control/Course/ReadAllController");
@@ -24,6 +25,11 @@ const singleCourse = require("../Control/Course/SingleController");
 const insertCourse = require("../Control/Course/InsertController");
 const updateCourse = require("../Control/Course/UpdateController");
 const deleteCourse = require("../Control/Course/DeleteController");
+
+
+
+
+const insertGroup = require("../Control/Group/Insert");
 
 module.exports = function (app) {
   const express = require("express");
@@ -75,6 +81,8 @@ module.exports = function (app) {
     updateImageTcc
   );
 
+  app.get("/repository/tcc/user" , readTCCByUser);
+
   //------------------------ROTAS USERS-----------------------//
 
   // Rota para recuperar todos os usuários
@@ -95,6 +103,12 @@ module.exports = function (app) {
   // Rota para fazer o login de um usuário
   app.post("/repository/user/login", loginUser);
 
+  // Rota para alterar a senha de um usuário
+  app.put("/repository/user/password", updatePasswordUser);
+
+  app.post("/repository/users/csv" , uploadLocal.fields([
+    {name: "data" , maxCount: 1}])
+    , csvUser)
 
   //------------------------ROTAS COURSE-----------------------//
 
@@ -114,4 +128,10 @@ module.exports = function (app) {
   app.delete("/repository/course/:id", deleteCourse);
 
   app.get("/repository/tccs/dates", readDistinctDatesTCC);
+
+
+
+
+  /*-----------------------rotas groupos-------------------*/
+  app.post("/repository/group" , insertGroup ); 
 };

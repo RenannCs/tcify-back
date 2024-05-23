@@ -28,9 +28,11 @@ module.exports = async (request , response)=>{
         
         const JwtToken = new ModelJwtToken();
 
+        console.log(resolve)
+
         const token = JwtToken.createToken({
-            "register": register,
-            "user_type": user.user_type
+            "id": resolve._id,
+            "userType": resolve.user_type
         });
 
         const arr = {

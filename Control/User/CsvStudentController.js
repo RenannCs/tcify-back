@@ -44,6 +44,7 @@ module.exports = async (request , response) =>{
                         user.email = student["email"];
                         user.register = student["register"];
                         user.password = student["register"];
+                        user.user_type = "student"; 
                         const resp = await user.exist();
                         
                         if(resp){

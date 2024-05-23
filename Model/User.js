@@ -78,7 +78,7 @@ module.exports = class User {
   }
 
   async singleFilterByRegister() {
-    const arrayData = ["name", "course_name", "email", "github", "linkedin"];
+    const arrayData = ["name", "register" , "course_name", "email", "phone_number" ,"github", "linkedin" ];
     return ModelUser.findOne()
       .where("register")
       .equals(this.register)
