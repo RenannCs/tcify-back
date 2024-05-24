@@ -104,7 +104,7 @@ module.exports = class User {
   }
 
   singleFilterByRegister() {
-    const arrayData = ["name", "register" , "course_name", "email", "phone_number" ,"github", "linkedin" ];
+    const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "profile_picture"];
     return ModelUser.findOne()
       .where("register")
       .equals(this.register)
@@ -152,13 +152,10 @@ module.exports = class User {
       .exec();
   }
 
-    async exist(){
-        const res =  await ModelUser.exists({"$or":[{"_id": new ObjectId(this.id)} , {"email": this.email} , {"register": this.register}]});
-        if (res!= null){
-            return true;
-        }
-        return false;
-    }
+  exist() {
+    const res = ModelUser.exists({ "$or": [{ "_id": new ObjectId(this.id) }, { "email": this.email }, { "register": this.register }] });
+    return res;
+  }
 
   async update() {
     const user = await ModelUser.findById(this.id);
