@@ -37,7 +37,7 @@ module.exports =  async (request , response)=>{
         
         const data = await student.singleFilterByRegister();
         
-        if((await group.existByUserRegister(student.register)).length != 0){
+        if((await group.existByStudent(student.register)) != null){
             const arr = {
                 status: "ERROR",
                 msg: "Aluno " + data.name + " já adicionado a um grupo",

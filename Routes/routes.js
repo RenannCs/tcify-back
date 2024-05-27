@@ -25,6 +25,8 @@ const deleteCourse = require("../Control/Course/DeleteController");
 
 
 const insertGroup = require("../Control/Group/Insert");
+const singleGroupByStudent = require('../Control/Group/SingleByStudent');
+const singleGroupById = require('../Control/Group/Single');
 
 module.exports = function (app) {
   const express = require("express");
@@ -127,6 +129,12 @@ module.exports = function (app) {
   app.delete("/repository/course/:id", deleteCourse);
 
 
-
+  // Inserir grupo
   app.post("/repository/group" , insertGroup);
-};
+
+  //retornar grupo pelo registro do usuario
+  app.get("/repository/group/singleByStudent/:register"  , singleGroupByStudent);
+
+  //retornar grupo pelo id do grupo
+  app.get('/repository/group/singleById/:id' , singleGroupById)
+}
