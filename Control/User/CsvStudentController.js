@@ -18,7 +18,6 @@ module.exports = async (request , response) =>{
         return response.status(401).send(arr);
     }
 
-    
     const csv = request.files["data"][0];
     let erros = [];
     let sucessos = [];
@@ -31,7 +30,6 @@ module.exports = async (request , response) =>{
             return response.status(500).send(arr);
         }
 
-        
         Papa.parse(data , {
             header: true,
             complete:  async (results)=>{
@@ -44,7 +42,8 @@ module.exports = async (request , response) =>{
                         user.email = student["email"];
                         user.register = student["register"];
                         user.password = student["register"];
-                        user.user_type = "student"; 
+                        user.user_type = "0";
+                        user.image = "/Default/profile_picture_default.webp"
                         const resp = await user.exist();
                         
                         if(resp){
@@ -62,12 +61,8 @@ module.exports = async (request , response) =>{
                 successes: sucessos,
                 message: "Alunos inseridos"
             }
-        
             return response.status(200).send(arr)
             }
         })
     })
-
-    
-
 }

@@ -38,11 +38,36 @@ module.exports = class Group{
         })
         return resp;
     }
+
+    findByStudentId(id){
+        const resp = ModelGroup.findOne({
+            "students":{
+                "$elemMatch": {"_id": id}
+            }
+        })
+        return resp;
+    }
     
     findById(){
         const resp = ModelGroup.findById(this.id);
-
         return resp;
+    }
+
+    async update(id , newData){
+        const group = await this.findByStudentId(id);
+        const students = group.students;
+        const newArray = []
+        for(const student of students){
+            if(student._id != id){
+                newArray.push(student);
+            }else{
+                newArray.push(newData);
+            }
+        }
+
+        group.students = newArray;
+
+        return group.save()
     }
 
     get students(){

@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     github: String,
     linkedin: String,
     user_type: String,
+    image: String
 });
 
 const ModelUser = mongoose.model("User", userSchema, "Users");

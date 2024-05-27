@@ -1,12 +1,15 @@
 /**
  * ATUALIZAR USUÁRIO
  *
- * Pode alterar nome, senha, número de telefone, github, linkedin e tipo de usuário.
+ * Pode alterar  número de telefone, github, linkedin, email
+ * 
+ * Atualizar grupo tambem
  */
 
-const ModelDatabase = require("../../Model/Database");
+//const ModelDatabase = require("../../Model/Database");
 const ModelJwtToken = require("../../Model/JwtToken");
 const ModelUser = require("../../Model/User");
+const ModelGroup = require('../../Model/Group');
 
 const JwtToken = new ModelJwtToken();
 
@@ -28,8 +31,9 @@ module.exports = async (request, response) => {
   /*
     const database = new ModelDatabase();
     await database.conect();
-    */
+  */
   const user = new ModelUser();
+  const group = new ModelGroup();
   user.id = id;
 
   const res = await user.exist();
@@ -43,22 +47,42 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
 
-  const name = request.body.name;
-  const password = request.body.password;
+  
   const phone_number = request.body.phone_number;
   const github = request.body.github;
   const linkedin = request.body.linkedin;
-  const user_type = request.body.user_type;
   const email = request.body.email;
-
-  user.name = name;
-  user.password = password;
+  
+  user.email = email;
   user.phone_number = phone_number;
   user.github = github;
   user.linkedin = linkedin;
-  user.user_type = user_type;
-  user.email = email;
 
+
+  try{
+    const resp = await user.update();
+
+    const newUser = await user.single(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
+
+    await group.update(user.id  , newUser);
+
+    const arr = {
+        status:"SUCESS",
+        data: resp,
+        message:"Usuario atualizado com sucesso"
+    }
+    return response.status(200).send(arr);
+  
+  }catch{
+    const arr = {
+      status:"ERROR",
+      message:"Ocorreu um erro ao atualizar o usuario"
+  }
+  return response.status(400).send(arr);
+  }
+
+
+  /*
   user
     .update()
     .then((resolve) => {
@@ -82,4 +106,5 @@ module.exports = async (request, response) => {
             database.desconnect();
         })
         */
+       
 };

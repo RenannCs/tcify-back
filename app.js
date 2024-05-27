@@ -10,7 +10,7 @@ routes(app);
 
 app.use(express.json());
 app.use('/Uploads', express.static('Uploads'));
-
+app.use('/Default' , express.static('Default'));
 
 const database = new Database();
 database.conect();
@@ -21,5 +21,5 @@ app.use(cors({
 
 
 app.listen(3000, function () {
-  console.log('Servidor rodando da porta: http://localhost:3000/repositorios/tcc')
+  console.log('Servidor rodando da porta: http://localhost:3000/')
 });

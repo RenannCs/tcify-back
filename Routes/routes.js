@@ -17,6 +17,7 @@ const deleteUser = require("../Control/User/DeleteController");
 const loginUser = require("../Control/User/LoginController");
 const updatePasswordUser = require("../Control/User/UpdatePassword");
 
+
 const readAllCourses = require("../Control/Course/ReadAllController");
 const singleCourse = require("../Control/Course/SingleController");
 const insertCourse = require("../Control/Course/InsertController");
@@ -27,6 +28,9 @@ const deleteCourse = require("../Control/Course/DeleteController");
 const insertGroup = require("../Control/Group/Insert");
 const singleGroupByStudent = require('../Control/Group/SingleByStudent');
 const singleGroupById = require('../Control/Group/Single');
+
+
+const studentCsv = require('../Control/User/CsvStudentController');
 
 module.exports = function (app) {
   const express = require("express");
@@ -107,9 +111,9 @@ module.exports = function (app) {
   // Rota para alterar a senha de um usuário
   app.put("/repository/user/password", updatePasswordUser);
 
-  /*app.post("/repository/users/csv" , uploadLocal.fields([
+  app.post("/repository/users/csv" , uploadLocal.fields([
     {name: "data" , maxCount: 1}])
-    , csvUser)*/
+    , studentCsv)
 
   //------------------------ROTAS COURSE-----------------------//
 

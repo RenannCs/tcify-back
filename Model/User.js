@@ -3,7 +3,7 @@ const ModelCourse = require("../Schemas/Course"); //
 const { ObjectId } = require("mongodb");
 
 const md5 = require("md5");
-module.exports = class User {
+module.exports = class User { 
   constructor(
     id = undefined,
     name = undefined,
@@ -15,7 +15,8 @@ module.exports = class User {
     github = undefined,
     linkedin = undefined,
     user_type = undefined,
-    register = undefined
+    register = undefined,
+    image = undefined
   ) {
     this._id = id;
     this._name = name;
@@ -28,6 +29,7 @@ module.exports = class User {
     this._linkedin = linkedin;
     this._user_type = user_type;
     this._register = register;
+    this._image = image
   }
 
   async insert() {
@@ -52,7 +54,7 @@ module.exports = class User {
       const newPassword = md5(this.password.trim());
       user.password = newPassword;
     }
-
+    
     if (this.phone_number != undefined) {
       user.phone_number = this.phone_number.trim();
     }
@@ -70,6 +72,9 @@ module.exports = class User {
 
     if (this.register != undefined) {
       user.register = this.register.trim();
+    }
+    if(this.image != undefined){
+      user.image = this.image;
     }
 
     return user.save();
@@ -104,13 +109,15 @@ module.exports = class User {
   }
 
   singleFilterByRegister() {
-    const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "profile_picture"];
+    const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"];
     return ModelUser.findOne()
       .where("register")
       .equals(this.register)
       .select(arrayData)
       .exec();
   }
+
+  
   async singleByRegister() {
     return ModelUser.findOne().where("register").equals(this.register).exec();
   }
@@ -176,7 +183,8 @@ module.exports = class User {
     }
 
     if (this.password != undefined) {
-      user.password = this.password.trim();
+      const newPassword = md5(this.password.trim());
+      user.password = newPassword;
     }
 
     if (this.phone_number != undefined) {
@@ -286,5 +294,12 @@ module.exports = class User {
   }
   set user_type(value) {
     this._user_type = value;
+  }
+
+  get image(){
+    return this._image;
+  }
+  set image(value){
+    this._image = value; 
   }
 };
