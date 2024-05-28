@@ -140,6 +140,7 @@ module.exports = class User {
       phone_number: user.phone_number,
       user_type: user.user_type,
       register: user.register,
+      image: user.image
     };
 
     return formattedUser;
@@ -205,6 +206,9 @@ module.exports = class User {
 
     if (this.register != undefined) {
       user.register = this.register.trim();
+    }
+    if(this.image != undefined){
+      user.image = this.image;
     }
 
     return user.save();

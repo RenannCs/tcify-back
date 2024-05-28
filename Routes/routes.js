@@ -16,7 +16,7 @@ const updateUser = require("../Control/User/UpdateController");
 const deleteUser = require("../Control/User/DeleteController");
 const loginUser = require("../Control/User/LoginController");
 const updatePasswordUser = require("../Control/User/UpdatePassword");
-
+const updateImageUser = require("../Control/User/UpdateImage");
 
 const readAllCourses = require("../Control/Course/ReadAllController");
 const singleCourse = require("../Control/Course/SingleController");
@@ -92,7 +92,7 @@ module.exports = function (app) {
 
   app.get("/repository/users/table", allTableUsers);
 
-  
+
   // Rota para recuperar um usuário por ID
   app.get("/repository/user/:id", singleUser);
 
@@ -111,10 +111,15 @@ module.exports = function (app) {
   // Rota para alterar a senha de um usuário
   app.put("/repository/user/password", updatePasswordUser);
 
-  app.post("/repository/users/csv" , uploadLocal.fields([
-    {name: "data" , maxCount: 1}])
+  app.post("/repository/users/csv", uploadLocal.fields([
+    { name: "data", maxCount: 1 }])
     , studentCsv)
 
+
+  app.post("/repository/users/image/:id",
+    uploadLocal.fields([{ name: "image", maxCount: 1 }]),
+    updateImageUser
+  )
   //------------------------ROTAS COURSE-----------------------//
 
   // Rota para recuperar todos os cursos
@@ -134,11 +139,11 @@ module.exports = function (app) {
 
 
   // Inserir grupo
-  app.post("/repository/group" , insertGroup);
+  app.post("/repository/group", insertGroup);
 
   //retornar grupo pelo registro do usuario
-  app.get("/repository/group/singleByStudent/:register"  , singleGroupByStudent);
+  app.get("/repository/group/singleByStudent/:register", singleGroupByStudent);
 
   //retornar grupo pelo id do grupo
-  app.get('/repository/group/singleById/:id' , singleGroupById)
+  app.get('/repository/group/singleById/:id', singleGroupById)
 }
