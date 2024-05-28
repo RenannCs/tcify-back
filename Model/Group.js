@@ -13,7 +13,11 @@ module.exports = class Group{
         this.id = id;
     }
 
-    
+    delete(){
+        const resp = ModelGroup.findByIdAndDelete(this.id);
+        return resp;
+    }
+
     insert(){
         const group = new ModelGroup();
         group.students = this.students;
@@ -48,7 +52,7 @@ module.exports = class Group{
         return resp;
     }
     
-    findById(){
+    single(){
         const resp = ModelGroup.findById(this.id);
         return resp;
     }

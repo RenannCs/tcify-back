@@ -48,7 +48,7 @@ const deleteCourse = require("../Control/Course/DeleteController");
 const insertGroup = require("../Control/Group/Insert");
 const singleGroupByStudent = require('../Control/Group/SingleByStudent');
 const singleGroupById = require('../Control/Group/Single');
-
+const deleteGroup = require('../Control/Group/delete');
 
 module.exports = function (app) {
   const express = require("express");
@@ -193,5 +193,8 @@ module.exports = function (app) {
   /* ************** GETS ************** */
   app.get("/repository/group/singleByStudent/:register", singleGroupByStudent);
 
-  app.get('/repository/group/singleById/:id', singleGroupById)
+  app.get('/repository/group/singleById/:id', singleGroupById);
+
+  /* ************** DELETE ************** */
+  app.delete('/repository/group/:id' , deleteGroup);
 }
