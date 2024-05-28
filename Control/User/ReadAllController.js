@@ -5,7 +5,8 @@ const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
-    const authorizationHeader = request.headers.authorization;
+    
+    /*const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
    

@@ -80,8 +80,8 @@ module.exports = class User {
     return user.save();
   }
 
-  async readAll() {
-    return ModelUser.find().exec();
+  readAll() {
+    return ModelUser.find()
   }
 
   async readAll(fields) {
