@@ -74,6 +74,11 @@ module.exports = class Group{
         return group.save()
     }
 
+    exists(){
+        const resp = ModelGroup.exists({"_id": new ObjectId(this.id)});
+        return resp;
+    }
+
     get students(){
         return this._students;
     }

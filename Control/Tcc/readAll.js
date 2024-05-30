@@ -1,8 +1,5 @@
-const ModelTcc = require('../../Model/TCC');
-const ModelJwtToken = require('../../Model/JwtToken');
-const ModelDatabase = require('../../Model/Database');
+const Tcc = require('../../Model/TCC');
 
-const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) =>{
     /*
@@ -19,7 +16,7 @@ module.exports = async (request, response) =>{
     const database = new ModelDatabase();
     await database.conect();
     */
-    const tcc = new ModelTcc();
+    const tcc = new Tcc();
       
     tcc.readAll()
     .then((resolve)=>{

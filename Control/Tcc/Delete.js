@@ -1,8 +1,6 @@
-const ModelTcc = require('../../Model/Tcc');
+const Tcc = require('../../Model/Tcc');
 const ModelJwtToken = require('../../Model/JwtToken');
-const ModelDatabase = require('../../Model/Database');
 const JwtToken = new ModelJwtToken();
-
 
 module.exports = async  (request, response) => {
     const authorizationHeader = request.headers.authorization;
@@ -16,12 +14,10 @@ module.exports = async  (request, response) => {
         };
         return response.status(401).send(arr);
     }
-    /*
-    const database = new ModelDatabase();
-    await database.conect();
-    */
+    
+    
     const id = request.params.id;
-    const tcc = new ModelTcc(id);
+    const tcc = new Tcc(id);
 
     tcc.delete()
         .then((resolve) => {

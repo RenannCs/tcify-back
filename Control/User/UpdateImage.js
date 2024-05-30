@@ -41,7 +41,7 @@ module.exports = async (request , response)=>{
     const group = new ModelGroup();
 
     const caminhoAntigo = (await user.single()).image;
-    console.log(caminhoAntigo);
+    
     const novoCaminho = "Uploads/UsersImages/" + user.id + ".jpg";
 
     const tamanhoMax = 1024 * 1024 * 10;
@@ -99,6 +99,10 @@ module.exports = async (request , response)=>{
         }
         return response.status(200).send(arr);
     }catch{
+        const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao procesar a imagem!"
+        }
         return response.status(400).send(arr);
     }
     

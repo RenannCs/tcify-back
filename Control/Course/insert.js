@@ -1,10 +1,8 @@
+const Course = require('../../Model/Course');
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
 
-const Group = require("../../Model/Group");
-
-
-module.exports = async (request , response)=>{
+module.exports =  async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -17,34 +15,26 @@ module.exports = async (request , response)=>{
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id;
+    const name = request.body.name;
 
-    const group = new Group();
-    group.id = id;
+    const course = new Course();
+    course.name = name;
 
-    if(await group.single() == null){
-        const arr = {
-            status: "ERROR",
-            message: "Grupo não existe!"
-        }
-        return response.status(404).send(arr);
-    }
-
-    group.delete()
+    course.insert()
         .then((resolve)=>{
             const arr = {
                 status: "SUCESS",
-                message: "Grupo excluído com sucesso!",
+                message: "Curso inserido com sucesso",
                 data: resolve
-            }
+            };
             return response.status(200).send(arr);
         })
         .catch((reject)=>{
             const arr = {
                 status: "ERROR",
-                message: "Ocorreu um erro ao excluir o grupo",
+                message: "Ocorreu um erro ao inserir o curso",
                 data: reject
-            }
+            };
             return response.status(400).send(arr);
         })
 }

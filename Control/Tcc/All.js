@@ -1,8 +1,4 @@
-const ModelTcc = require("../../Model/Tcc");
-const ModelJwtToken = require("../../Model/JwtToken");
-const ModelDatabase = require("../../Model/Database");
-
-const JwtToken = new ModelJwtToken();
+const Tcc = require("../../Model/Tcc");
 
 module.exports = async (request, response) => {
   /*
@@ -10,7 +6,7 @@ module.exports = async (request, response) => {
     const database = new ModelDatabase();
     await database.conect();
     */
-  const tcc = new ModelTcc();
+  const tcc = new Tcc();
 
   const fields = [
     "_id",

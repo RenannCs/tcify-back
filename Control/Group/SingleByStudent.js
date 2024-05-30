@@ -2,13 +2,13 @@
 retornar todos os alunos e os dados dos usuarios
 pesquisa feita pelo registro de usuario
 */
-const ModelJwtToken = require('../../Model/JwtToken');
-const JwtToken = new ModelJwtToken();
+//const ModelJwtToken = require('../../Model/JwtToken');
+//const JwtToken = new ModelJwtToken();
 
-const ModelGroup = require("../../Model/Group");
+const Group = require("../../Model/Group");
 
 module.exports = async(request , response)=>{
-    const authorizationHeader = request.headers.authorization;
+    /*const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
     if (tokenValidationResult.status !== true) {
@@ -18,11 +18,11 @@ module.exports = async(request , response)=>{
             error: tokenValidationResult.error
         };
         return response.status(401).send(arr);
-    }
+    }*/
 
     const register = request.params.register;
 
-    const group = new ModelGroup();
+    const group = new Group();
 
     group.findByStudent(register)
         .then((resolve)=>{

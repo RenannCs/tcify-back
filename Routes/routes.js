@@ -11,7 +11,7 @@ const singleTCC = require("../Control/Tcc/single");
 const insertTCC = require("../Control/Tcc/insert");
 const updateTCC = require("../Control/Tcc/update");
 const deleteTCC = require("../Control/Tcc/Delete");
-const updateImageTcc = require("../Control/Tcc/UpdateImg");
+const updateImageTcc = require("../Control/Tcc/updateImage");
 
 /**
  * 
@@ -34,11 +34,11 @@ const studentCsv = require('../Control/User/CsvStudentController');
  * IMPORTS PARA CURSOS
  * 
  */
-const readAllCourses = require("../Control/Course/ReadAllController");
-const singleCourse = require("../Control/Course/SingleController");
-const insertCourse = require("../Control/Course/InsertController");
-const updateCourse = require("../Control/Course/UpdateController");
-const deleteCourse = require("../Control/Course/DeleteController");
+const readAllCourses = require("../Control/Course/all");
+const singleCourse = require("../Control/Course/single");
+const insertCourse = require("../Control/Course/insert");
+const updateCourse = require("../Control/Course/update");
+const deleteCourse = require("../Control/Course/delete");
 
 /**
  * 

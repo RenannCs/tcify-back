@@ -1,12 +1,12 @@
 /*
 single do grupo por id
 */
-const ModelGroup = require('../../Model/Group');
+const Group = require('../../Model/Group');
 
 module.exports = async (request , response)=>{
     const id = request.params.id;
     
-    const group = new ModelGroup();
+    const group = new Group();
     group.id = id;
 
     group.findById()

@@ -1,11 +1,9 @@
 /**
- * Faz update de título, sumário, nota, supervisor, data e curso.
- * 
- * --Adicionar controle para atualizar grupo, imagens e arquivos.
+ * Update de tcc
+ * Pode alterar titulo, sumario e nota
  */
+const Tcc = require('../../Model/Tcc');
 
-const ModelTcc = require('../../Model/Tcc');
-const ModelDatabase = require('../../Model/Database');
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
 
@@ -24,12 +22,9 @@ module.exports = async (request, response) => {
     }
     const id = request.params.id;
 
-    /*
-    const database = new ModelDatabase();
-    await database.conect();
-    */
-    const tcc = new ModelTcc();
+    const tcc = new Tcc();
     tcc.id = id;
+
     const res = await tcc.exist()
     if (!res) {
         const arr = {
@@ -39,24 +34,14 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
     }
 
-
     const title = request.body.title;
     const summary = request.body.summary;
     const grade = request.body.grade;
-    const supervisor = request.body.supervisor;
-    const date = request.body.date;
-    const course_id = request.body.course_id;
-    const course_name = request.body.course_name;
-
+    
     tcc.title = title;
     tcc.summary = summary;
     tcc.grade = grade;
-    tcc.supervisor = supervisor;
-    tcc.date = date;
-    tcc.course_id = course_id;
-    tcc.course_name = course_name;
-
-
+    
     tcc.update()
         .then((resolve) => {
             const arr = {

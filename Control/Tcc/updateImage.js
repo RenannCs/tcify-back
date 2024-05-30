@@ -5,7 +5,6 @@
  * uma já existente. Altera também no Banco de Dados.
  */
 
-const ModelDatabase = require("../../Model/Database");
 const ModelTcc = require("../../Model/Tcc");
 const ModelJwtToken = require('../../Model/JwtToken');
 const imageSize = require('image-size');
@@ -29,14 +28,11 @@ module.exports =  async (request, response) =>{
     
     const id = request.params.id;
 
-    //const database = new ModelDatabase();
-    //await database.conect();
 
     const tcc = new ModelTcc();
     tcc.id = id;
     const res = await tcc.exist()
     if (!res) {
-        //database.desconnect()
         const arr = {
             status: "ERROR",
             message: "TCC não existe!"
@@ -66,8 +62,8 @@ module.exports =  async (request, response) =>{
     }
     
     
+    //const imagePath = image[0].path;
     const imagePath = image[0].path;
-
     const dimensions = await imageSize(imagePath);
     const { width, height } = dimensions;
     
@@ -80,8 +76,32 @@ module.exports =  async (request, response) =>{
         return response.status(413).send(arr);
     }
 
-    const caminhoAntigo = "Uploads/Images/" + id + ".jpg";
+    const dataTcc = await tcc.single();
+    const caminhoAntigo = dataTcc.image;
+    const novoCaminho = "Uploads/TccsImages/" + tcc.id + ".jpg";
     
+    //try{
+        if(caminhoAntigo != "Default/tcc_image_default.png"){
+            fs.unlink(caminhoAntigo , (error)=>{})
+        }
+        fs.rename(image[0].path , novoCaminho , (error)=>{});
+        tcc.image = novoCaminho;
+        await tcc.update();
+        
+
+        const arr = {
+            status: "SUCESS",
+            message: "Imagem atualizada com sucesso",
+        }
+        return response.status(200).send(arr);
+    /*}catch{
+        const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao procesar a imagem!"
+        }
+        return response.status(400).send(arr);
+    }
+    /*
     fs.access(caminhoAntigo , fs.constants.F_OK , async (err)=>{
         if(err){
             fs.rename(image[0].path , "Uploads/Images/" + id + ".jpg" , (erro)=> {});
@@ -127,6 +147,6 @@ module.exports =  async (request, response) =>{
                 return response.status(404).send(arr);
             }
         });
-    })
+    })*/
 
 }

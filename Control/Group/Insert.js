@@ -1,8 +1,8 @@
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
 
-const ModelGroup = require("../../Model/Group");
-const ModelUser = require("../../Model/User");
+const Group = require("../../Model/Group");
+const User = require("../../Model/User");
 
 module.exports =  async (request , response)=>{
     const authorizationHeader = request.headers.authorization;
@@ -17,14 +17,14 @@ module.exports =  async (request , response)=>{
         return response.status(401).send(arr);
     }
 
-    const group = new ModelGroup();
+    const group = new Group();
 
     const arrayStudentsRegister = request.body.students;
     const arrayStudentsData = [];
     
     for(const _student of arrayStudentsRegister){
         
-        const student = new ModelUser();
+        const student = new User();
         student.register = _student;
 
         if(await student.exist() == null){

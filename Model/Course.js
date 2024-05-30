@@ -1,6 +1,58 @@
-const { ObjectId, BSON } = require("mongodb");
+const { ObjectId } = require('mongodb');
+const ModelCourse = require('../Schemas/Course')
 
 module.exports = class Course {
+
+    constructor(
+        id = undefined,
+        name = undefined
+    ){
+        this.id = id;
+        this.name = name;   
+    }
+
+    set id(value){
+        this._id = value;
+    }
+    get id(){
+        return this._id;
+    }
+
+    set name(value){
+        this._name = value;
+    }
+    get name(){
+        return this._name;
+    }
+        
+    single(){
+        const resp = ModelCourse.findById(this.id);
+        return resp;
+    }
+    all(){
+        const resp = ModelCourse.find();
+        return resp;
+    }
+    delete(){
+        const resp = ModelCourse.findByIdAndDelete(this.id);
+        return resp;
+    }
+    insert(){
+        const course = new ModelCourse();
+        course.name = this.name;
+
+        return course.save();
+    }
+    async update(){
+        const course = await ModelCourse.findById(this.id);
+        course.name = this.name;
+        return course.save();
+    }
+    exists(){
+        const resp = ModelCourse.exists({"_id": new ObjectId(this.id)});
+        return resp;
+    }
+    /*
     constructor(client) {
         this._client = client;
         this._database = this.client.db('Repositorio_TCC');
@@ -155,7 +207,7 @@ module.exports = class Course {
         }
         return true;
     }
-    */
+    
 
 
 
@@ -176,5 +228,5 @@ module.exports = class Course {
     }
     get collection() {
         return this._collection;
-    }
+    }*/
 }

@@ -3,13 +3,13 @@
  *  
  * Adiciona um novo TCC com base nas informações passadas.
  * 
- * Só adiciona título, sumário, supervisor, data, estudantes, id_curso, nome curso.
+ * Só adiciona título, sumário, supervisor, data, grupo, id_curso, nome curso.
  * 
  */
 
-const ModelDatabase = require('../../Model/Database');
-const TCC = require('../../Model/Tcc');
-const User = require('../../Model/User');
+
+const Tcc = require('../../Model/Tcc');
+const Group = require('../../Model/Group');
 const ModelJwtToken = require('../../Model/JwtToken');
 /*
 const fs = require('fs');
@@ -50,7 +50,7 @@ module.exports =  async (request, response) =>{
         fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
         zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
-    */
+    
     //const database = new ModelDatabase();
     //await database.conect();
     
@@ -78,26 +78,40 @@ module.exports =  async (request, response) =>{
         student3.register = student3Id;
         const student3Data = await student3.singleFilterByRegister();
         studentsArray.push(student3Data);
-    }
+    }*/
     
-    const tcc = new TCC(
-            undefined,
-            request.body.title,
-            request.body.summary,
-            undefined,
-            request.body.supervisor,
-            request.body.date,
-            false,
-            undefined,
-            undefined,
-            undefined,
-            studentsArray,
-            request.body.course_id,
-            request.body.course_name,
-            undefined
-        )
+    const title = request.body.title;
+    const summary = request.body.summary;
+    const supervisor = request.body.supervisor;
+    const date = request.body.date;
+    const group_id = request.body.group;
+    const course_name = request.body.course_name;
 
+
+
+    const group = new Group();
+    group.id = group_id;
     
+
+    if(await group.exists() == null){
+        const arr = {
+            status: "ERROR",
+            message: "Grupo não existe"
+        };
+        return response.status(404).send(arr);
+    }
+    const tcc = new Tcc();
+    
+    tcc.title = title;
+    tcc.summary = summary;
+    tcc.supervisor = supervisor;
+    tcc.date = date;
+    tcc.group = group_id;
+    tcc.course_name = course_name;
+    tcc.image = "Default/tcc_image_default.png";
+    tcc.status = 0;
+    tcc.grade = 0
+
     tcc.insert()
     .then((resolve)=>{
         const arr = {
