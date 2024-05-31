@@ -7,7 +7,7 @@ module.exports = async (request, response) => {
     await database.conect();
     */
   const tcc = new Tcc();
-
+  
   const fields = [
     "_id",
     "title",
@@ -16,14 +16,13 @@ module.exports = async (request, response) => {
     "supervisor",
     "date",
     "status",
-    "files",
     "group",
     "course_id",
     "course_name",
   ];
 
   tcc
-    .readAll(fields)
+    .allFieldsFilter(fields , {"status": 2})
     .then((resolve) => {
       const arr = {
         data: resolve,

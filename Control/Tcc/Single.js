@@ -1,12 +1,9 @@
 const Tcc = require('../../Model/Tcc');
 
 module.exports = async (request, response) => {
-    /*
-    const database = new ModelDatabase();
-    await database.conect();
-    */
     const id = request.params.id;
     const tcc = new Tcc(id);
+    
     tcc.single()
         .then((resolve) => {
             if (resolve == null) {

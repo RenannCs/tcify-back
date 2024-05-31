@@ -5,8 +5,8 @@
  */
 const readAllTCCs = require("../Control/Tcc/All");
 const allTableTCCs = require("../Control/TCC/allTable");
-const readTCCsByCourse = require("../Control/Tcc/AllByCourse");
-const readTCCsByYear = require("../Control/Tcc/AllByYear");
+const readTCCsByCourse = require("../Control/Tcc/allByCourse");
+const readTCCsByYear = require("../Control/Tcc/allByYear");
 const singleTCC = require("../Control/Tcc/single");
 const insertTCC = require("../Control/Tcc/insert");
 const updateTCC = require("../Control/Tcc/update");

@@ -13,15 +13,13 @@ module.exports = async (request, response) => {
     "date"
   ];
 
-  tcc
-    .readAll(fields)
-    .then((resolve) => {
-      const arr = {
-        data: resolve,
-        status: "SUCCESS",
+  tcc.allFields(fields)
+      .then((resolve) => {
+          const arr = {
+            data: resolve,
+            status: "SUCCESS",
         message: "TCCs successfully retrieved.",
       };
-
       response.status(200).send(arr);
     })
     .catch((reject) => {

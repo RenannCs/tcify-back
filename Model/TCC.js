@@ -1,7 +1,6 @@
 const { ObjectId } = require("mongodb");
 const ModelTcc = require("../Schemas/Tcc");
 
-
 module.exports = class TCC {
   constructor(
     id = undefined,
@@ -53,21 +52,29 @@ module.exports = class TCC {
 
     return tcc.save();
   }
-
-  async exist() {
-    const res = await ModelTcc.exists({ _id: new ObjectId(this.id) });
-    if (res != null) {
-      return true;
-    }
-    return false;
+  
+  allFieldsFilter(fields , filter){
+    const resp = ModelTcc.find(filter).select(fields);
+    return resp;
   }
 
-  async readAll(fields) {
-    return ModelTcc.find({ status: 2 }).select(fields).exec();
+  allFields(fields){
+    const resp = ModelTcc.find().select(fields);
+    return resp;
+  }
+  
+  exist() {
+    const resp = ModelTcc.exists({"_id": new ObjectId(this.id)});
+    return resp;
   }
 
-  async readByYear() {
-    const arrayData = [ 
+  all() {
+    const resp = ModelTcc.find();
+    return resp;
+  }
+
+  allByYear() {
+    const fields = [
       "_id",
       "title",
       "summary",
@@ -75,41 +82,38 @@ module.exports = class TCC {
       "supervisor",
       "date",
       "status",
-      "files",
       "group",
       "course_id",
       "course_name",
     ];
+    const resp = ModelTcc.where("date").equals(this.date).select(fields);
+    return resp;
+  }
 
-    return ModelTcc.where("date").equals(this.date).select(arrayData).exec();
+  allByCourse() {
+    const fields = [
+      "_id",
+      "title",
+      "summary",
+      "grade",
+      "supervisor",
+      "date",
+      "status",
+      "group",
+      "course_id",
+      "course_name",
+    ];
+    const resp = ModelTcc.where("course_id").equals(this.course_id).select(fields);
+    return resp;
   }
 
   single() {
-    return ModelTcc.findById(this.id);
+    const resp = ModelTcc.findById(this.id);
+    return resp;
   }
-
-  async readByCourse() {
-    const arrayData = [
-      "_id",
-      "title",
-      "summary",
-      "grade",
-      "supervisor",
-      "date",
-      "status",
-      "files",
-      "group",
-      "course_id",
-      "course_name",
-    ];
-    return ModelTcc.where("course_id")
-      .equals(this.course_id)
-      .select(arrayData)
-      .exec();
-  }
-
-  async delete() {
-    return ModelTcc.findByIdAndDelete(this.id).exec();
+  delete() {
+    const resp = ModelTcc.findByIdAndDelete(this.id);
+    return resp
   }
 
   async update() {
@@ -187,7 +191,6 @@ module.exports = class TCC {
   get status() {
     return this._status;
   }
-
   get group() {
     return this._group;
   }

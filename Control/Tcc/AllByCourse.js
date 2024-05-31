@@ -1,30 +1,24 @@
 const Tcc = require('../../Model/Tcc');
+const Course = require('../../Model/Course');
 
 module.exports = async (request, response) => {
-    /*
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }
-    */
-    /*
-
-    const database = new ModelDatabase();
-    await database.conect();
-    */
     const id = request.params.id;
+
+    const course = new Course();
+    course.id = id;
+
+    if(await course.exists() == null){
+        const arr = {
+            status: "ERROR",
+            message: "Curso não existe!"
+        };
+        return response.status(404).send(arr);
+    }
+
     const tcc = new Tcc();
     tcc.course_id = id;
-    
-
-    tcc.readByCourse()
+        
+    tcc.allByCourse()
         .then((resolve) => {
             if (resolve && resolve.length > 0) {
                 const arr = {
@@ -50,8 +44,5 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
-        /*.finally(()=>{
-            database.desconnect();
-        })*/
 
 }

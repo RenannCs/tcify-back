@@ -1,32 +1,12 @@
 const ModelTcc = require('../../Model/Tcc');
-const ModelJwtToken = require('../../Model/JwtToken');
-
 
 module.exports = async (request, response) => {
-
-    /*
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }
-    */
-    /*
-    const database = new ModelDatabase();
-    await database.conect();
-    */
     const year = request.params.year
 
     const tcc = new ModelTcc();
     tcc.date = year;
 
-    tcc.readByYear()
+    tcc.allByYear()
         .then((resolve) => {
             if (resolve && resolve.length > 0) {
                 const arr = {
@@ -52,9 +32,5 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
-        /*
-        .finally(()=>{
-            database.desconnect();
-        })*/
 
-};
+}

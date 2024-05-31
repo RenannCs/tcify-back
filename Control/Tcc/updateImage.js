@@ -80,7 +80,7 @@ module.exports =  async (request, response) =>{
     const caminhoAntigo = dataTcc.image;
     const novoCaminho = "Uploads/TccsImages/" + tcc.id + ".jpg";
     
-    //try{
+    try{
         if(caminhoAntigo != "Default/tcc_image_default.png"){
             fs.unlink(caminhoAntigo , (error)=>{})
         }
@@ -94,7 +94,7 @@ module.exports =  async (request, response) =>{
             message: "Imagem atualizada com sucesso",
         }
         return response.status(200).send(arr);
-    /*}catch{
+    }catch{
         const arr = {
             status: "ERROR",
             message: "Ocorreu um erro ao procesar a imagem!"

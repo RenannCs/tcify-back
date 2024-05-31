@@ -1,12 +1,11 @@
 /**
  * Update de tcc
- * Pode alterar titulo, sumario e nota
+ * Pode alterar titulo, sumario , nota e status
  */
 const Tcc = require('../../Model/Tcc');
 
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
-
 
 module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
@@ -37,11 +36,13 @@ module.exports = async (request, response) => {
     const title = request.body.title;
     const summary = request.body.summary;
     const grade = request.body.grade;
-    
+    const status = request.body.status;
+
     tcc.title = title;
     tcc.summary = summary;
     tcc.grade = grade;
-    
+    tcc.status = status;
+
     tcc.update()
         .then((resolve) => {
             const arr = {
@@ -59,9 +60,4 @@ module.exports = async (request, response) => {
             };
             response.status(400).send(arr);
         })
-        /*
-        .finally(() => {
-            database.desconnect();
-        })*/
-
 }

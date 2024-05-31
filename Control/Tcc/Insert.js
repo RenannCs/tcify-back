@@ -87,8 +87,7 @@ module.exports =  async (request, response) =>{
     const group_id = request.body.group;
     const course_name = request.body.course_name;
 
-
-
+    
     const group = new Group();
     group.id = group_id;
     
