@@ -34,8 +34,8 @@ module.exports =  async (request , response)=>{
             }
             return response.status(404).send(arr);
         }
-        
-        const data = await student.singleFilterByRegister();
+        const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"];
+        const data = await student.singleFields(arrayData)
         
         if((await group.existByStudent(student.register)) != null){
             const arr = {

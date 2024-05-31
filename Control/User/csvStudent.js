@@ -39,11 +39,13 @@ module.exports = async (request , response) =>{
                         const user = new User();
                         user.name = student["name"];
                         user.course_name = student["course_name"];
+                        user.course_id = student["course_id"];
                         user.email = student["email"];
                         user.register = student["register"];
                         user.password = student["register"];
                         user.user_type = "0";
-                        user.image = "Default/profile_picture_default.webp"
+                        //user.image = "http://localhost:3000/Default/profile_picture_default.webp"
+
                         const resp = await user.exist();
                         
                         if(resp){

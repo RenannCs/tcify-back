@@ -3,7 +3,7 @@
  * IMPORTS PARA TCC
  * 
  */
-const readAllTCCs = require("../Control/Tcc/All");
+const readAllTCCs = require("../Control/Tcc/all");
 const allTableTCCs = require("../Control/TCC/allTable");
 const readTCCsByCourse = require("../Control/Tcc/allByCourse");
 const readTCCsByYear = require("../Control/Tcc/allByYear");
@@ -18,16 +18,16 @@ const updateImageTcc = require("../Control/Tcc/updateImage");
  * IMPORTS PARA USUARIOS
  * 
  */
-const readAllUsers = require("../Control/User/ReadAllController");
-const allTableUsers = require("../Control/User/AllTable");
-const singleUser = require("../Control/User/SingleController");
-const insertUser = require("../Control/User/insertController");
-const updateUser = require("../Control/User/updateController");
-const deleteUser = require("../Control/User/deleteController");
-const loginUser = require("../Control/User/loginController");
-const updatePasswordUser = require("../Control/User/UpdatePassword");
-const updateImageUser = require("../Control/User/UpdateImage");
-const studentCsv = require('../Control/User/CsvStudentController');
+const readAllUsers = require("../Control/User/all");
+const allTableUsers = require("../Control/User/allTable");
+const singleUser = require("../Control/User/single");
+const insertUser = require("../Control/User/insert");
+const updateUser = require("../Control/User/update");
+const deleteUser = require("../Control/User/delete");
+const loginUser = require("../Control/User/login");
+const updatePasswordUser = require("../Control/User/updatePassword");
+const updateImageUser = require("../Control/User/updateImage");
+const studentCsv = require('../Control/User/csvStudent');
 
 /**
  * 
@@ -85,15 +85,7 @@ module.exports = function (app) {
 
   /* ************** POST ************** */
   app.post(
-    "/repository/tcc",
-    uploadLocal.fields([
-      { name: "image", maxCount: 1 },
-      { name: "document", maxCount: 1 },
-      { name: "monography", maxCount: 1 },
-      { name: "zip", maxCount: 1 },
-    ]),
-    insertTCC
-  );
+    "/repository/tcc", insertTCC);
 
   app.post(
     "/repository/tcc/image/:id",

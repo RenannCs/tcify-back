@@ -1,13 +1,13 @@
-name,course_name,email,register
-Isabele Pires,Informática,isabelepires@gmail.com,50220123
-Thiago Bitencourt Sancho,Informática,thiagosancho2006@gmail.com,50220434
-Rayssa Texeira Brito,Química,rayssateixeira@gmail.com,50220731
-Marina Ribeiro,Informática,marinaribeiro@gmail.com,50220666
-Enzo Lelis,Informática,enzolelis@gmail.com,50220159
-Renan Cordeiro Santo,Informática,renancordeiro@gmail.com,50220404
-Giovanna Alckmin,Química,giovannalckmin@gmail.com,50220951
-Camila Cunha,Química,camilacunha@gmail.com,50220357
-Matheus Cavalerio,Informática,matheuscavaleiro@gmail.com,50220456
-Giovana Franco,Informática,giovanafranco@gmail.com,50220654
-Beatriz Faria,Informática,beatrizfaria@gmail.com,50220852
-Mileny Sabrina,Informática,milenysabrina@gmail,50220789
+name,course_name,email,register,course_id
+Isabele Pires,Informática,isabelepires@gmail.com,50220123,65f9b5d12c2adb5031948b96
+Thiago Bitencourt Sancho,Informática,thiagosancho2006@gmail.com,50220434,65f9b5d12c2adb5031948b96
+Rayssa Texeira Brito,Química,rayssateixeira@gmail.com,50220731,65f9b60e2c2adb5031948b99
+Marina Ribeiro,Informática,marinaribeiro@gmail.com,50220666,65f9b5d12c2adb5031948b96
+Enzo Lelis,Informática,enzolelis@gmail.com,50220159,65f9b5d12c2adb5031948b96
+Renan Cordeiro Santo,Informática,renancordeiro@gmail.com,50220404,65f9b5d12c2adb5031948b96
+Giovanna Alckmin,Química,giovannalckmin@gmail.com,50220951,65f9b60e2c2adb5031948b99
+Camila Cunha,Química,camilacunha@gmail.com,50220357,65f9b60e2c2adb5031948b99
+Matheus Cavalerio,Informática,matheuscavaleiro@gmail.com,50220456,65f9b5d12c2adb5031948b96
+Giovana Franco,Informática,giovanafranco@gmail.com,50220654,65f9b5d12c2adb5031948b96
+Beatriz Faria,Informática,beatrizfaria@gmail.com,50220852,65f9b5d12c2adb5031948b96
+Mileny Sabrina,Informática,milenysabrina@gmail,50220789,65f9b5d12c2adb5031948b96

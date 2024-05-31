@@ -1,5 +1,4 @@
 const ModelUser = require("../Schemas/User");
-const ModelCourse = require("../Schemas/Course"); //
 const { ObjectId } = require("mongodb");
 
 const md5 = require("md5");
@@ -16,23 +15,25 @@ module.exports = class User {
     linkedin = undefined,
     user_type = undefined,
     register = undefined,
-    image = undefined
+    image = undefined,
+    
   ) {
-    this._id = id;
-    this._name = name;
-    this._course_name = course_name;
-    this._course_id = course_id;
-    this._email = email;
-    this._password = password;
-    this._phone_number = phone_number;
-    this._github = github;
-    this._linkedin = linkedin;
-    this._user_type = user_type;
-    this._register = register;
-    this._image = image
+    this.id = id;
+    this.name = name;
+    this.course_name = course_name;
+    this.course_id = course_id;
+    this.email = email;
+    this.password = password;
+    this.phone_number = phone_number;
+    this.github = github;
+    this.linkedin = linkedin;
+    this.user_type = user_type;
+    this.register = register;
+    this.image = image;
+    
   }
 
-  async insert() {
+  insert() {
     const user = new ModelUser();
     if (this.name != undefined) {
       user.name = this.name.trim();
@@ -80,87 +81,46 @@ module.exports = class User {
     return user.save();
   }
 
-  readAll() {
-    return ModelUser.find()
+  all() {
+    const resp = ModelUser.find();
+    return resp;
+  }
+    
+  allFields(fields) {
+    const resp = ModelUser.find().select(fields);
+    return resp;
   }
 
-  async readAll(fields) {
-    const users = await ModelUser.find()
-      .select(fields)
-      .populate({
-        path: "course_id",
-        model: "Course",
-        select: "name",
-      })
-      .exec();
+  singleByRegister() {
+    const resp =  ModelUser.findOne().where("register").equals(this.register);
+    return resp;
+  } 
 
-    const formattedUsers = users.map((user) => ({
-      _id: user._id,
-      name: user.name,
-      course_id: user.course_id ? user.course_id._id : null,
-      course_name: user.course_id ? user.course_id.name : null,
-      email: user.email,
-      phone_number: user.phone_number,
-      user_type: user.user_type,
-      register: user.register,
-    }));
-
-    return formattedUsers;
+  singleFields(fields){
+    const resp = ModelUser.findById(this.id).select(fields);
+    return resp;
+  }
+  single() {
+    const resp = ModelUser.findById(this.id);
+    return resp;
   }
 
-  singleFilterByRegister() {
-    const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"];
-    return ModelUser.findOne()
-      .where("register")
-      .equals(this.register)
-      .select(arrayData)
-      .exec();
+  delete() {
+    const resp = ModelUser.findByIdAndDelete(this.id);
+    return resp;
   }
 
-  
-  async singleByRegister() {
-    return ModelUser.findOne().where("register").equals(this.register).exec();
-  }
-  async single(fields) {
-    const user = await ModelUser.findById(this.id)
-      .select(fields)
-      .populate({
-        path: "course_id",
-        model: "Course",
-        select: "name",
-      })
-      .exec();
-
-    const formattedUser = {
-      _id: user._id,
-      name: user.name,
-      course_id: user.course_id ? user.course_id._id : null,
-      course_name: user.course_id ? user.course_id.name : null,
-      email: user.email,
-      phone_number: user.phone_number,
-      user_type: user.user_type,
-      register: user.register,
-      image: user.image
-    };
-
-    return formattedUser;
-  }
-
-  async delete() {
-    return ModelUser.findByIdAndDelete(this.id).exec();
-  }
-
-  async login() {
+  login() {
     const newPassword = md5(this.password);
-    return ModelUser.findOne({
-      $or: [{ register: this.register }, { email: this.register }],
-      password: newPassword,
-    })
-      .select("_id user_type")
-      .exec();
+    const resp =  ModelUser.exists({
+      "$or": [{ register: this.register }, { email: this.register }],
+    "password": newPassword,
+    }).select(["_id" , "user_type"]);
+    
+    return resp;
   }
 
-  exist() {
+  exists() {
     const res = ModelUser.exists({ "$or": [{ "_id": new ObjectId(this.id) }, { "email": this.email }, { "register": this.register }] });
     return res;
   }
@@ -214,96 +174,76 @@ module.exports = class User {
     return user.save();
   }
 
-  get register() {
-    return this._register;
-  }
-  set register(value) {
-    this._register = value;
-  }
-
-  get id() {
+  get id(){
     return this._id;
   }
-  set id(value) {
-    this._id = value;
+  set id(v){
+    this._id = v;
   }
-
-  // Getter e setter para 'name'
-  get name() {
+  get name(){
     return this._name;
   }
-  set name(value) {
-    this._name = value;
+  set name(v){
+    this._name = v; 
   }
-
-  // Getter e setter para 'courseName'
-  get course_name() {
+  get course_name(){
     return this._course_name;
   }
-  set course_name(value) {
-    this._course_name = value;
+  set course_name(v){
+    this._course_name = v;
   }
-
-  // Getter e setter para 'courseId'
-  get course_id() {
+  get course_id(){
     return this._course_id;
   }
-  set course_id(value) {
-    this._course_id = value;
+  set course_id(v){
+    this._course_id = v;
   }
-
-  // Getter e setter para 'email'
-  get email() {
+  get email(){
     return this._email;
   }
-  set email(value) {
-    this._email = value;
+  set email(v){
+    this._email = v;
   }
-
-  // Getter e setter para 'password'
-  get password() {
+  get password(){
     return this._password;
   }
-  set password(value) {
-    this._password = value;
+  set password(v){
+    this._password = v;
   }
-
-  // Getter e setter para 'phoneNumber'
-  get phone_number() {
+  get phone_number(){
     return this._phone_number;
   }
-  set phone_number(value) {
-    this._phone_number = value;
+  set phone_number(v){
+    this._phone_number = v;
   }
-
-  // Getter e setter para 'github'
-  get github() {
+  get github(){
     return this._github;
   }
-  set github(value) {
-    this._github = value;
+  set github(v){
+    this._github = v;
   }
-
-  // Getter e setter para 'linkedin'
-  get linkedin() {
+  get linkedin(){
     return this._linkedin;
   }
-  set linkedin(value) {
-    this._linkedin = value;
+  set linkedin(v){
+    this._linkedin = v;
   }
-
-  // Getter e setter para 'userType'
-  get user_type() {
+  get user_type(){
     return this._user_type;
   }
-  set user_type(value) {
-    this._user_type = value;
+  set user_type(v){
+    this._user_type = v;
   }
-
   get image(){
     return this._image;
   }
-  set image(value){
-    this._image = value; 
+  set image(v){
+    this._image = v;
+  }
+  get register(){
+    return this._register;
+  }
+  set register(v){
+    this._register = v;
   }
 };

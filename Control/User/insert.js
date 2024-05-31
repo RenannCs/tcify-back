@@ -1,6 +1,10 @@
-const ModelDatabase = require("../../Model/Database");
+/**
+ * Adiciona um novo usuário qualquer [aluno, professor ou admin]
+ * 
+ * Coloca nome, curso, email, senha, tipo usuario e registro
+ */
 const ModelJwtToken = require("../../Model/JwtToken");
-const ModelUser = require("../../Model/User");
+const User = require("../../Model/User");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -16,41 +20,27 @@ module.exports = async (request, response) => {
     };
     return response.status(401).send(arr);
   }
-  /*
-    const database = new ModelDatabase();
-    await database.conect();
-    */
+  
 
   const name = request.body.name;
   const course_name = request.body.course_name;
   const course_id = request.body.course_id;
   const email = request.body.email;
   const password = request.body.password;
-  const phone_number = request.body.phone_number;
-  const github = request.body.github;
-  const linkedin = request.body.linkedin;
   const user_type = request.body.user_type;
   const register = request.body.register;
 
-  const user = new ModelUser(
-    undefined,
-    name,
-    course_name,
-    course_id,
-    email,
-    password,
-    phone_number,
-    github,
-    linkedin,
-    user_type,
-    register
-  );
+  const user = new User();
+  user.name = name;
+  user.course_name = course_name;
+  user.course_id = course_id;
+  user.email = email;
+  user.password = password;
+  user.user_type = user_type;
+  user.register = register;
 
 
-
-  const resp = await user.exist();
-  if (resp) {
-    //database.desconnect();
+  if (await user.exists() != null) {
     const arr = {
       status: "ERROR",
       message: "Registro ou email já em uso!",
@@ -76,4 +66,4 @@ module.exports = async (request, response) => {
       };
       response.status(400).send(arr);
     })
-};
+}

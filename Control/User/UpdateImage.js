@@ -30,7 +30,7 @@ module.exports = async (request , response)=>{
     const user = new ModelUser();
     user.id = id;
     
-    if(await user.exist() == null){
+    if(await user.exists() == null){
         const arr = {
             status: "ERROR",
             message: "Usuário não encontrado!"
@@ -80,7 +80,7 @@ module.exports = async (request , response)=>{
     }
 
     try{
-        if(caminhoAntigo != "Default/profile_picture_default.webp"){
+        if(caminhoAntigo != null){
             fs.unlink(caminhoAntigo , (error)=>{})
         }
         fs.rename(image[0].path , novoCaminho , (error)=>{});
@@ -89,7 +89,7 @@ module.exports = async (request , response)=>{
         
         
         if(await group.findByStudentId(user.id) !=null){
-            const newUser = await user.single(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
+            const newUser = await user.singleFields(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
             await group.update(user.id , newUser);
         }
 

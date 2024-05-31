@@ -1,4 +1,3 @@
-const ModelDatabase = require("../../Model/Database");
 const ModelJwtToken = require("../../Model/JwtToken");
 const ModelUser = require("../../Model/User");
 const md5 = require("md5");
@@ -27,7 +26,7 @@ module.exports = async (request, response) => {
 
   const user = new ModelUser(id);
 
-  const userData = await user.single(fields);
+  const userData = await user.singleFields(fields);
 
 
   if (userData.password !== password) {

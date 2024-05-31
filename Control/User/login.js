@@ -15,14 +15,13 @@ module.exports = async (request, response) => {
   user.password = password;
 
 
-  user
-    .login()
+  user.login()
     .then((resolve) => {
       if (resolve == null) {
         const arr = {
           data: resolve,
           status: "ERROR",
-          message: "Registro ou Senha incorretos!",
+          message: "Registro ou senha incorretos!",
         };
         return response.status(200).send(arr);
       }
@@ -52,8 +51,4 @@ module.exports = async (request, response) => {
       };
       response.status(400).send(arr);
     });
-  /*
-    .finally(()=>{
-        database.desconnect();
-    })*/
-};
+}

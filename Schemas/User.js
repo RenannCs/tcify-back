@@ -2,10 +2,8 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     name: String,
-    course_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Courses"  // Correção: Referência à coleção "Courses"
-    },
+    course_name: String,
+    course_id: String,
     register: String,
     email: String,
     password: String,
