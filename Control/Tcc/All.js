@@ -17,33 +17,33 @@ module.exports = async (request, response) => {
     "date",
     "status",
     "group",
-    "course_id",
-    "course_name",
+    "course_id"
   ];
 
-  tcc
-    .allFieldsFilter(fields , {"status": 2})
-    .then((resolve) => {
-      const arr = {
-        data: resolve,
-        status: "SUCCESS",
-        message: "TCCs successfully retrieved.",
-      };
-
-      response.status(200).send(arr);
-    })
-    .catch((reject) => {
-      const arr = {
-        data: reject,
-        status: "ERROR",
-        message:
-          "An error occurred while processing your request. Please try again later.",
-      };
-
-      response.status(400).send(arr);
-    });
-  /*
-    .finally(()=>{
-        database.desconnect();
-    })*/
-};
+  try{
+    const data = await tcc.allFields(fields);
+    const format = data.map((tcc)=>({
+      _id: tcc._id,
+      title: tcc.title,
+      summary: tcc.summary ? tcc.summary : null,
+      grade: tcc.grade ? tcc.grade : null,
+      supervisor: tcc.supervisor,
+      date: tcc.date,
+      status: tcc.status,
+      group: tcc.group,
+      course_id: tcc.course_id,
+    }))
+    const arr = {
+      status: "SUCESS",
+      message: "TCC's recuperados com sucesso!",
+      data: format
+    };
+    return response.status(200).send(arr);
+  }catch {
+    const arr ={ 
+      status: "ERROR",
+      message: "Ocorreu um erro ao buscar os TCC's"
+    };
+    return response.status(400).send(arr);
+  }
+}

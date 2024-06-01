@@ -13,6 +13,31 @@ module.exports = async (request, response) => {
     "date"
   ];
 
+  try{
+    const data = await tcc.allFields(fields);
+    const format = data.map((tcc)=>({
+      _id: tcc._id,
+      title: tcc.title,
+      supervisor: tcc.supervisor,
+      group: tcc.group,
+      course_id: tcc.course_id,
+      course_name: tcc.course_id.name,              
+      date: tcc.date,
+    }))
+    const arr = {
+      status: "SUCESS",
+      message: "TCC's recuperados com sucesso!",
+      data: format
+    };
+    return response.status(200).send(arr);
+  }catch {
+    const arr ={ 
+      status: "ERROR",
+      message: "Ocorreu um erro ao buscar os TCC's"
+    };
+    return response.status(400).send(arr);
+  }
+  /*
   tcc.allFields(fields)
       .then((resolve) => {
           const arr = {
@@ -31,5 +56,5 @@ module.exports = async (request, response) => {
       };
 
       response.status(400).send(arr);
-    });
+    });*/
 };

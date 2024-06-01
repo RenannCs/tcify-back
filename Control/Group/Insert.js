@@ -27,25 +27,26 @@ module.exports =  async (request , response)=>{
         const student = new User();
         student.register = _student;
 
-        if(await student.exist() == null){
+        if(await student.exists() == null){
             const arr = {
                 status: "ERROR",
                 msg: "Matrícula " + student.register + " não existe"
             }
             return response.status(404).send(arr);
         }
-        const arrayData = ["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"];
-        const data = await student.singleFields(arrayData)
+        const arrayData = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
+        const data = await student.singleFieldsByRegister(arrayData);
+        
         
         if((await group.existByStudent(student.register)) != null){
             const arr = {
                 status: "ERROR",
-                msg: "Aluno " + data.name + " já adicionado a um grupo",
+                msg: "Aluno " + data[0].name + " já adicionado a um grupo",
             }
             return response.status(400).send(arr);
         }
 
-        arrayStudentsData.push(data)   
+        arrayStudentsData.push(data[0])   
     }
     group.students = arrayStudentsData;
 

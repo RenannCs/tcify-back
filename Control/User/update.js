@@ -36,7 +36,7 @@ module.exports = async (request, response) => {
   const group = new ModelGroup();
   user.id = id;
 
-  const res = await user.exist();
+  const res = await user.exists();
 
   if (!res) {
     //database.desconnect();

@@ -38,7 +38,6 @@ module.exports = async (request , response) =>{
                     try{
                         const user = new User();
                         user.name = student["name"];
-                        user.course_name = student["course_name"];
                         user.course_id = student["course_id"];
                         user.email = student["email"];
                         user.register = student["register"];
@@ -46,7 +45,7 @@ module.exports = async (request , response) =>{
                         user.user_type = "0";
                         //user.image = "http://localhost:3000/Default/profile_picture_default.webp"
 
-                        const resp = await user.exist();
+                        const resp = await user.exists();
                         
                         if(resp){
                             throw new Error;

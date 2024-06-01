@@ -1,36 +1,55 @@
-const ModelTcc = require('../../Model/Tcc');
+const Tcc = require('../../Model/Tcc');
 
 module.exports = async (request, response) => {
     const year = request.params.year
 
-    const tcc = new ModelTcc();
-    tcc.date = year;
-
-    tcc.allByYear()
-        .then((resolve) => {
-            if (resolve && resolve.length > 0) {
-                const arr = {
-                    data: resolve,
-                    status: "SUCCESS",
-                    message: "TCCs successfully retrieved."
-                };
-                response.status(200).send(arr);
-            } else {
-                const arr = {
-                    data: resolve,
-                    status: "SUCCESS",
-                    message: "No TCCs in the requested year."
-                };
-                response.status(200).send(arr);
-            }
-        })
-        .catch((reject) => {
+    const tcc = new Tcc();
+    
+    const fields = [
+        "_id",
+        "title",
+        "summary",
+        "grade",
+        "supervisor",
+        "date",
+        "status",
+        "group",
+        "course_id"
+    ];
+    
+    try{
+        const data = await tcc.allFieldsFilter(fields , {"date": year});
+        console.log(data)
+        if(data.length == 0){
             const arr = {
-                status: "ERROR",
-                data: reject,
-                message: "An error occurred while processing your request. Please try again later."
-            };
-            response.status(400).send(arr);
-        })
+                status: "SUCESS",
+                message: "Não há TCC's para esse ano"
+            }
+            return response.status(404).send(arr);
+        }
 
+        const format = data.map((tcc)=>({
+            _id: tcc._id,
+            title: tcc.title,
+            summary: tcc.summary ? tcc.summary : null,
+            grade: tcc.grade ? tcc.grade : null,
+            supervisor: tcc.supervisor,
+            date: tcc.date,
+            status: tcc.status,
+            group: tcc.group,
+            course_id: tcc.course_id,
+          }))
+          const arr = {
+            status: "SUCESS",
+            message: "TCC's recuperados com sucesso!",
+            data: format
+          };
+          return response.status(200).send(arr);
+    }catch{
+        const arr ={ 
+            status: "ERROR",
+            message: "Ocorreu um erro ao buscar os TCC's"
+          };
+          return response.status(400).send(arr);
+    }
 }

@@ -1,5 +1,7 @@
 const { ObjectId } = require("mongodb");
-const ModelTcc = require("../Schemas/Tcc");
+const ModelTcc = require("../Schemas/TCC");
+const ModelCourse = require('../Schemas/Course');
+const ModelGroup = require('../Schemas/Group');
 
 module.exports = class TCC {
   constructor(
@@ -54,12 +56,32 @@ module.exports = class TCC {
   }
   
   allFieldsFilter(fields , filter){
-    const resp = ModelTcc.find(filter).select(fields);
+    const resp = ModelTcc.find(filter).select(fields)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
 
   allFields(fields){
-    const resp = ModelTcc.find().select(fields);
+    const resp = ModelTcc.find().select(fields)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
   
@@ -69,7 +91,17 @@ module.exports = class TCC {
   }
 
   all() {
-    const resp = ModelTcc.find();
+    const resp = ModelTcc.find()
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
 
@@ -86,7 +118,17 @@ module.exports = class TCC {
       "course_id",
       "course_name",
     ];
-    const resp = ModelTcc.where("date").equals(this.date).select(fields);
+    const resp = ModelTcc.where("date").equals(this.date).select(fields)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
 
@@ -100,15 +142,34 @@ module.exports = class TCC {
       "date",
       "status",
       "group",
-      "course_id",
-      "course_name",
+      "course_id"
     ];
-    const resp = ModelTcc.where("course_id").equals(this.course_id).select(fields);
+    const resp = ModelTcc.where("course_id").equals(this.course_id).select(fields)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
 
   single() {
-    const resp = ModelTcc.findById(this.id);
+    const resp = ModelTcc.findById(this.id)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    })
+    .populate({
+      path: "group",
+      model: "Group",
+      select: "students"
+    });
     return resp;
   }
   delete() {
@@ -160,6 +221,11 @@ module.exports = class TCC {
     }
 
     return tcc.save();
+  }
+
+  existsByGroupId(id){
+    const resp = ModelTcc.exists({"group": id});
+    return resp;
   }
   get zip() {
     return this._zip;

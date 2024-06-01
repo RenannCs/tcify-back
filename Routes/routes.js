@@ -84,8 +84,7 @@ module.exports = function (app) {
   app.get("/repository/tcc/:id", singleTCC);
 
   /* ************** POST ************** */
-  app.post(
-    "/repository/tcc", insertTCC);
+  app.post("/repository/tcc", insertTCC);
 
   app.post(
     "/repository/tcc/image/:id",

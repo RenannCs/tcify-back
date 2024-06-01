@@ -84,13 +84,12 @@ module.exports =  async (request, response) =>{
     const summary = request.body.summary;
     const supervisor = request.body.supervisor;
     const date = request.body.date;
-    const group_id = request.body.group;
-    const course_name = request.body.course_name;
+    const group_id = request.body.group_id;
+    const course_id = request.body.course_id;
 
     
     const group = new Group();
     group.id = group_id;
-    
 
     if(await group.exists() == null){
         const arr = {
@@ -100,16 +99,23 @@ module.exports =  async (request, response) =>{
         return response.status(404).send(arr);
     }
     const tcc = new Tcc();
-    
+    if(await tcc.existsByGroupId(group_id) != null){
+        const arr = {
+            status: "ERROR",
+            message: "Grupo já possui TCC!"
+        };
+        return response.status(400).send(arr);
+    }
+
     tcc.title = title;
     tcc.summary = summary;
     tcc.supervisor = supervisor;
     tcc.date = date;
     tcc.group = group_id;
-    tcc.course_name = course_name;
-    tcc.image = "Default/tcc_image_default.png";
+    tcc.course_id = course_id;
+    //tcc.image = "Default/tcc_image_default.png";
     tcc.status = 0;
-    tcc.grade = 0
+    tcc.grade = 0;
 
     tcc.insert()
     .then((resolve)=>{

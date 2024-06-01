@@ -1,4 +1,4 @@
-    const mongoose = require("mongoose")
+const mongoose = require("mongoose")
 
 const tccSchema = new mongoose.Schema({
     title: String, 
@@ -10,9 +10,14 @@ const tccSchema = new mongoose.Schema({
     document: String,
     monography: String,
     zip: String,
-    group: String,
-    course_id: String,
-    course_name: String,
+    group: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
+    },
+    course_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Courses"
+    },
     image: String
 })
 
