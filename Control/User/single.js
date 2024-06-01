@@ -33,10 +33,10 @@ module.exports = async (request, response) => {
       name: data.name,
       register: data.register,
       email: data.email,
-      course_name: data.course_name,
-      course_id: data.course_id,
+      course_id: data.course_id._id,
+      course_name: data.course_id.name,
       github: data.github ? data.github : null,
-      linkedin: data.linkedin ? user.linkedin : null,
+      linkedin: data.linkedin ? data.linkedin : null,
       phone_number: data.phone_number ? data.phone_number : null,
       user_type: data.user_type,
       user_image: data.image ? data.image : "Default/profile_picture_default.webp"

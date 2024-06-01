@@ -20,16 +20,21 @@ module.exports = async (request, response) => {
 
   const id = request.body.id;
   const password = md5(request.body.password);
-  const newPassword = md5(request.body.newPassword);
+  const newPasswordMd5 = md5(request.body.newPassword);
+  const newPassword = request.body.newPassword;
 
+  
   const fields = ["password"];
 
-  const user = new ModelUser(id);
+  const user = new ModelUser();
+  user.password = newPassword;
+  user.id = id
 
   const userData = await user.singleFields(fields);
 
-
-  if (userData.password !== password) {
+  
+  
+  if (userData.password != password) {
     const arr = {
       status: "ERROR",
       message: "Senha incorreta!",
@@ -37,15 +42,13 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  if (userData.password == newPassword) {
+  if (userData.password == newPasswordMd5) {
     const arr = {
       status: "ERROR",
       message: "Senha já cadastrada!",
     };
     return response.status(401).send(arr);
   }
-
-  user.password = newPassword;
 
   try {
     await user.update();

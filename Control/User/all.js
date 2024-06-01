@@ -7,8 +7,8 @@ module.exports = async (request, response) => {
         const format = data.map((user)=>({
             _id: user.id,
             name: user.name,
-            course_id: user.course_id,
-            course_name: user.course_name,
+            course_id: user.course_id._id,
+            course_name: user.course_id.name,
             email: user.email,
             user_type: user.user_type,
             register: user.register,

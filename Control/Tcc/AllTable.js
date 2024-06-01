@@ -19,9 +19,9 @@ module.exports = async (request, response) => {
       _id: tcc._id,
       title: tcc.title,
       supervisor: tcc.supervisor,
-      group: tcc.group,
-      course_id: tcc.course_id,
-      course_name: tcc.course_id.name,              
+      group: tcc.group.students,
+      course_id: tcc.course_id._id,
+      course_name: tcc.course_id.name,         
       date: tcc.date,
     }))
     const arr = {

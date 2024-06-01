@@ -49,6 +49,7 @@ const insertGroup = require("../Control/Group/Insert");
 const singleGroupByStudent = require('../Control/Group/SingleByStudent');
 const singleGroupById = require('../Control/Group/Single');
 const deleteGroup = require('../Control/Group/delete');
+const insertStudentGroup = require('../Control/Group/insertStudent')
 
 module.exports = function (app) {
   const express = require("express");
@@ -188,4 +189,7 @@ module.exports = function (app) {
 
   /* ************** DELETE ************** */
   app.delete('/repository/group/:id' , deleteGroup);
+
+  /* ************** PATCH ************** */
+  app.patch('/repository/group/:id' , insertStudentGroup);
 }

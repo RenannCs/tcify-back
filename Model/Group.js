@@ -56,8 +56,13 @@ module.exports = class Group{
         const resp = ModelGroup.findById(this.id);
         return resp;
     }
-
-    async update(id , newData){
+    async update(){
+        const group = await ModelGroup.findById(this.id);
+        group.students = this.students;
+        const resp = group.save();
+        return resp;
+    }
+    async updateStudent(id , newData){
         const group = await this.findByStudentId(id);
         const students = group.students;
         const newArray = []

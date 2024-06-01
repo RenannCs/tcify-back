@@ -30,8 +30,9 @@ module.exports = async (request, response) => {
       supervisor: tcc.supervisor,
       date: tcc.date,
       status: tcc.status,
-      group: tcc.group,
-      course_id: tcc.course_id,
+      group: tcc.group.students,
+      course_id: tcc.course_id._id,
+      course_name: tcc.course_id.name
     }))
     const arr = {
       status: "SUCESS",
