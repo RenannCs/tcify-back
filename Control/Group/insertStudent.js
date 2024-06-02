@@ -56,7 +56,7 @@ module.exports = async (request , response)=>{
     const grupoData = await group.single();
     const arrAlunos = grupoData.students;
     arrAlunos.push(alunoData[0]);
-    console.log(grupoData.students)
+
     group.students = arrAlunos;
     
     group.update()

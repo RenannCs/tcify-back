@@ -19,7 +19,7 @@ module.exports = async (request, response) => {
     
     try{
         const data = await tcc.allFieldsFilter(fields , {"date": year});
-        console.log(data)
+
         if(data.length == 0){
             const arr = {
                 status: "SUCESS",

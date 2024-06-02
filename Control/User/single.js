@@ -39,7 +39,7 @@ module.exports = async (request, response) => {
       linkedin: data.linkedin ? data.linkedin : null,
       phone_number: data.phone_number ? data.phone_number : null,
       user_type: data.user_type,
-      user_image: data.image ? data.image : "Default/profile_picture_default.webp"
+      image: data.image ? `${process.env.API_PATH}${data.image}` : `${process.env.API_PATH}Default/profile_picture_default.webp`
     }
     const arr = {
       status: "SUCESS",
