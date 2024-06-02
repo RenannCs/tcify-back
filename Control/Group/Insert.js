@@ -30,7 +30,7 @@ module.exports =  async (request , response)=>{
         if(await student.exists() == null){
             const arr = {
                 status: "ERROR",
-                msg: "Matrícula " + student.register + " não existe"
+                message: "Matrícula " + student.register + " não existe"
             }
             return response.status(404).send(arr);
         }
@@ -41,7 +41,7 @@ module.exports =  async (request , response)=>{
         if((await group.existByStudent(student.register)) != null){
             const arr = {
                 status: "ERROR",
-                msg: "Aluno " + data[0].name + " já adicionado a um grupo",
+                message: "Aluno " + data[0].name + " já adicionado a um grupo",
             }
             return response.status(400).send(arr);
         }
