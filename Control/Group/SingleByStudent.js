@@ -20,11 +20,11 @@ module.exports = async(request , response)=>{
         return response.status(401).send(arr);
     }*/
 
-    const register = request.params.register;
+    const id = request.params.id;
 
     const group = new Group();
-
-    group.findByStudent(register)
+    console.log(id)
+    group.findByStudent(id)
         .then((resolve)=>{
             if(resolve == null){
                 const arr = {

@@ -34,10 +34,10 @@ module.exports = class Group{
         return resp;
     }
 
-    findByStudent(register){
+    findByStudent(id){
         const resp = ModelGroup.findOne({
             "students":{
-                "$elemMatch": {"register": register}
+                "$elemMatch": {"_id": new ObjectId(id)}
             }
         })
         return resp;

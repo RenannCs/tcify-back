@@ -51,6 +51,8 @@ const singleGroupById = require('../Control/Group/Single');
 const deleteGroup = require('../Control/Group/delete');
 const insertStudentGroup = require('../Control/Group/insertStudent')
 
+const sendemail = require('../Control/Email/testesend');
+
 module.exports = function (app) {
   const express = require("express");
   const multer = require("multer");
@@ -183,7 +185,7 @@ module.exports = function (app) {
   app.post("/repository/group", insertGroup);
 
   /* ************** GETS ************** */
-  app.get("/repository/group/singleByStudent/:register", singleGroupByStudent);
+  app.get("/repository/group/singleByStudent/:id", singleGroupByStudent);
 
   app.get('/repository/group/singleById/:id', singleGroupById);
 
@@ -192,4 +194,8 @@ module.exports = function (app) {
 
   /* ************** PATCH ************** */
   app.patch('/repository/group/:id' , insertStudentGroup);
+
+
+
+  app.get('/teste' , sendemail)
 }
