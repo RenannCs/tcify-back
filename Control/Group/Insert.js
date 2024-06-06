@@ -41,7 +41,7 @@ module.exports =  async (request , response)=>{
         if((await group.existByStudent(student.register)) != null){
             const arr = {
                 status: "ERROR",
-                message: "Aluno " + data[0].name + " já adicionado a um grupo",
+                message: "Aluno " + student.register + " já adicionado a um grupo",
             }
             return response.status(400).send(arr);
         }

@@ -9,7 +9,7 @@ module.exports = async (request , response)=>{
     const group = new Group();
     group.id = id;
 
-    group.findById()
+    group.single()
         .then((resolve)=>{
             if(resolve == null){
                 const arr = {

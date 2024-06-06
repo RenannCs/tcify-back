@@ -2,7 +2,9 @@ const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
 
 const Group = require("../../Model/Group");
-
+/**
+ * DELETAR O TCC JUNTO
+ */
 
 module.exports = async (request , response)=>{
     const authorizationHeader = request.headers.authorization;

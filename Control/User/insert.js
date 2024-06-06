@@ -1,10 +1,12 @@
 /**
  * Adiciona um novo usuário qualquer [aluno, professor ou admin]
- * 
+ *
  * Coloca nome, curso, email, senha, tipo usuario e registro
  */
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Model/User");
+const Email = require("../../Model/Email");
+const Course = require("../../Model/Course");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -20,27 +22,31 @@ module.exports = async (request, response) => {
     };
     return response.status(401).send(arr);
   }
-  
 
   const name = request.body.name;
-  const course_name = request.body.course_name;
   const course_id = request.body.course_id;
-  const email = request.body.email;
-  const password = request.body.password;
+  const emailUser = request.body.email;
   const user_type = request.body.user_type;
   const register = request.body.register;
 
+  const strAll =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
+  let password = "";
+
+  for (let i = 0; i < 6; i++) {
+    const n = Math.floor(Math.random() * strAll.length);
+    password += strAll[n];
+  }
+
   const user = new User();
   user.name = name;
-  user.course_name = course_name;
   user.course_id = course_id;
-  user.email = email;
+  user.email = emailUser;
   user.password = password;
   user.user_type = user_type;
   user.register = register;
 
-
-  if (await user.exists() != null) {
+  if ((await user.exists()) != null) {
     const arr = {
       status: "ERROR",
       message: "Registro ou email já em uso!",
@@ -48,6 +54,47 @@ module.exports = async (request, response) => {
     return response.status(409).send(arr);
   }
 
+  const course = new Course();
+  course.id = course_id;
+  const course_name = await course.single();
+  if (course_name == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Curso não existe!",
+    };
+    return response.status(404).send(arr);
+  }
+  let user_typeStr = "";
+  if (user_type == "0") {
+    user_typeStr = "Aluno";
+  } else if (user_typeStr == "1") {
+    user_typeStr = "Professor";
+  } else {
+    user_typeStr = "Administrador";
+  }
+
+  const email = new Email();
+  email.dest = emailUser;
+  email.subject = "Conectado ao repositório de TCC's da Univap Centro";
+  email.message = `
+  <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+  <br>Seus dados:<br>
+  Nome: ${user.name}<br>
+  Registro: ${user.register}<br>
+  Curso: ${course_name.name}<br>
+  Tipo de usuário: ${user_typeStr}<br>
+  Email: ${user.email}<br>
+  Senha: ${password}<br>
+  `;
+  try {
+    await email.send();
+  } catch {
+    const arr = {
+      status: "ERROR",
+      message: "Ocorreu um erro ao enviar o email! Usuário não adicionado!",
+    };
+    return response.status(400).send(arr);
+  }
   user
     .insert()
     .then((result) => {
@@ -65,5 +112,5 @@ module.exports = async (request, response) => {
         error: error.message,
       };
       response.status(400).send(arr);
-    })
-}
+    });
+};
