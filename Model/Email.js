@@ -1,8 +1,6 @@
 const nodemailer = require("nodemailer");
 const { parseConnectionUrl } = require("nodemailer/lib/shared");
 
-
-
 module.exports = class Email {
     constructor(message = "" , dest = "" , subject = "" , title = "Repositório TCC's Univap Centro"){
         this.message = message;

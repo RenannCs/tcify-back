@@ -54,21 +54,22 @@ module.exports = async (request, response) => {
               password += strAll[n];
             }
             user.password = password;
-            
+
             if ((await user.exists()) != null) {
               throw new Error();
             }
             const course = new Course();
             course.id = user.course_id;
             const course_name = await course.single();
-            
-            if(course_name == null){
-                throw new Error();
+
+            if (course_name == null) {
+              throw new Error();
             }
 
             const email = new Email();
             email.dest = user.email;
-            email.subject = "Conectado ao repositório de TCC's da Univap Centro";
+            email.subject =
+              "Conectado ao repositório de TCC's da Univap Centro";
             email.message = `
             <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
             <br>Seus dados:<br>
@@ -79,7 +80,7 @@ module.exports = async (request, response) => {
             Email: ${user.email}<br>
             Senha: ${password}<br>
             `;
-            await email.send();
+            email.send();
             await user.insert();
             sucessos.push(student["name"]);
           } catch (error) {

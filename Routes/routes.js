@@ -45,13 +45,14 @@ const deleteCourse = require("../Control/Course/delete");
  * IMPORTS PARA GRUPOS
  * 
  */
-const insertGroup = require("../Control/Group/Insert");
+const insertGroup = require("../Control/Group/insert");
 const singleGroupByStudent = require('../Control/Group/SingleByStudent');
 const singleGroupById = require('../Control/Group/Single');
 const deleteGroup = require('../Control/Group/delete');
-const insertStudentGroup = require('../Control/Group/insertStudent')
+const insertStudentGroup = require('../Control/Group/insertStudent');
+const deleteStudentGroup = require('../Control/Group/deleteStudent');
 
-const sendemail = require('../Control/Email/testesend');
+//const sendemail = require('../Control/Email/testesend');
 
 module.exports = function (app) {
   const express = require("express");
@@ -193,9 +194,9 @@ module.exports = function (app) {
   app.delete('/repository/group/:id' , deleteGroup);
 
   /* ************** PATCH ************** */
-  app.patch('/repository/group/:id' , insertStudentGroup);
+  app.patch('/repository/group/insertStudent/:id' , insertStudentGroup);
 
+  app.patch('/repository/group/deleteStudent/:id' , deleteStudentGroup);
 
-
-  app.get('/teste' , sendemail)
+  //app.get('/teste' , sendemail)
 }

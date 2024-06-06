@@ -3,6 +3,7 @@ const JwtToken = new ModelJwtToken();
 
 const Group = require("../../Model/Group");
 const User = require("../../Model/User");
+const Email = require("../../Model/Email");
 
 module.exports =  async (request , response)=>{
     const authorizationHeader = request.headers.authorization;
@@ -34,10 +35,7 @@ module.exports =  async (request , response)=>{
             }
             return response.status(404).send(arr);
         }
-        const arrayData = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
-        const data = await student.singleFieldsByRegister(arrayData);
-        
-        
+
         if((await group.existByStudent(student.register)) != null){
             const arr = {
                 status: "ERROR",
@@ -46,8 +44,20 @@ module.exports =  async (request , response)=>{
             return response.status(400).send(arr);
         }
 
-        arrayStudentsData.push(data[0])   
+        const arrayData = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
+        const data = await student.singleFieldsByRegister(arrayData);
+        arrayStudentsData.push(data[0]);
+        
+        const email = new Email();
+        email.dest = data[0].email;
+        email.subject = "Você foi adicionado a um grupo!"
+        email.message = `
+        <p> ${data[0].name}, você foi adicionado a um grupo do Repositório de TCC's da Univap Centro!</p>
+        <p> Para verificar o seu grupo, acesse o portal!</p>`
+        email.title = "Adicionado a um grupo";
+        email.send();
     }
+    
     group.students = arrayStudentsData;
 
     group.insert()

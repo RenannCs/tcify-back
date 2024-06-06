@@ -87,7 +87,7 @@ module.exports = async (request, response) => {
   Senha: ${password}<br>
   `;
   try {
-    await email.send();
+     email.send();
   } catch {
     const arr = {
       status: "ERROR",

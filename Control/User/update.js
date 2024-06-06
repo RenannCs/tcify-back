@@ -62,8 +62,8 @@ module.exports = async (request, response) => {
   try{
     const resp = await user.update();
 
-    const newUser = await user.single(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
-
+    const newUser = await user.singleFields(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
+    console.log(newUser);
     await group.updateStudent(user.id,newUser);
 
     const arr = {

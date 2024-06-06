@@ -23,8 +23,7 @@ module.exports = async(request , response)=>{
     const id = request.params.id;
 
     const group = new Group();
-    
-    group.findByStudent(id)
+    group.findByStudentId(id)
         .then((resolve)=>{
             if(resolve == null){
                 const arr = {

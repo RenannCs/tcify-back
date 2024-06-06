@@ -1,9 +1,6 @@
-/**
- * Insere um aluno ao grupo
- */
-const Group = require("../../Model/Group");
-const User = require("../../Model/User");
-const Email = require("../../Model/Email");
+const Group = require('../../Model/Group');
+const User = require('../../Model/User');
+const Email = require('../../Model/Email');
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
 
@@ -25,63 +22,69 @@ module.exports = async (request , response)=>{
 
     const group = new Group();
     group.id = id;
-
     const user = new User();
     user.register = register;
 
-    if(await group.exists() == null){
+    const groupData = await group.single();
+    if(groupData == null){
         const arr = {
-            status:"ERROR",
-            message:"Grupo não existe!"
+            status: "ERROR",
+            message: "Grupo não encontrado!"
+        };
+        return response.staus(404).send(arr);
+    }
+    const userId = await user.exists();
+    if(userId == null){
+        const arr = {
+            status: "ERROR",
+            message: "Usuário não encontrado!"
         };
         return response.status(404).send(arr);
     }
-    if(await user.exists() == null){
-        const arr = {
-            status: "ERROR",
-            message: "Aluno não existe!"
+    const students = groupData.students;
+    let newStudents = [];
+    let ver = false;
+    for(const student of students){
+        if(student.register != register){
+            newStudents.push(student);
+        }else{
+            ver = true;
         }
-        return response.status(404).send(arr);
     }
-    if(await group.existByStudent(register) != null){
+    if(!ver){
         const arr = {
             status: "ERROR",
-            message: "Aluno já inserido em um grupo"
-        }
+            message: "Aluno não está nesse grupo!"
+        };
         return response.status(400).send(arr);
     }
 
-    const fields = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"]
-    const alunoData = await user.singleFieldsByRegister(fields);
-
+    user.id = userId._id;
+    const studentData = await user.single();
     const email = new Email();
-    email.dest = alunoData[0].email;
-    email.subject = "Você foi adicionado a um grupo!";
+    email.dest = studentData.email;
+    email.subject = "Você foi removido do grupo";
+    email.title = "Você foi removido do seu grupo!";
     email.message = `
-        <p> ${alunoData[0].name}, você foi adicionado a um grupo do Repositório de TCC's da Univap Centro!</p>
-        <p> Para verificar o seu grupo, acesse o portal!</p>`
-    email.title = "Adicionado a um grupo";
+        <p> ${studentData.name}, você foi removido do seu grupo do Repositório de TCC's da Univap Centro!</p>`;
+    
     email.send();
 
-    const grupoData = await group.single();
-    const arrAlunos = grupoData.students;
-    arrAlunos.push(alunoData[0]);
 
-    group.students = arrAlunos;
-    
+    group.students = newStudents;
     group.update()
         .then((resolve)=>{
             const arr = {
-                status: "SUCESS",
-                message: "Aluno inserido com sucesso",
+                status:"SUCESS",
+                message: "Aluno excluído com sucesso!",
                 data: resolve
             };
             return response.status(200).send(arr);
         })
         .catch((reject)=>{
-            const arr = {
+            const arr =  {
                 status: "ERROR",
-                message: "Ocorreu um erro ao inserir o aluno",
+                message: "Ocorreu um erro ao excluir o aluno!",
                 data: reject
             };
             return response.status(400).send(arr);
