@@ -194,9 +194,9 @@ module.exports = function (app) {
   app.delete('/repository/group/:id' , deleteGroup);
 
   /* ************** PATCH ************** */
-  app.patch('/repository/group/insertStudent/:id' , insertStudentGroup);
+  app.patch('/repository/group/insertStudent' , insertStudentGroup);
 
-  app.patch('/repository/group/deleteStudent/:id' , deleteStudentGroup);
+  app.patch('/repository/group/deleteStudent' , deleteStudentGroup);
 
   //app.get('/teste' , sendemail)
 }

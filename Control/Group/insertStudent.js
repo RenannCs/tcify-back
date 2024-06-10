@@ -20,7 +20,7 @@ module.exports = async (request , response)=>{
         return response.status(401).send(arr);
     }
 
-    const id = request.params.id;
+    const id = request.body.id;
     const register = request.body.register;
 
     const group = new Group();
