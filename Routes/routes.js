@@ -88,7 +88,11 @@ module.exports = function (app) {
   app.get("/repository/tcc/:id", singleTCC);
 
   /* ************** POST ************** */
-  app.post("/repository/tcc", insertTCC);
+  app.post('/repository/tcc', uploadLocal.fields([
+    {name: "document" , maxCount: 1},
+    {name: "monography" , maxCount: 1},
+    {name: "zip" , maxCount: 1}
+]) ,  insertTCC);
 
   app.post(
     "/repository/tcc/image/:id",

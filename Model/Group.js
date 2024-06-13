@@ -7,10 +7,14 @@ module.exports = class Group{
         /**
          * @type {Array}
          */
-        students = undefined
+        students = undefined,
+        leaderId = undefined,
+        status = undefined
     ){
         this.students = students;
         this.id = id;
+        this.leaderId = leaderId;
+        this.status = status;
     }
 
     delete(){
@@ -21,6 +25,8 @@ module.exports = class Group{
     insert(){
         const group = new ModelGroup();
         group.students = this.students;
+        group.leaderId = this.leaderId;
+        group.status = this.status;
         return group.save();
     }
 
@@ -95,5 +101,17 @@ module.exports = class Group{
     }
     set id(value){
         this._id = value;
+    }
+    get leaderId(){
+        return this._leaderId; 
+    }
+    set leaderId(v){
+        this._leaderId = v;
+    }
+    get status(){
+        return this._status;
+    }
+    set status(v){
+        this._status = v;
     }
 }

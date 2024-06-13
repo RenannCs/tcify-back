@@ -38,14 +38,9 @@ module.exports =  async (request , response)=>{
             message: "Você já possuí grupo!"
         };
         return response.status(400).send(arr);
-    }
-    const fields = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
-
-    const leaderData = await leader.singleFieldsByRegister(fields);
-    group.students = [leaderData[0]]; 
+    } 
     
     for(const _student of arrayStudentsRegister){
-        
         const student = new User();
         student.register = _student;
 
@@ -56,18 +51,41 @@ module.exports =  async (request , response)=>{
             }
             return response.status(404).send(arr);
         }
-
-        if((await group.existByStudent(student.register)) != null){
+        console.log(student.register)
+        if(await group.existByStudent(student.register) != null){
             const arr = {
                 status: "ERROR",
                 message: "Aluno " + student.register + " já adicionado a um grupo",
             }
             return response.status(400).send(arr);
         }
+        
+    }
 
+    const fields = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
+    const leaderData = await leader.singleFieldsByRegister(fields);
+    group.students = [leaderData[0]];
+    group.leaderId = leaderData[0].id;
+    group.status = "0";
+    
+    let novoGrupo;
+    try{
+        novoGrupo = await group.insert();
+    }catch{
+        const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao inserir o grupo"
+        };
+        return response.status(400).send(arr);
+    }
+    
+    for(const _student of arrayStudentsRegister){
+        const student = new User();
+        student.register = _student;
+
+        
         const arrayData = ["name" , "email"];
         const data = await student.singleFieldsByRegister(arrayData);
-        //arrayStudentsData.push(data[0]);
         
         const email = new Email();
         email.dest = data[0].email;
@@ -75,27 +93,17 @@ module.exports =  async (request , response)=>{
         email.message = `
         <p> ${data[0].name}, você foi convidado para participar do grupo de ${leaderData[0].name} 
         do Repositório de TCC's da Univap Centro!</p>
-        <p> Para aceitar o grupo, acesse o ${process.env.API_PATH + "/authorization/group/id/user/id"}!</p>`
+        <p> Para aceitar o grupo, acesse o ${process.env.API_PATH + "/authorization/group/" + novoGrupo.id + "/user/" + data[0].id}!</p>`
         email.title = "Você foi convidado para um grupo!";
         email.send();
     }
+
+    const arr = {
+        status: "SUCESS",
+        message: "Grupo inserido com sucesso!",
+        data: novoGrupo
+    };
+    return response.status(200).send(arr);
     
-    group.insert()
-        .then((resolve)=>{
-            const arr = {
-                status: "SUCESS",
-                message: "Grupo inserido com sucesso",
-                data: resolve
-            }
-            return response.status(200).send(arr);
-        })
-        .catch((reject)=>{
-            const arr = {
-                status: "ERROR",
-                message: "Ocorreu um erro ao inserir o grupo",
-                data: reject
-            }
-            return response.status(400).send(arr);
-        })
 }
 

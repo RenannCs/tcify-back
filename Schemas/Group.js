@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema({
     students: Array,
+    leaderId: ObjectId,
     status: String
 })
 

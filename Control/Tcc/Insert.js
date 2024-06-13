@@ -11,9 +11,8 @@
 const Tcc = require('../../Model/Tcc');
 const Group = require('../../Model/Group');
 const ModelJwtToken = require('../../Model/JwtToken');
-/*
 const fs = require('fs');
-*/
+
 const JwtToken = new ModelJwtToken();
 
 module.exports =  async (request, response) =>{
@@ -28,7 +27,7 @@ module.exports =  async (request, response) =>{
         };
         return response.status(401).send(arr);
     }
-    /*
+    
     const monography = request.files["monography"];
     let monographyPath = undefined;
     
@@ -50,47 +49,21 @@ module.exports =  async (request, response) =>{
         fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
         zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
-    
-    //const database = new ModelDatabase();
-    //await database.conect();
-    
-    let studentsArray = [];
-    const student1Id = request.body.student1;
-    const student2Id = request.body.student2;
-    const student3Id = request.body.student3;
 
-    if(student1Id != undefined){
-        const student1 = new User();
-        student1.register = student1Id;
-        const student1Data = await student1.singleFilterByRegister();
-        studentsArray.push(student1Data);
-    }
-    
-    if(student2Id != undefined){
-        const student2 = new User();
-        student2.register = student2Id
-        const student2Data = await student2.singleFilterByRegister();
-        studentsArray.push(student2Data);
-    }
-    
-    if(student3Id != undefined){
-        const student3 = new User();
-        student3.register = student3Id;
-        const student3Data = await student3.singleFilterByRegister();
-        studentsArray.push(student3Data);
-    }*/
     
     const title = request.body.title;
     const summary = request.body.summary;
     const supervisor = request.body.supervisor;
-    const date = request.body.date;
     const group_id = request.body.group_id;
     const course_id = request.body.course_id;
 
+
+    const date = new Date();
     
     const group = new Group();
     group.id = group_id;
 
+    
     if(await group.exists() == null){
         const arr = {
             status: "ERROR",
@@ -110,12 +83,16 @@ module.exports =  async (request, response) =>{
     tcc.title = title;
     tcc.summary = summary;
     tcc.supervisor = supervisor;
-    tcc.date = date;
+    tcc.date = date.toISOString();
     tcc.group = group_id;
     tcc.course_id = course_id;
     //tcc.image = "Default/tcc_image_default.png";
     tcc.status = 0;
     tcc.grade = 0;
+    tcc.monography = monographyPath;
+    tcc.document = documentPath;
+    tcc.zip = zipPath;
+
 
     tcc.insert()
     .then((resolve)=>{
