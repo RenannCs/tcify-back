@@ -46,7 +46,7 @@ module.exports = async (request, response) => {
             grade: tcc.grade ? tcc.grade : null,
             supervisor: tcc.supervisor.name,
             supervisor_id: tcc.supervisor._id,
-            date: tcc.date,
+            date: new Date(tcc.date).getFullYear(),
             status: tcc.status,
             group: tcc.group.students,
             course_id: tcc.course_id._id,
