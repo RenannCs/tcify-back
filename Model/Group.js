@@ -17,6 +17,16 @@ module.exports = class Group{
         this.status = status;
     }
 
+    all(){
+        const resp = ModelGroup.find().populate({
+            path: "leaderId",
+            model: "User",
+            select: "name"
+        });
+        return resp;
+    }
+
+
     delete(){
         const resp = ModelGroup.findByIdAndDelete(this.id);
         return resp;

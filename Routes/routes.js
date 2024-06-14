@@ -53,6 +53,7 @@ const deleteGroup = require('../Control/Group/delete');
 const insertStudentGroup = require('../Control/Group/insertStudent');
 const deleteStudentGroup = require('../Control/Group/deleteStudent');
 const acceptGroup = require('../Control/Group/accept');
+const allGroup = require('../Control/Group/all');
 //const sendemail = require('../Control/Email/testesend');
 
 module.exports = function (app) {
@@ -196,6 +197,8 @@ module.exports = function (app) {
   app.get("/repository/group/singleByStudent/:id", singleGroupByStudent);
 
   app.get('/repository/group/singleById/:id', singleGroupById);
+
+  app.get('/repository/groups' , allGroup);
 
   /* ************** DELETE ************** */
   app.delete('/repository/group/:id' , deleteGroup);
