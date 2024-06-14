@@ -1,8 +1,8 @@
 const { ObjectId } = require("mongodb");
 const ModelTcc = require("../Schemas/TCC");
-const ModelCourse = require('../Schemas/Course');
-const ModelGroup = require('../Schemas/Group');
-
+const Course = require('../Schemas/Course');
+const Group = require('../Schemas/Group');
+const User = require("../Schemas/User");
 module.exports = class TCC {
   constructor(
     id = undefined,
@@ -66,6 +66,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }
@@ -81,6 +86,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }
@@ -101,6 +111,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }
@@ -128,6 +143,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }
@@ -154,6 +174,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }
@@ -169,6 +194,11 @@ module.exports = class TCC {
       path: "group",
       model: "Group",
       select: "students"
+    })
+    .populate({
+      path: "supervisor",
+      model: "User",
+      select: "name"
     });
     return resp;
   }

@@ -4,12 +4,16 @@ const tccSchema = new mongoose.Schema({
     title: String, 
     summary: String,
     grade: Number,
-    supervisor: String,
+    
     date: Date,
     status: Number,
     document: String,
     monography: String,
     zip: String,
+    supervisor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users"
+    },
     group: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Group"

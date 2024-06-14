@@ -18,7 +18,8 @@ module.exports = async (request, response) => {
     const format = data.map((tcc)=>({
       _id: tcc._id,
       title: tcc.title,
-      supervisor: tcc.supervisor,
+      supervisor: tcc.supervisor.name,
+      supervisor_id: tcc.supervisor._id,
       group: tcc.group.students,
       course_id: tcc.course_id._id,
       course_name: tcc.course_id.name,         
