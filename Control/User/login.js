@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
           status: "ERROR",
           message: "Registro ou senha incorretos!",
         };
-        return response.status(200).send(arr);
+        return response.status(401).send(arr);
       }
 
       const JwtToken = new ModelJwtToken();
