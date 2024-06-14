@@ -10,31 +10,32 @@ module.exports = async (request, response) => {
     "group",
     "course_id",
     "course_name",
-    "date"
+    "date",
   ];
 
-  try{
+  try {
     const data = await tcc.allFields(fields);
-    const format = data.map((tcc)=>({
+    const format = data.map((tcc) => ({
+      _id: tcc._id,
       _id: tcc._id,
       title: tcc.title,
       supervisor: tcc.supervisor.name,
       supervisor_id: tcc.supervisor._id,
       group: tcc.group.students,
       course_id: tcc.course_id._id,
-      course_name: tcc.course_id.name,         
-      date: tcc.date,
-    }))
+      course_name: tcc.course_id.name,
+      date: new Date(tcc.date).getFullYear(), 
+    }));
     const arr = {
       status: "SUCESS",
       message: "TCC's recuperados com sucesso!",
-      data: format
+      data: format,
     };
     return response.status(200).send(arr);
-  }catch {
-    const arr ={ 
+  } catch {
+    const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao buscar os TCC's"
+      message: "Ocorreu um erro ao buscar os TCC's",
     };
     return response.status(400).send(arr);
   }

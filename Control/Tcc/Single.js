@@ -14,7 +14,7 @@ module.exports = async (request, response) => {
           grade: data.grade ? data.grade : null,
           supervisor: data.supervisor.name,
           supervisor_id: data.supervisor._id,
-          date: data.date,
+          date: new Date(data.date).getFullYear(), 
           status: data.status,
           group: data.group.students,
           course_id: data.course_id._id,
