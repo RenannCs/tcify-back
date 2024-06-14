@@ -100,6 +100,16 @@ module.exports = class User {
     return resp;
   }
 
+  allFieldsFilter(fields, filter){
+    const resp = ModelUser.find(filter).select(fields)
+    .populate({
+      path: "course_id",
+      model: "Course",
+      select: "name"
+    });
+    return resp;
+  }
+
   singleByRegister() {
     const resp =  ModelUser.findOne().where("register").equals(this.register).populate({
       path: "course_id",

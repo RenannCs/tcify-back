@@ -28,6 +28,7 @@ const loginUser = require("../Control/User/login");
 const updatePasswordUser = require("../Control/User/updatePassword");
 const updateImageUser = require("../Control/User/updateImage");
 const studentCsv = require('../Control/User/csvStudent');
+const allTeachers = require('../Control/User/allTeachers')
 
 /**
  * 
@@ -51,7 +52,7 @@ const singleGroupById = require('../Control/Group/Single');
 const deleteGroup = require('../Control/Group/delete');
 const insertStudentGroup = require('../Control/Group/insertStudent');
 const deleteStudentGroup = require('../Control/Group/deleteStudent');
-
+const acceptGroup = require('../Control/Group/accept');
 //const sendemail = require('../Control/Email/testesend');
 
 module.exports = function (app) {
@@ -126,6 +127,8 @@ module.exports = function (app) {
   app.get("/repository/users/table", allTableUsers);
 
   app.get("/repository/user/:id", singleUser);
+
+  app.get("/repository/users/teachers" , allTeachers);
 
   /* ************** POSTS ************** */
   app.post("/repository/user", uploadLocal.any(), insertUser);
@@ -202,5 +205,7 @@ module.exports = function (app) {
 
   app.patch('/repository/group/deleteStudent' , deleteStudentGroup);
 
+
+  app.patch('/repository/group/accept' , acceptGroup);
   //app.get('/teste' , sendemail)
 }

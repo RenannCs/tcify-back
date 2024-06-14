@@ -51,7 +51,6 @@ module.exports =  async (request , response)=>{
             }
             return response.status(404).send(arr);
         }
-        console.log(student.register)
         if(await group.existByStudent(student.register) != null){
             const arr = {
                 status: "ERROR",
