@@ -56,14 +56,15 @@ module.exports = async (request, response) => {
 
   const course = new Course();
   course.id = course_id;
-  const course_name = await course.single();
-  if (course_name == null) {
+  const _course = await course.single();
+  if (_course == null) {
     const arr = {
       status: "ERROR",
       message: "Curso não existe!",
     };
     return response.status(404).send(arr);
   }
+  user.course_name = _course.name
   let user_typeStr = "";
   if (user_type == "0") {
     user_typeStr = "Aluno";
@@ -81,7 +82,7 @@ module.exports = async (request, response) => {
   <br>Seus dados:<br>
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
-  Curso: ${course_name.name}<br>
+  Curso: ${_course.name}<br>
   Tipo de usuário: ${user_typeStr}<br>
   Email: ${user.email}<br>
   Senha: ${password}<br>

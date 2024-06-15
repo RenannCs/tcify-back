@@ -83,64 +83,35 @@ module.exports = class User {
   }
 
   all() {
-    const resp = ModelUser.find().populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.find();
     return resp;
   }
     
   allFields(fields) {
-    const resp = ModelUser.find().select(fields).populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.find().select(fields);
     return resp;
   }
 
   allFieldsFilter(fields, filter){
-    const resp = ModelUser.find(filter).select(fields)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.find(filter).select(fields);
     return resp;
   }
 
   singleByRegister() {
-    const resp =  ModelUser.findOne().where("register").equals(this.register).populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp =  ModelUser.findOne().where("register").equals(this.register);
     return resp;
   } 
 
   singleFields(fields){
-    const resp = ModelUser.findById(this.id).select(fields).populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.findById(this.id).select(fields);
     return resp;
   }
   singleFieldsByRegister(fields){
-    const resp = ModelUser.where("register").equals(this.register).select(fields).populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.where("register").equals(this.register).select(fields);
     return resp;
   }
   single() {
-    const resp = ModelUser.findById(this.id).populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    });
+    const resp = ModelUser.findById(this.id);
     return resp;
   }
 

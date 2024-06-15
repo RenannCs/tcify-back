@@ -2,10 +2,8 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     name: String,
-    course_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Courses"
-    },
+    course_id: mongoose.Types.ObjectId,
+    course_name: String,
     register: String,
     email: String,
     password: String,

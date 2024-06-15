@@ -41,6 +41,9 @@ module.exports = async (request, response) => {
             const user = new User();
             user.name = student["name"];
             user.course_id = student["course_id"];
+
+          
+
             user.email = student["email"];
             user.register = student["register"];
             user.user_type = "0";
@@ -60,12 +63,13 @@ module.exports = async (request, response) => {
             }
             const course = new Course();
             course.id = user.course_id;
-            const course_name = await course.single();
+            const _course = await course.single();
 
-            if (course_name == null) {
+
+            if (_course == null) {
               throw new Error();
             }
-
+            user.course_name = _course.name;
             const email = new Email();
             email.dest = user.email;
             email.subject =
@@ -75,7 +79,7 @@ module.exports = async (request, response) => {
             <br>Seus dados:<br>
             Nome: ${user.name}<br>
             Registro: ${user.register}<br>
-            Curso: ${course_name.name}<br>
+            Curso: ${_course.name}<br>
             Tipo de usuário: Aluno<br>
             Email: ${user.email}<br>
             Senha: ${password}<br>
