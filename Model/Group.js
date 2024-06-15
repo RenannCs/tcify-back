@@ -9,20 +9,18 @@ module.exports = class Group{
          */
         students = undefined,
         leaderId = undefined,
-        status = undefined
+        status = undefined,
+        leaderName = undefined
     ){
         this.students = students;
         this.id = id;
         this.leaderId = leaderId;
+        this.leaderName = leaderName
         this.status = status;
     }
 
     all(){
-        const resp = ModelGroup.find().populate({
-            path: "leaderId",
-            model: "User",
-            select: "name"
-        });
+        const resp = ModelGroup.find();
         return resp;
     }
 
@@ -36,6 +34,7 @@ module.exports = class Group{
         const group = new ModelGroup();
         group.students = this.students;
         group.leaderId = this.leaderId;
+        group.leaderName = this.leaderName;
         group.status = this.status;
         return group.save();
     }
@@ -123,5 +122,11 @@ module.exports = class Group{
     }
     set status(v){
         this._status = v;
+    }
+    get leaderName(){
+        return this._leaderName;
+    }
+    set leaderName(v){
+        this._leaderName = v;
     }
 }

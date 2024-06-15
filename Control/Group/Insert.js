@@ -65,6 +65,7 @@ module.exports =  async (request , response)=>{
     const leaderData = await leader.singleFieldsByRegister(fields);
     group.students = [leaderData[0]];
     group.leaderId = leaderData[0].id;
+    group.leaderName = leaderData[0].name;
     group.status = "0";
     
     let novoGrupo;

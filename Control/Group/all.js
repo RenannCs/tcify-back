@@ -9,8 +9,8 @@ module.exports = async (request , response) => {
         const format = data.map((group)=>({
             _id: group.id,
             students: group.students,
-            leader: group.leaderId.name,
-            leaderId: group.leaderId._id,
+            leader: group.leaderName,
+            leaderId: group.leaderId,
             status: group.status
         }));
 

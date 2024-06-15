@@ -3,10 +3,8 @@ const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema({
     students: Array,
-    leaderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
-    },
+    leaderId: mongoose.Types.ObjectId,
+    leaderName: String,
     status: String
 })
 
