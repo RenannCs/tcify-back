@@ -19,13 +19,13 @@ module.exports = async (request, response) => {
           group: data.group.students,
           course_id: data.course_id._id,
           course_name: data.course_id.course_name,
-          document: data.document ? data.document : null,
-          monography: data.monography ? data.monography : null,
-          zip: data.zip ? data.zip : null,
+          document: data.document ? process.env.API_PATH + data.document : null,
+          monography: data.monography ? process.env.API_PATH + data.monography : null,
+          zip: data.zip ? process.env.API_PATH + data.zip : null,
           image: data.image ? data.image : "Default/tcc_image_default.png"
         };
         const arr = {
-          status: "SUCESS",
+          status: "SUCCESS",
           message: "TCC's recuperados com sucesso!",
           data: format
         };
