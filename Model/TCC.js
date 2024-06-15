@@ -249,7 +249,15 @@ module.exports = class TCC {
     if (this.course_name != undefined) {
       tcc.course_name = this.course_name;
     }
-
+    if(this.monography != undefined){
+      tcc.monography = this.monography;
+    }
+    if(this.document != undefined){
+      tcc.document = this.document;
+    }
+    if(this.zip != undefined){
+      tcc.zip = this.zip;
+    }
     return tcc.save();
   }
 

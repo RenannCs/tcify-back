@@ -12,7 +12,9 @@ const insertTCC = require("../Control/Tcc/insert");
 const updateTCC = require("../Control/Tcc/update");
 const deleteTCC = require("../Control/Tcc/Delete");
 const updateImageTcc = require("../Control/Tcc/updateImage");
-
+const updateMonography = require("../Control/Tcc/updateMonography");
+const updateDocument = require("../Control/Tcc/updateDocument");
+const updateZip = require("../Control/Tcc/updateZip");
 /**
  * 
  * IMPORTS PARA USUARIOS
@@ -101,9 +103,24 @@ module.exports = function (app) {
     uploadLocal.fields([{ name: "image", maxCount: 1 }]),
     updateImageTcc
   );
-
+  
   /* ************** PATCH ************** */
   app.patch("/repository/tcc/:id", uploadLocal.any(), updateTCC);
+
+  app.patch("/repository/tcc/monography/:id",
+    uploadLocal.fields([{name: "monography" , maxCount: 1}]),
+    updateMonography
+  )
+
+  app.patch("/repository/tcc/document/:id",
+    uploadLocal.fields([{name: "document" , maxCount: 1}]),
+    updateDocument
+  )
+
+  app.patch("/repository/tcc/zip/:id",
+    uploadLocal.fields([{name: "zip" , maxCount: 1}]),
+    updateZip
+  )
   
   /* ************** DELETE ************** */
   app.delete("/repository/tcc/:id", deleteTCC);
