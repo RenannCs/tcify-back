@@ -14,10 +14,12 @@ module.exports = async (request, response) => {
     "summary",
     "grade",
     "supervisor",
+    "supervisor_id",
     "date",
     "status",
     "group",
-    "course_id"
+    "course_id",
+    "course_name"
   ];
 
   try{
@@ -27,13 +29,13 @@ module.exports = async (request, response) => {
       title: tcc.title,
       summary: tcc.summary ? tcc.summary : null,
       grade: tcc.grade ? tcc.grade : null,
-      supervisor: tcc.supervisor.name,
-      supervisor_id: tcc.supervisor._id,
-      date: tcc.date,
+      supervisor: tcc.supervisor,
+      supervisor_id: tcc.supervisor_id,
+      date: new Date(tcc.date).getFullYear().toString(),
       status: tcc.status,
-      group: tcc.group.students,
-      course_id: tcc.course_id._id,
-      course_name: tcc.course_id.name
+      group: tcc.group,
+      course_id: tcc.course_id,
+      course_name: tcc.course_name
     }))
     const arr = {
       status: "SUCESS",

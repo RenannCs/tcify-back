@@ -16,6 +16,7 @@ const updateImageTcc = require("../Control/Tcc/updateImage");
 const updateMonography = require("../Control/Tcc/updateMonography");
 const updateDocument = require("../Control/Tcc/updateDocument");
 const updateZip = require("../Control/Tcc/updateZip");
+const singleTccByStudent = require("../Control/Tcc/singleByStudent");
 /**
  * 
  * IMPORTS PARA USUARIOS
@@ -94,6 +95,8 @@ module.exports = function (app) {
   app.get("/repository/tccs/year/:year", readTCCsByYear);
   
   app.get("/repository/tcc/:id", singleTCC);
+
+  app.get("/repository/tcc/student/:id" , singleTccByStudent);
 
   /* ************** POST ************** */
   app.post('/repository/tcc', uploadLocal.fields([

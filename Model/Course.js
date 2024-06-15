@@ -26,7 +26,8 @@ module.exports = class Course {
     }
         
     single(){
-        const resp = ModelCourse.findById(this.id);
+        const resp = ModelCourse.findById(new ObjectId(this.id));
+        
         return resp;
     }
     all(){

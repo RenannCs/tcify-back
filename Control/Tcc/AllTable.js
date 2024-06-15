@@ -6,24 +6,27 @@ module.exports = async (request, response) => {
   const fields = [
     "_id",
     "title",
+    "summary",
+    "grade",
     "supervisor",
+    "supervisor_id",
+    "date",
+    "status",
     "group",
     "course_id",
-    "course_name",
-    "date",
+    "course_name"
   ];
 
   try {
     const data = await tcc.allFields(fields);
     const format = data.map((tcc) => ({
       _id: tcc._id,
-      _id: tcc._id,
       title: tcc.title,
-      supervisor: tcc.supervisor.name,
-      supervisor_id: tcc.supervisor._id,
-      group: tcc.group.students,
-      course_id: tcc.course_id._id,
-      course_name: tcc.course_id.name,
+      supervisor: tcc.supervisor,
+      supervisor_id: tcc.supervisor_id,
+      group: tcc.group,
+      course_id: tcc.course_id,
+      course_name: tcc.course_name,
       date: new Date(tcc.date).getFullYear(), 
     }));
     const arr = {

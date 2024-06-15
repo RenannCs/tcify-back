@@ -10,18 +10,11 @@ const tccSchema = new mongoose.Schema({
     document: String,
     monography: String,
     zip: String,
-    supervisor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
-    },
-    group: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Group"
-    },
-    course_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Courses"
-    },
+    supervisor: String,
+    supervisor_id: mongoose.Types.ObjectId,
+    group_id: mongoose.Types.ObjectId,
+    course_id: mongoose.Types.ObjectId,
+    course_name: String,
     image: String
 })
 

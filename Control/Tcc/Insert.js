@@ -10,6 +10,8 @@
 
 const Tcc = require('../../Model/Tcc');
 const Group = require('../../Model/Group');
+const Course = require("../../Model/Course");
+const User = require("../../Model/User");
 const ModelJwtToken = require('../../Model/JwtToken');
 const fs = require('fs');
 
@@ -80,12 +82,22 @@ module.exports =  async (request, response) =>{
         return response.status(400).send(arr);
     }
 
+    const course = new Course();
+    course.id = course_id;
+    const dataCourse = await course.single();
+
+    const user = new User();
+    user.id = supervisor;
+    const dataSupervisor = await user.single();
+    
     tcc.title = title;
     tcc.summary = summary;
-    tcc.supervisor = supervisor;
+    tcc.supervisor = dataSupervisor.name;
+    tcc.supervisor_id = supervisor;
     tcc.date = date.toISOString();
     tcc.group = group_id;
     tcc.course_id = course_id;
+    tcc.course_name = dataCourse.name;
     //tcc.image = "Default/tcc_image_default.png";
     tcc.status = 0;
     tcc.grade = 0;

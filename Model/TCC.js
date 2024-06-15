@@ -10,6 +10,7 @@ module.exports = class TCC {
     summary = undefined,
     grade = undefined,
     supervisor = undefined,
+    supervisor_id = undefined,
     date = undefined,
     status = undefined,
     monography = undefined,
@@ -34,6 +35,7 @@ module.exports = class TCC {
     this.course_id = course_id;
     this.course_name = course_name;
     this.image = image;
+    this.supervisor_id = supervisor_id;
   }
 
   insert() {
@@ -47,51 +49,27 @@ module.exports = class TCC {
     tcc.monography = this.monography;
     tcc.document = this.document;
     tcc.zip = this.zip;
-    tcc.group = this.group;
+    tcc.group_id = this.group;
     tcc.course_id = this.course_id;
     tcc.course_name = this.course_name;
     tcc.image = this.image;
+    tcc.supervisor_id = this.supervisor_id
 
     return tcc.save();
   }
   
+  singleFilter(filter){
+    const resp = ModelTcc.find(filter);
+    return resp;
+  }
+
   allFieldsFilter(fields , filter){
-    const resp = ModelTcc.find(filter).select(fields)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.find(filter).select(fields);
     return resp;
   }
 
   allFields(fields){
-    const resp = ModelTcc.find().select(fields)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.find().select(fields);
     return resp;
   }
   
@@ -101,22 +79,7 @@ module.exports = class TCC {
   }
 
   all() {
-    const resp = ModelTcc.find()
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.find();
     return resp;
   }
 
@@ -133,22 +96,7 @@ module.exports = class TCC {
       "course_id",
       "course_name",
     ];
-    const resp = ModelTcc.where("date").equals(this.date).select(fields)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.where("date").equals(this.date).select(fields);
     return resp;
   }
 
@@ -164,42 +112,12 @@ module.exports = class TCC {
       "group",
       "course_id"
     ];
-    const resp = ModelTcc.where("course_id").equals(this.course_id).select(fields)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.where("course_id").equals(this.course_id).select(fields);
     return resp;
   }
 
   single() {
-    const resp = ModelTcc.findById(this.id)
-    .populate({
-      path: "course_id",
-      model: "Course",
-      select: "name"
-    })
-    .populate({
-      path: "group",
-      model: "Group",
-      select: "students"
-    })
-    .populate({
-      path: "supervisor",
-      model: "User",
-      select: "name"
-    });
+    const resp = ModelTcc.findById(this.id);
     return resp;
   }
   delete() {
@@ -350,5 +268,11 @@ module.exports = class TCC {
   }
   set image(value) {
     this._image = value;
+  }
+  get supervisor_id(){
+    return this._supervisor_id;
+  }
+  set supervisor_id(v){
+    this._supervisor_id = v;
   }
 };
