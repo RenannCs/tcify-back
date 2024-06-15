@@ -9,6 +9,7 @@ module.exports = async (request , response) =>{
 
     const student = new User();
     student.id = userId;
+    
     if (await student.exists() == null){
         const arr = {
             status: "ERROR",

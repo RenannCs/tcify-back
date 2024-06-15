@@ -93,7 +93,7 @@ module.exports =  async (request , response)=>{
         email.message = `
         <p> ${data[0].name}, você foi convidado para participar do grupo de ${leaderData[0].name} 
         do Repositório de TCC's da Univap Centro!</p>
-        <p> Para aceitar o grupo, acesse o ${process.env.API_PATH + "/authorization/group/" + novoGrupo.id + "/user/" + data[0].id}!</p>`
+        <p> Para aceitar o grupo, acesse o ${process.env.FRONT_PATH + "authorization/group/" + novoGrupo.id + "/user/" + data[0].id}!</p>`
         email.title = "Você foi convidado para um grupo!";
         email.send();
     }

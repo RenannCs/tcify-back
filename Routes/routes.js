@@ -5,6 +5,7 @@
  */
 const readAllTCCs = require("../Control/Tcc/all");
 const allTableTCCs = require("../Control/TCC/allTable");
+const allTableAdminTCCs = require("../Control/TCC/allTableAdmin");
 const readTCCsByCourse = require("../Control/Tcc/allByCourse");
 const readTCCsByYear = require("../Control/Tcc/allByYear");
 const singleTCC = require("../Control/Tcc/single");
@@ -84,6 +85,9 @@ module.exports = function (app) {
   app.get("/repository/tccs", readAllTCCs);
 
   app.get("/repository/tccs/table", allTableTCCs);
+
+  app.get("/repository/tccs/tableAdmin", allTableAdminTCCs);
+
 
   app.get("/repository/tccs/course/:id", readTCCsByCourse);
   
