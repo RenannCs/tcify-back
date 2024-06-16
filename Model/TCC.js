@@ -179,6 +179,9 @@ module.exports = class TCC {
     if(this.zip != undefined){
       tcc.zip = this.zip;
     }
+    if(this.students !=undefined){
+      tcc.students = this.students;
+    }
     return tcc.save();
   }
 

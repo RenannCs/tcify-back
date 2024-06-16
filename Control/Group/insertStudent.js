@@ -3,9 +3,11 @@
  */
 const Group = require("../../Model/Group");
 const User = require("../../Model/User");
+const Tcc = require('../../Model/TCC');
 const Email = require("../../Model/Email");
 const ModelJwtToken = require('../../Model/JwtToken');
 const JwtToken = new ModelJwtToken();
+const {ObjectId} = require("mongodb");
 
 module.exports = async (request , response)=>{
     const authorizationHeader = request.headers.authorization;
@@ -66,6 +68,15 @@ module.exports = async (request , response)=>{
     const grupoData = await group.single();
     const arrAlunos = grupoData.students;
     arrAlunos.push(alunoData[0]);
+
+    const tcc = new Tcc();
+        const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(id)});
+        if(dataTcc != null){
+            const idTcc = dataTcc[0].id;
+            tcc.id = idTcc;
+            tcc.students = arrAlunos;
+            tcc.update();
+        }
 
     group.students = arrAlunos;
     

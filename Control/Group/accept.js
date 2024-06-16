@@ -1,5 +1,7 @@
 const User = require('../../Model/User');
 const Group = require('../../Model/Group');
+const Tcc = require("../../Model/TCC");
+const { ObjectId } = require('mongodb');
 
 
 module.exports = async (request , response) =>{
@@ -46,6 +48,15 @@ module.exports = async (request , response) =>{
         arrAlunos.push(studentData);
 
         group.students = arrAlunos;
+
+        const tcc = new Tcc();
+        const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(groupId)});
+        if(dataTcc != null){
+            const idTcc = dataTcc[0].id;
+            tcc.id = idTcc;
+            tcc.students = arrAlunos;
+            tcc.update();
+        }
         group.update()
             .then((resolve)=>{
                 const arr = {
