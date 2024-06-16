@@ -12,7 +12,7 @@ module.exports = async (request, response) => {
     "supervisor_id",
     "date",
     "status",
-    "group",
+    "students",
     "course_id",
     "course_name"
   ];
@@ -24,7 +24,7 @@ module.exports = async (request, response) => {
       title: tcc.title,
       supervisor: tcc.supervisor,
       supervisor_id: tcc.supervisor_id,
-      group: tcc.group,
+      students: tcc.students,
       course_id: tcc.course_id,
       course_name: tcc.course_name,
       date: new Date(tcc.date).getFullYear(), 

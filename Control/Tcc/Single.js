@@ -16,7 +16,7 @@ module.exports = async (request, response) => {
           supervisor_id: data.supervisor_id,
           date: new Date(data.date).getFullYear(), 
           status: data.status,
-          group: data.group,
+          students: data.students,
           course_id: data.course_id,
           course_name: data.course_name,
           document: data.document ? process.env.API_PATH + data.document : null,
