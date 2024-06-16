@@ -13,6 +13,7 @@ const tccSchema = new mongoose.Schema({
     supervisor: String,
     supervisor_id: mongoose.Types.ObjectId,
     group_id: mongoose.Types.ObjectId,
+    students: [],
     course_id: mongoose.Types.ObjectId,
     course_name: String,
     image: String

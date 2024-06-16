@@ -19,7 +19,8 @@ module.exports = class TCC {
     group = undefined,
     course_id = undefined,
     course_name = undefined,
-    image = undefined
+    image = undefined,
+    students = undefined
   ) {
     this.id = id;
     this.title = title;
@@ -36,6 +37,7 @@ module.exports = class TCC {
     this.course_name = course_name;
     this.image = image;
     this.supervisor_id = supervisor_id;
+    this.students = students;
   }
 
   insert() {
@@ -53,7 +55,8 @@ module.exports = class TCC {
     tcc.course_id = this.course_id;
     tcc.course_name = this.course_name;
     tcc.image = this.image;
-    tcc.supervisor_id = this.supervisor_id
+    tcc.supervisor_id = this.supervisor_id;
+    tcc.students = this.students;
 
     return tcc.save();
   }
@@ -274,5 +277,11 @@ module.exports = class TCC {
   }
   set supervisor_id(v){
     this._supervisor_id = v;
+  }
+  get students(){
+    return this._students;
+  }
+  set students(v){
+    this._students = v;
   }
 };

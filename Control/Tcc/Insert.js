@@ -90,12 +90,15 @@ module.exports =  async (request, response) =>{
     user.id = supervisor;
     const dataSupervisor = await user.single();
     
+    const groupData = await group.single();
+
     tcc.title = title;
     tcc.summary = summary;
     tcc.supervisor = dataSupervisor.name;
     tcc.supervisor_id = supervisor;
     tcc.date = date.toISOString();
     tcc.group = group_id;
+    tcc.students = groupData.students;
     tcc.course_id = course_id;
     tcc.course_name = dataCourse.name;
     //tcc.image = "Default/tcc_image_default.png";
