@@ -18,6 +18,6 @@ module.exports = async (request, response) => {
                 message: "Ocorreu um erro ao buscar os cursos",
                 data: reject
             };
-            return response.staus(400).send(arr);
+            return response.status(400).send(arr);
         })
 };

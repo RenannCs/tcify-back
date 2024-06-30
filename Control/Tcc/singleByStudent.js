@@ -20,7 +20,7 @@ module.exports = async (request , response) =>{
 
     const tcc = new Tcc();
     const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(idGroup)});
-    if(dataTcc == null){
+    if(dataTcc.length == 0){
         const arr = {
             status: "ERROR",
             message: "Grupo não possui TCC!"
@@ -31,7 +31,7 @@ module.exports = async (request , response) =>{
     const arr ={
         status: "SUCESS",
         message: "TCC recuperado com sucesso!",
-        data: dataTcc
+        data: dataTcc[0]
     };
     return response.status(200).send(arr);
 }

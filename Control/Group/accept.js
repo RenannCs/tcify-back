@@ -51,7 +51,7 @@ module.exports = async (request , response) =>{
 
         const tcc = new Tcc();
         const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(groupId)});
-        if(dataTcc != null){
+        if(dataTcc.length != 0){
             const idTcc = dataTcc[0].id;
             tcc.id = idTcc;
             tcc.students = arrAlunos;

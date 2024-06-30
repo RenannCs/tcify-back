@@ -66,6 +66,7 @@ module.exports =  async (request, response) =>{
     group.id = group_id;
 
     
+    
     if(await group.exists() == null){
         const arr = {
             status: "ERROR",

@@ -32,7 +32,7 @@ module.exports = async  (request, response) => {
             const arr = {
                 data: resolve,
                 status: 'SUCCESS',
-                message: 'TCC successfully deleted.'
+                message: 'Projeto deletado com sucesso!'
             }
             response.status(200).send(arr);
         })
