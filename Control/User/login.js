@@ -1,21 +1,16 @@
-const ModelUser = require("../../Model/User");
-const ModelDatabase = require("../../Model/Database");
+const User = require("../../Schemas/User");
 const ModelJwtToken = require("../../Model/JwtToken");
 
 module.exports = async (request, response) => {
-  const register = request.body.register;
+  const userIn = request.body.register;
   const password = request.body.password;
 
   /*
     const database = new ModelDatabase();
     await database.conect(); 
     */
-  const user = new ModelUser();
-  user.register = register;
-  user.password = password;
 
-
-  user.login()
+  User.login(userIn, password)
     .then((resolve) => {
       if (resolve == null) {
         const arr = {
@@ -46,9 +41,8 @@ module.exports = async (request, response) => {
       const arr = {
         status: "ERROR",
         data: reject,
-        message:
-          "Erro ao fazer login!",
+        message: "Erro ao fazer login!",
       };
       response.status(400).send(arr);
     });
-}
+};

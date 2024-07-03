@@ -198,7 +198,7 @@ module.exports = function (app) {
   app.post("/repository/course", insertCourse);
 
   /* ************** PATCH ************** */
-  app.patch("/repository/course/:id", updateCourse);
+  app.patch("/repository/course", updateCourse);
 
   /* ************** DELETE ************** */
   app.delete("/repository/course/:id", deleteCourse);

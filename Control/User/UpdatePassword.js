@@ -1,9 +1,8 @@
+const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
-const ModelUser = require("../../Model/User");
-const md5 = require("md5");
-
+const User = require("../../Schemas/User");
 const JwtToken = new ModelJwtToken();
-
+const md5 = require("md5");
 module.exports = async (request, response) => {
   const authorizationHeader = request.headers.authorization;
   const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
@@ -19,22 +18,20 @@ module.exports = async (request, response) => {
   }
 
   const id = request.body.id;
-  const password = md5(request.body.password);
-  const newPasswordMd5 = md5(request.body.newPassword);
+  const password = request.body.password;
   const newPassword = request.body.newPassword;
 
-  
-  const fields = ["password"];
+  if ((await User.exists({ _id: new ObjectId(id) })) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Usuário não existe!",
+    };
+    return response.status(404).send(arr);
+  }
 
-  const user = new ModelUser();
-  user.password = newPassword;
-  user.id = id
+  const user = await User.findById(id);
 
-  const userData = await user.singleFields(fields);
-
-  
-  
-  if (userData.password != password) {
+  if (user.password != md5(password)) {
     const arr = {
       status: "ERROR",
       message: "Senha incorreta!",
@@ -42,7 +39,7 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  if (userData.password == newPasswordMd5) {
+  if (user.password == md5(newPassword)) {
     const arr = {
       status: "ERROR",
       message: "Senha já cadastrada!",
@@ -50,6 +47,25 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
+  user.password = newPassword;
+
+  user
+    .save()
+    .then(() => {
+      const arr = {
+        status: "SUCCESS",
+        message: "Senha atualizada com sucesso!",
+      };
+      return response.status(200).send(arr);
+    })
+    .catch(() => {
+      const arr = {
+        status: "ERROR",
+        message: "Erro ao atualizar o senha!",
+      };
+      return response.status(500).send(arr);
+    });
+  /*
   try {
     await user.update();
     const arr = {
@@ -63,5 +79,5 @@ module.exports = async (request, response) => {
       message: "Erro ao atualizar o senha!",
     };
     return response.status(500).send(arr);
-  }
+  }*/
 };

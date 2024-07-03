@@ -1,5 +1,6 @@
+const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
-const User = require("../../Model/User");
+const User = require("../../Schemas/User");
 
 const JwtToken = new ModelJwtToken();
 
@@ -17,34 +18,32 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-
   const id = request.params.id;
-  const user = new User();
-  user.id = id;
 
-  if(await user.exists() == null){
+  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
     const arr = {
       status: "ERROR",
-      message: "Usuário não existe!"
+      message: "Usuário não existe!",
     };
-    return response.status(404).send(arr)
+    return response.status(404).send(arr);
   }
 
-  user.delete()
-    .then((resolve)=>{
+  User.findByIdAndDelete(id)
+    .exec() 
+    .then((resolve) => {
       const arr = {
         status: "SUCESS",
         message: "Usário excluído com sucesso",
-        data: resolve
+        data: resolve,
       };
       return response.status(200).send(arr);
     })
-    .catch((reject)=>{
+    .catch((reject) => {
       const arr = {
         status: "ERROR",
         message: "Ocorreu um erro ao tentar excluir o usuário!",
-        data: reject
+        data: reject,
       };
       return response.status(400).send(arr);
-    })
+    });
 };

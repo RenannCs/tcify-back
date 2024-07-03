@@ -4,9 +4,10 @@
  * Coloca nome, curso, email, senha, tipo usuario e registro
  */
 const ModelJwtToken = require("../../Model/JwtToken");
-const User = require("../../Model/User");
+const User = require("../../Schemas/User");
 const Email = require("../../Model/Email");
-const Course = require("../../Model/Course");
+const Course = require("../../Schemas/Course");
+const { ObjectId } = require("mongodb");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -46,25 +47,22 @@ module.exports = async (request, response) => {
   user.user_type = user_type;
   user.register = register;
 
-  if ((await user.exists()) != null) {
+  if(await User.exists({register: register}) != null){
     const arr = {
       status: "ERROR",
-      message: "Registro ou email já em uso!",
+      message: "Registro já em uso!"
     };
     return response.status(409).send(arr);
   }
 
-  const course = new Course();
-  course.id = course_id;
-  const _course = await course.single();
-  if (_course == null) {
+  if(await Course.exists({"_id": new ObjectId(course_id)}).exec() == null){
     const arr = {
       status: "ERROR",
-      message: "Curso não existe!",
+      message: "Curso não existe!"
     };
     return response.status(404).send(arr);
   }
-  user.course_name = _course.name
+  const course = await Course.findById(course_id).exec()
   let user_typeStr = "";
   if (user_type == "0") {
     user_typeStr = "Aluno";
@@ -82,7 +80,7 @@ module.exports = async (request, response) => {
   <br>Seus dados:<br>
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
-  Curso: ${_course.name}<br>
+  Curso: ${course.name}<br>
   Tipo de usuário: ${user_typeStr}<br>
   Email: ${user.email}<br>
   Senha: ${password}<br>
@@ -97,7 +95,7 @@ module.exports = async (request, response) => {
     return response.status(400).send(arr);
   }
   user
-    .insert()
+    .save()
     .then((result) => {
       const arr = {
         data: result,

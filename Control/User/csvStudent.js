@@ -1,10 +1,11 @@
-const User = require("../../Model/User");
-const Course = require("../../Model/Course");
+const User = require("../../Schemas/User");
+const Course = require("../../Schemas/Course");
 const Email = require("../../Model/Email");
 const ModelJwtToken = require("../../Model/JwtToken");
 const JwtToken = new ModelJwtToken();
 const Papa = require("papaparse");
 const fs = require("fs");
+const { ObjectId } = require("mongodb");
 
 module.exports = async (request, response) => {
   const authorizationHeader = request.headers.authorization;
@@ -42,8 +43,6 @@ module.exports = async (request, response) => {
             user.name = student["name"];
             user.course_id = student["course_id"];
 
-          
-
             user.email = student["email"];
             user.register = student["register"];
             user.user_type = "0";
@@ -58,18 +57,20 @@ module.exports = async (request, response) => {
             }
             user.password = password;
 
-            if ((await user.exists()) != null) {
+            if (
+              (await User.exists({ register: student["register"] })) != null
+            ) {
               throw new Error();
             }
-            const course = new Course();
-            course.id = user.course_id;
-            const _course = await course.single();
-
-
-            if (_course == null) {
+            if (
+              (await Course.exists({
+                _id: new ObjectId(student["course_id"]),
+              })) == null
+            ) {
               throw new Error();
             }
-            user.course_name = _course.name;
+            const course = await Course.findById(student["course_id"]);
+
             const email = new Email();
             email.dest = user.email;
             email.subject =
@@ -79,13 +80,13 @@ module.exports = async (request, response) => {
             <br>Seus dados:<br>
             Nome: ${user.name}<br>
             Registro: ${user.register}<br>
-            Curso: ${_course.name}<br>
+            Curso: ${course.name}<br>
             Tipo de usuário: Aluno<br>
             Email: ${user.email}<br>
             Senha: ${password}<br>
             `;
             email.send();
-            await user.insert();
+            await user.save();
             sucessos.push(student["name"]);
           } catch (error) {
             erros.push(student["name"]);

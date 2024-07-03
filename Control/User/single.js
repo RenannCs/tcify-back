@@ -1,24 +1,10 @@
-const ModelUser = require("../../Model/User");
+const { ObjectId } = require("mongodb");
+const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
   const id = request.params.id;
-  const user = new ModelUser(id);
 
-  const fields = [
-    "_id",
-    "name",
-    "register",
-    "email",
-    "course_name",
-    "course_id",
-    "github",
-    "linkedin",
-    "phone_number",
-    "user_type",
-    "image"
-  ];
-
-  if(await user.exists() == null){
+  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
     const arr = {
       status: "ERROR",
       message: "Usuário não encontrado",
@@ -26,32 +12,34 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
 
-  try{
-    const data = await user.singleFields(fields);
+  try {
+    const data = await User.single(id);
     const format = {
-      _id: data._id,
+      _id: data.id,
       name: data.name,
       register: data.register,
       email: data.email,
-      course_id: data.course_id,
-      course_name: data.course_name,
+      course_id: data.course_id ? data.course_id._id : null,
+      course_name: data.course_id ? data.course_id.name : null,
       github: data.github ? data.github : null,
       linkedin: data.linkedin ? data.linkedin : null,
       phone_number: data.phone_number ? data.phone_number : null,
       user_type: data.user_type,
-      image: data.image ? `${process.env.API_PATH}${data.image}` : `${process.env.API_PATH}Default/profile_picture_default.webp`
-    }
+      image: data.image
+        ? `${process.env.API_PATH}${data.image}`
+        : `${process.env.API_PATH}Default/profile_picture_default.webp`,
+    };
     const arr = {
       status: "SUCESS",
       message: "Usuário recuperado com sucesso",
-      data: format
+      data: format,
     };
     return response.status(200).send(arr);
-  }catch{
+  } catch {
     const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao recuperar o usário"
-    }
+      message: "Ocorreu um erro ao recuperar o usário",
+    };
     return response.status(400).send(arr);
   }
-}
+};

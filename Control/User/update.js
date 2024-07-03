@@ -1,16 +1,15 @@
 /**
  * ATUALIZAR USUÁRIO
  *
- * Pode alterar  número de telefone, github, linkedin, email
- * 
+ * Pode alterar  número de telefone, link, linkedin, email
+ *
  * Atualizar grupo tambem
  */
 
 //const ModelDatabase = require("../../Model/Database");
+const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
-const ModelUser = require("../../Model/User");
-const ModelGroup = require('../../Model/Group');
-
+const User = require("../../Schemas/User");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -28,59 +27,52 @@ module.exports = async (request, response) => {
   }
 
   const id = request.params.id;
-  /*
-    const database = new ModelDatabase();
-    await database.conect();
-  */
-  const user = new ModelUser();
-  const group = new ModelGroup();
-  user.id = id;
+  const phone_number = request.body.phone_number;
+  const link = request.body.link;
+  const linkedin = request.body.linkedin;
+  const email = request.body.email;
 
-  const res = await user.exists();
-
-  if (!res) {
-    //database.desconnect();
+  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
     const arr = {
       status: "ERROR",
-      message: "Usuário não existe",
+      message: "Usuário não existe!",
     };
     return response.status(404).send(arr);
   }
 
-  
-  const phone_number = request.body.phone_number;
-  const github = request.body.github;
-  const linkedin = request.body.linkedin;
-  const email = request.body.email;
-  
-  user.email = email;
-  user.phone_number = phone_number;
-  user.github = github;
-  user.linkedin = linkedin;
+  const user = await User.findById(id).exec();
 
-
-  try{
-    const resp = await user.update();
-
-    const newUser = await user.singleFields(["name", "register", "course_name", "email", "phone_number", "github", "linkedin", "image"]);
-    console.log(newUser);
-    await group.updateStudent(user.id,newUser);
-
-    const arr = {
-        status:"SUCESS",
-        data: resp,
-        message:"Usuario atualizado com sucesso"
-    }
-    return response.status(200).send(arr);
-  
-  }catch{
-    const arr = {
-      status:"ERROR",
-      message:"Ocorreu um erro ao atualizar o usuario"
+  if (email != undefined) {
+    user.email = email;
   }
-  return response.status(400).send(arr);
+  if (phone_number != undefined) {
+    user.phone_number = phone_number;
+  }
+  if (link != undefined) {
+    user.link = link;
+  }
+  if (linkedin != undefined) {
+    user.linkedin = linkedin;
   }
 
+  user
+    .save()
+    .then((resolve) => {
+      const arr = {
+        status: "SUCESS",
+        data: resolve,
+        message: "Usuario atualizado com sucesso",
+      };
+      return response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      const arr = {
+        status: "ERROR",
+        data: reject,
+        message: "Ocorreu um erro ao atualizar o usuário!",
+      };
+      return response.status(200).send(arr);
+    });
 
   /*
   user
@@ -106,5 +98,4 @@ module.exports = async (request, response) => {
             database.desconnect();
         })
         */
-       
 };
