@@ -32,7 +32,7 @@ module.exports = async (request, response) => {
     .exec() 
     .then((resolve) => {
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "Usário excluído com sucesso",
         data: resolve,
       };

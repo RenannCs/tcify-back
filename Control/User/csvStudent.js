@@ -58,7 +58,12 @@ module.exports = async (request, response) => {
             user.password = password;
 
             if (
-              (await User.exists({ register: student["register"] })) != null
+              (await User.exists({
+                $or: [
+                  { register: student["register"] },
+                  { email: student["email"] },
+                ],
+              })) != null
             ) {
               throw new Error();
             }
@@ -93,7 +98,7 @@ module.exports = async (request, response) => {
           }
         }
         const arr = {
-          status: "SUCESS",
+          status: "SUCCESS",
           errors: erros,
           successes: sucessos,
           message: "Alunos inseridos",

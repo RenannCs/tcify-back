@@ -4,7 +4,11 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     name: String,
-    course_id: mongoose.Types.ObjectId,
+    course_id: {
+      type: mongoose.Types.ObjectId,
+      ref : "Course",
+      
+    },
     register: String,
     email: String,
     password: String,

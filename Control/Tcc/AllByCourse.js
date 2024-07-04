@@ -36,7 +36,7 @@ module.exports = async (request, response) => {
         const data = await tcc.allFieldsFilter(fields , {"course_id": new ObjectId(id)});
         if(data.length == 0){
             const arr = {
-                status: "SUCESS",
+                status: "SUCCESS",
                 message: "Não há TCC's para esse curso"
             }
             return response.status(404).send(arr);
@@ -55,7 +55,7 @@ module.exports = async (request, response) => {
             course_name: tcc.course_name
           }));
           const arr = {
-            status: "SUCESS",
+            status: "SUCCESS",
             message: "TCC's recuperados com sucesso!",
             data: format
           };

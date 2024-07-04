@@ -1,26 +1,24 @@
 /*
 single do grupo por id
 */
-const Group = require("../../Model/Group");
+const { ObjectId } = require("mongodb");
+const Group = require("../../Schemas/Group");
 
 module.exports = async (request, response) => {
   const id = request.params.id;
 
-  const group = new Group();
-  group.id = id;
+  if ((await Group.exists({ _id: new ObjectId(id) }).exec()) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Nenhum grupo encontrado!",
+    };
+    return response.status(404).send(arr);
+  }
 
-  group
-    .single()
+  Group.single(id)
     .then((resolve) => {
-      if (resolve == null) {
-        const arr = {
-          status: "ERROR",
-          message: "Não foi encontrado nenhum grupo com o Id fornecido",
-        };
-        return response.status(404).send(arr);
-      }
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "Grupo retornado com sucesso",
         data: resolve,
       };

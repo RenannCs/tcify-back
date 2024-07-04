@@ -30,7 +30,7 @@ module.exports = async (request, response) => {
         : `${process.env.API_PATH}Default/profile_picture_default.webp`,
     };
     const arr = {
-      status: "SUCESS",
+      status: "SUCCESS",
       message: "Usuário recuperado com sucesso",
       data: format,
     };

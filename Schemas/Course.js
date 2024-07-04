@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 // Definição do esquema para Courses
 const courseSchema = new mongoose.Schema(
   {
-  name: String
+  name: String,
+  description: String
   }
 );
 

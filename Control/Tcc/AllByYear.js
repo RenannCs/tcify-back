@@ -22,7 +22,7 @@ module.exports = async (request, response) => {
 
         if(data.length == 0){
             const arr = {
-                status: "SUCESS",
+                status: "SUCCESS",
                 message: "Não há TCC's para esse ano"
             }
             return response.status(404).send(arr);
@@ -42,7 +42,7 @@ module.exports = async (request, response) => {
             course_name: tcc.course_id.name
           }))
           const arr = {
-            status: "SUCESS",
+            status: "SUCCESS",
             message: "TCC's recuperados com sucesso!",
             data: format
           };

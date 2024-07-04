@@ -59,7 +59,7 @@ module.exports = async (request, response) => {
     .save()
     .then((resolve) => {
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         data: resolve,
         message: "Usuario atualizado com sucesso",
       };
@@ -79,7 +79,7 @@ module.exports = async (request, response) => {
     .update()
     .then((resolve) => {
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         data: resolve,
         message: "Usuário atualizado com sucesso!",
       };

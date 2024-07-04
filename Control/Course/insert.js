@@ -17,15 +17,17 @@ module.exports = async (request, response) => {
   }
 
   const name = request.body.name;
+  const description = request.body.description;
 
   const course = new Course();
   course.name = name;
-
+  course.description = description;
+  
   course
     .save()
     .then((resolve) => {
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "Curso inserido com sucesso",
         data: resolve,
       };

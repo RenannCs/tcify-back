@@ -5,7 +5,7 @@ module.exports = async (request, response) => {
     .exec()
     .then((resolve) => {
       const arr = {
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "Cursos retornados com sucesso",
         data: resolve,
       };

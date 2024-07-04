@@ -78,7 +78,7 @@ module.exports = async (request , response) =>{
     try{
         await tcc.update();
         const arr = {
-            status: "SUCESS",
+            status: "SUCCESS",
             message: "Monografia atualizada com sucesso!"
         };
         return response.status(200).send(arr);

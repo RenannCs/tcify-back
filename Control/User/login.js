@@ -31,7 +31,7 @@ module.exports = async (request, response) => {
       const arr = {
         data: resolve,
         token: token,
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "Usuário logado com sucesso!",
       };
 

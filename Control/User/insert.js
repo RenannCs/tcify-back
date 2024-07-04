@@ -47,22 +47,29 @@ module.exports = async (request, response) => {
   user.user_type = user_type;
   user.register = register;
 
-  if(await User.exists({register: register}) != null){
+  if ((await User.exists({ register: register })) != null) {
     const arr = {
       status: "ERROR",
-      message: "Registro já em uso!"
+      message: "Registro já em uso!",
+    };
+    return response.status(409).send(arr);
+  }
+  if ((await User.exists({ email: emailUser })) != null) {
+    const arr = {
+      status: "ERROR",
+      message: "Email já em uso!",
     };
     return response.status(409).send(arr);
   }
 
-  if(await Course.exists({"_id": new ObjectId(course_id)}).exec() == null){
+  if ((await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null) {
     const arr = {
       status: "ERROR",
-      message: "Curso não existe!"
+      message: "Curso não existe!",
     };
     return response.status(404).send(arr);
   }
-  const course = await Course.findById(course_id).exec()
+  const course = await Course.findById(course_id).exec();
   let user_typeStr = "";
   if (user_type == "0") {
     user_typeStr = "Aluno";
@@ -86,7 +93,7 @@ module.exports = async (request, response) => {
   Senha: ${password}<br>
   `;
   try {
-     email.send();
+    email.send();
   } catch {
     const arr = {
       status: "ERROR",

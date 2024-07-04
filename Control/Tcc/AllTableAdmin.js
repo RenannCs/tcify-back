@@ -32,7 +32,7 @@ module.exports = async (request, response) => {
       grade: tcc.grade
     }));
     const arr = {
-      status: "SUCESS",
+      status: "SUCCESS",
       message: "TCC's recuperados com sucesso!",
       data: format,
     };

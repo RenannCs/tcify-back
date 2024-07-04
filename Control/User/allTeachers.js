@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
       user_type: user.user_type,
     }));
     const arr = {
-      status: "SUCESS",
+      status: "SUCCESS",
       message: "Dados recuperados com sucesso",
       data: format,
     };

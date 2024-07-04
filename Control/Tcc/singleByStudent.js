@@ -29,7 +29,7 @@ module.exports = async (request , response) =>{
     }
 
     const arr ={
-        status: "SUCESS",
+        status: "SUCCESS",
         message: "TCC recuperado com sucesso!",
         data: dataTcc[0]
     };

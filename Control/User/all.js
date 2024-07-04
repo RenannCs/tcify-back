@@ -17,8 +17,8 @@ module.exports = async (request, response) => {
     }));
 
     const arr = {
-      status: "SUCESS",
-      message: "Usuário recuperados com sucesso!",
+      status: "SUCCESS",
+      message: "Usuários recuperados com sucesso!",
       data: dataFormat,
     };
     return response.status(200).send(arr);
@@ -46,7 +46,7 @@ module.exports = async (request, response) => {
             image: user.image ? user.image: "Default/profile_picture_default.webp"
         }));
         const arr = {
-            status: "SUCESS",
+            status: "SUCCESS",
             message: "Usuário recuperados com sucesso!",
             data: format
         };

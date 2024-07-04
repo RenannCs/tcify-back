@@ -1,84 +1,65 @@
-const User = require('../../Model/User');
-const Group = require('../../Model/Group');
-const Tcc = require("../../Model/TCC");
-const { ObjectId } = require('mongodb');
+const User = require("../../Schemas/User");
+const Group = require("../../Schemas/Group");
 
+const { ObjectId } = require("mongodb");
 
-module.exports = async (request , response) =>{
-    const userId = request.body.userId;
-    const groupId = request.body.groupId;
-    const accept = request.body.accept;
+module.exports = async (request, response) => {
+  const userId = request.body.userId;
+  const groupId = request.body.groupId;
+  const accept = request.body.accept;
 
-    const student = new User();
-    student.id = userId;
-    
-    if (await student.exists() == null){
+  if ((await User.exists({ _id: new ObjectId(userId) }).exec()) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Aluno não existe!",
+    };
+    return response.status(404).send(arr);
+  }
+
+  if ((await Group.exists({ _id: new ObjectId(groupId) }).exec()) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Grupo não encontrado!",
+    };
+    return response.status(404).send(arr);
+  }
+  if ((await Group.existsByStudent(userId)) != null) {
+    const arr = {
+      status: "ERROR",
+      message: "Usuário já possui grupo!",
+    };
+    return response.status(404).send(arr);
+  }
+
+  if (accept) {
+    const group = await Group.findById(groupId);
+    let students = group.students;
+    students.push(new ObjectId(userId));
+    group.students = students;
+
+    group
+      .save()
+      .then((resolve) => {
         const arr = {
-            status: "ERROR",
-            message: "Aluno não existe!"
-        };
-        return response.status(404).send(arr);
-    }
-
-    const group = new Group();
-    group.id = groupId;
-
-    if (await group.exists() == null){
-        const arr = {
-            status: "ERROR",
-            message: "Grupo não encontrado!"
-        };
-        return response.status(404).send(arr);
-    }
-    if(await group.findByStudentId(student.id) != null){
-        const arr = {
-            status: "ERROR",
-            message: "Usuário já possui grupo!"
-        };
-        return response.status(404).send(arr);
-    }
-
-    if(accept){
-        const fields = ["name", "register", "course_name", "course_id" , "email", "phone_number", "github", "linkedin", "image"];
-        const studentData = await student.singleFields(fields);
-        
-        const grupoData = await group.single();
-        
-        const arrAlunos = grupoData.students;
-        arrAlunos.push(studentData);
-
-        group.students = arrAlunos;
-
-        const tcc = new Tcc();
-        const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(groupId)});
-        if(dataTcc.length != 0){
-            const idTcc = dataTcc[0].id;
-            tcc.id = idTcc;
-            tcc.students = arrAlunos;
-            tcc.update();
-        }
-        group.update()
-            .then((resolve)=>{
-                const arr = {
-                    status: "SUCESS",
-                    message: "Usuário inserido com sucesso!",
-                    data: resolve
-                };
-                return response.status(200).send(arr);
-            })
-            .catch((reject)=>{
-                const arr = {
-                    status: "ERROR",
-                    message: "Ocorreu um erro ao inserir o usuário!",
-                    data: reject
-                };
-                return response.status(404).send(arr);
-            })
-    }else{
-        const arr = {
-            status: "SUCESS",
-            message: "Usuário recusou o convite!"
+          status: "SUCCESS",
+          message: "Usuário inserido com sucesso!",
+          data: resolve,
         };
         return response.status(200).send(arr);
-    }
-}
+      })
+      .catch((reject) => {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao inserir o usuário!",
+          data: reject,
+        };
+        return response.status(404).send(arr);
+      });
+  } else {
+    const arr = {
+      status: "SUCCESS",
+      message: "Usuário recusou o convite!",
+    };
+    return response.status(200).send(arr);
+  }
+};

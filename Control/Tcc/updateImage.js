@@ -90,7 +90,7 @@ module.exports =  async (request, response) =>{
         
 
         const arr = {
-            status: "SUCESS",
+            status: "SUCCESS",
             message: "Imagem atualizada com sucesso",
         }
         return response.status(200).send(arr);
@@ -110,7 +110,7 @@ module.exports =  async (request, response) =>{
                 await tcc.update();
                 //database.desconnect();
                 const arr = {
-                    status: "SUCESS",
+                    status: "SUCCESS",
                     message: "Imagem inserida com sucesso"
                 }
                 return response.status(200).send(arr);
@@ -133,7 +133,7 @@ module.exports =  async (request, response) =>{
                 await tcc.update();
                 //database.desconnect();
                 const arr = {
-                    status: "SUCESS",
+                    status: "SUCCESS",
                     message: "Imagem atualizada com sucesso"
                 }
                 return response.status(200).send(arr);

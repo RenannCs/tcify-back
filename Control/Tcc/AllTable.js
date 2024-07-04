@@ -30,7 +30,7 @@ module.exports = async (request, response) => {
       date: new Date(tcc.date).getFullYear(), 
     }));
     const arr = {
-      status: "SUCESS",
+      status: "SUCCESS",
       message: "TCC's recuperados com sucesso!",
       data: format,
     };

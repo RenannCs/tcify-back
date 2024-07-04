@@ -84,7 +84,7 @@ module.exports = async (request, response) => {
     await user.save();
 
     const arr = {
-      status: "SUCESS",
+      status: "SUCCESS",
       message: "Imagem atualizada com sucesso",
     };
     return response.status(200).send(arr);
