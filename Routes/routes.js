@@ -58,6 +58,7 @@ const insertStudentGroup = require('../Control/Group/insertStudent');
 const deleteStudentGroup = require('../Control/Group/deleteStudent');
 const acceptGroup = require('../Control/Group/accept');
 const allGroup = require('../Control/Group/all');
+const updateStatus = require("../Control/Group/updateStatus");
 //const sendemail = require('../Control/Email/testesend');
 
 module.exports = function (app) {
@@ -231,6 +232,8 @@ module.exports = function (app) {
   app.patch('/repository/group/insertStudent' , insertStudentGroup);
 
   app.patch('/repository/group/deleteStudent' , deleteStudentGroup);
+
+  app.patch('/repository/group/updateStatus' , updateStatus);
 
 
   app.patch('/repository/group/accept' , acceptGroup);
