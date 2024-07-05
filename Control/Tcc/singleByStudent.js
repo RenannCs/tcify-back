@@ -1,37 +1,95 @@
-const User = require('../../Model/User');
-const Tcc = require('../../Model/TCC');
-const Group = require('../../Model/Group');
-const { ObjectId } = require('mongodb');
-module.exports = async (request , response) =>{
-    const id = request.params.id;
+const Tcc = require("../../Schemas/Tcc");
+const Group = require("../../Schemas/Group");
 
-    const group = new Group();
+module.exports = async (request, response) => {
+  const id = request.params.id;
 
-    const dataGroup = await group.findByStudentId(id);
-    if(dataGroup == null){
-        const arr = {
-            status: "ERROR",
-            message: "Usuário não possui grupo!"
-        };
-        return response.status(404).send(arr);
-    }
+  if ((await Group.existsByStudent(id)) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Nenhum TCC encontrado!",
+    };
+    return response.status(404).send(arr);
+  }
+  const group = await Group.findByStudentId(id);
 
-    const idGroup = dataGroup.id;
+  if ((await Tcc.exists({ _id: group.tcc_id })) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Nenhum TCC encontrado!",
+    };
+    return response.status(404).send(arr);
+  }
 
-    const tcc = new Tcc();
-    const dataTcc = await tcc.singleFilter({"group_id": new ObjectId(idGroup)});
-    if(dataTcc.length == 0){
-        const arr = {
-            status: "ERROR",
-            message: "Grupo não possui TCC!"
-        };
-        return response.status(404).send(arr);
-    }
+  Tcc.single(group.tcc_id)
+    .then((tcc) => {
+      return (dataFormat = {
+        _id: tcc.id,
+        title: tcc.title,
+        summary: tcc.summary,
 
-    const arr ={
+        supervisor: tcc.supervisor.name,
+        supervisor_id: tcc.supervisor._id,
+
+        date: new Date(tcc.date).getFullYear().toString(),
+
+        course_name: tcc.course_id.name,
+        course_id: tcc.course_id._id,
+
+        status: tcc.status,
+        grade: tcc.grade,
+
+        group_id: tcc.group_id._id,
+        students: tcc.group_id.students,
+
+        leader: tcc.group_id.leader_id.name,
+        leader_id: tcc.group_id.leader_id._id,
+      });
+    })
+    .then((resolve) => {
+      const arr = {
         status: "SUCCESS",
-        message: "TCC recuperado com sucesso!",
-        data: dataTcc[0]
+        message: "TCC recuperados com sucesso!",
+        data: resolve,
+      };
+      return response.status(200).send(arr);
+    })
+    .catch(() => {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao recuperar os TCC's!",
+      };
+      return response.status(400).send(arr);
+    });
+
+  /*
+
+  try{
+    const data = await tcc.allFields(fields);
+    const format = data.map((tcc)=>({
+      _id: tcc._id,
+      title: tcc.title,
+      summary: tcc.summary ? tcc.summary : null,
+      grade: tcc.grade ? tcc.grade : null,
+      supervisor: tcc.supervisor,
+      supervisor_id: tcc.supervisor_id,
+      date: new Date(tcc.date).getFullYear().toString(),
+      status: tcc.status,
+      students: tcc.students,
+      course_id: tcc.course_id,
+      course_name: tcc.course_name
+    }))
+    const arr = {
+      status: "SUCCESS",
+      message: "TCC's recuperados com sucesso!",
+      data: format
     };
     return response.status(200).send(arr);
-}
+  }catch {
+    const arr ={ 
+      status: "ERROR",
+      message: "Ocorreu um erro ao buscar os TCC's"
+    };
+    return response.status(400).send(arr);
+  }*/
+};

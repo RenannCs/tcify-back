@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Tcc = require("./TCC")
+const Tcc = require("./Tcc")
 const groupSchema = new mongoose.Schema(
   {
     title: String,

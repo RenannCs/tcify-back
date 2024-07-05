@@ -1,6 +1,6 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
-const Tcc = require("../../Schemas/TCC");
+const Tcc = require("../../Schemas/Tcc");
 const Email = require("../../Model/Email");
 
 const ModelJwtToken = require("../../Model/JwtToken");

@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const ModelTcc = require("../Schemas/TCC");
+const ModelTcc = require("../Schemas/Tcc");
 const Course = require('../Schemas/Course');
 const Group = require('../Schemas/Group');
 const User = require("../Schemas/User");

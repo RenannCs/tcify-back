@@ -1,35 +1,55 @@
-const ModelTcc = require("../../Model/Tcc");
+const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  const tcc = new ModelTcc();
+  Tcc.all()
+    .then((data) => {
+      return data.map((tcc) => ({
+        _id: tcc.id,
+        title: tcc.title,
 
-  const fields = [
-    "_id",
-    "title",
-    "supervisor",
-    "students",
-    "course_id",
-    "course_name",
-    "date",
-    "status",
-    "grade",
-    "supervisor_id"
-  ];
+        supervisor: tcc.supervisor.name,
+        supervisor_id: tcc.supervisor._id,
+
+        group_id: tcc.group_id._id,
+        students: tcc.group_id.students,
+
+        course_id: tcc.course_id._id,
+        course_name: tcc.course_id.name,
+
+        grade: tcc.grade,
+
+        date: new Date(tcc.date).getFullYear().toString(),
+      }));
+    })
+    .then((resolve) => {
+      const arr = {
+        status: "SUCCESS",
+        message: "TCC's recuperados com sucesso!",
+        data: resolve,
+      };
+      return response.status(200).send(arr);
+    })
+    .catch(() => {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao recuperar os TCC's!",
+      };
+      return response.status(400).send(arr);
+    });
+
+  /*
 
   try {
     const data = await tcc.allFields(fields);
     const format = data.map((tcc) => ({
       _id: tcc._id,
-      _id: tcc._id,
       title: tcc.title,
       supervisor: tcc.supervisor,
       supervisor_id: tcc.supervisor_id,
-      studensts: tcc.students,
+      students: tcc.students,
       course_id: tcc.course_id,
       course_name: tcc.course_name,
       date: new Date(tcc.date).getFullYear(), 
-      status: tcc.status,
-      grade: tcc.grade
     }));
     const arr = {
       status: "SUCCESS",
@@ -44,6 +64,9 @@ module.exports = async (request, response) => {
     };
     return response.status(400).send(arr);
   }
+
+
+
   /*
   tcc.allFields(fields)
       .then((resolve) => {

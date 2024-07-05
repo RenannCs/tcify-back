@@ -2,7 +2,7 @@ const ModelJwtToken = require("../../Model/JwtToken");
 const JwtToken = new ModelJwtToken();
 const { ObjectId } = require("mongodb");
 const Group = require("../../Schemas/Group");
-const Tcc = require("../../Schemas/TCC");
+const Tcc = require("../../Schemas/Tcc");
 /**
  * DELETAR O TCC JUNTO
  */

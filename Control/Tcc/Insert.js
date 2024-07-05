@@ -1,35 +1,33 @@
 /**
  * INSERIR TCC
- *  
+ *
  * Adiciona um novo TCC com base nas informações passadas.
- * 
+ *
  * Só adiciona título, sumário, supervisor, data, grupo, id_curso, nome curso.
- * 
+ *
  */
 
-
-const Tcc = require('../../Model/Tcc');
-const Group = require('../../Model/Group');
-const Course = require("../../Model/Course");
-const User = require("../../Model/User");
-const ModelJwtToken = require('../../Model/JwtToken');
-const fs = require('fs');
-
+const Tcc = require("../../Schemas/Tcc");
+const Group = require("../../Schemas/Group");
+const ModelJwtToken = require("../../Model/JwtToken");
+//const fs = require('fs');
+const { ObjectId } = require("mongodb");
 const JwtToken = new ModelJwtToken();
 
-module.exports =  async (request, response) =>{
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+module.exports = async (request, response) => {
+  const authorizationHeader = request.headers.authorization;
+  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }
-    
+  if (tokenValidationResult.status !== true) {
+    const arr = {
+      status: "ERROR",
+      message:
+        "Invalid token! If the problem persists, please contact our technical support.",
+      error: tokenValidationResult.error,
+    };
+    return response.status(401).send(arr);
+  }
+  /*
     const monography = request.files["monography"];
     let monographyPath = undefined;
     
@@ -51,85 +49,69 @@ module.exports =  async (request, response) =>{
         fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
         zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
     }
+*/
 
-    
-    const title = request.body.title;
-    const summary = request.body.summary;
-    const supervisor = request.body.supervisor;
-    const group_id = request.body.group_id;
-    const course_id = request.body.course_id;
+  const summary = request.body.summary;
+  const supervisor = request.body.supervisor;
+  const group_id = request.body.group_id;
 
+  const date = new Date();
 
-    const date = new Date();
-    
-    const group = new Group();
-    group.id = group_id;
+  if ((await Group.exists({ _id: new ObjectId(group_id) })) == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Grupo não existe",
+    };
+    return response.status(404).send(arr);
+  }
 
-    
-    
-    if(await group.exists() == null){
-        const arr = {
-            status: "ERROR",
-            message: "Grupo não existe"
-        };
-        return response.status(404).send(arr);
-    }
-    const tcc = new Tcc();
-    if(await tcc.existsByGroupId(group_id) != null){
-        const arr = {
-            status: "ERROR",
-            message: "Grupo já possui TCC!"
-        };
-        return response.status(400).send(arr);
-    }
+  if ((await Tcc.existsByGroup(group_id)) != null) {
+    const arr = {
+      status: "ERROR",
+      message: "Grupo já possui TCC!",
+    };
+    return response.status(419).send(arr);
+  }
 
-    const course = new Course();
-    course.id = course_id;
-    const dataCourse = await course.single();
+  const group = await Group.findById(group_id).exec();
 
-    const user = new User();
-    user.id = supervisor;
-    const dataSupervisor = await user.single();
-    
-    const groupData = await group.single();
+  const tcc = new Tcc();
 
-    tcc.title = title;
-    tcc.summary = summary;
-    tcc.supervisor = dataSupervisor.name;
-    tcc.supervisor_id = supervisor;
-    tcc.date = date.toISOString();
-    tcc.group = group_id;
-    tcc.students = groupData.students;
-    tcc.course_id = course_id;
-    tcc.course_name = dataCourse.name;
-    //tcc.image = "Default/tcc_image_default.png";
-    tcc.status = 0;
-    tcc.grade = 0;
-    tcc.monography = monographyPath;
+  tcc.title = group.title;
+  tcc.summary = summary;
+  tcc.supervisor = supervisor;
+  tcc.date = date.toISOString();
+  tcc.group_id = group_id;
+  tcc.course_id = group.course_id;
+  tcc.status = 0;
+  tcc.grade = 0;
+  //tcc.image = "Default/tcc_image_default.png";
+
+  /*tcc.monography = monographyPath;
     tcc.document = documentPath;
-    tcc.zip = zipPath;
+    tcc.zip = zipPath;*/
 
-
-    tcc.insert()
-    .then((resolve)=>{
-        const arr = {
-            data: resolve,
-            status: 'SUCCESS',
-            message: 'TCC inserted successfully.'
-        };
-        response.status(200).send(arr);
+  tcc
+    .save()
+    .then((resolve) => {
+      const arr = {
+        status: "SUCCESS",
+        message: "TCC adicionado com sucesso!",
+        data: resolve,
+      };
+      response.status(200).send(arr);
     })
-    .catch((reject)=>{
-        const arr = {
-            data: reject,
-            status: 'ERROR',
-            message: 'An error occurred while processing your request. Please try again later.'
-        };
-        response.status(400).send(arr);
-    })
-    /*
+    .catch((reject) => {
+      const arr = {
+        data: reject,
+        status: "ERROR",
+        message: "Ocorreu um erro ao adicionar o TCC!",
+      };
+      response.status(400).send(arr);
+    });
+  /*
     .finally(()=>{
         database.desconnect();
     })
     */
-}
+};
