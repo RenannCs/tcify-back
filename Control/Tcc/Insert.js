@@ -52,7 +52,7 @@ module.exports = async (request, response) => {
 */
 
   const summary = request.body.summary;
-  const supervisor = request.body.supervisor;
+  //const supervisor = request.body.supervisor;
   const group_id = request.body.group_id;
 
   const date = new Date();
@@ -79,7 +79,7 @@ module.exports = async (request, response) => {
 
   tcc.title = group.title;
   tcc.summary = summary;
-  tcc.supervisor = supervisor;
+  tcc.supervisor = group.supervisor;
   tcc.date = date.toISOString();
   tcc.group_id = group_id;
   tcc.course_id = group.course_id;
@@ -94,6 +94,8 @@ module.exports = async (request, response) => {
   tcc
     .save()
     .then((resolve) => {
+      group.tcc_id = resolve.id;
+      group.save();
       const arr = {
         status: "SUCCESS",
         message: "TCC adicionado com sucesso!",
