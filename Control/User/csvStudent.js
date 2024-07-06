@@ -45,7 +45,7 @@ module.exports = async (request, response) => {
 
             user.email = student["email"];
             user.register = student["register"];
-            user.user_type = "0";
+            user.user_type = "student";
 
             const strAll =
               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
