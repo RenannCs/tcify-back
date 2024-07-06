@@ -25,23 +25,23 @@ module.exports = async (request, response) => {
         let first = true;
         for (const student of group.students) {
           if (!first) {
-            newStudents += ",";
+            newStudents += ", ";
           }
           newStudents += student.name;
           first = false;
         }
         let newGroup = {
-          _id: group.id,
+          _id: group._id,
           title: group.title,
 
-          supervisor: group.supervisor.name,
-          supervisor_id: group.supervisor._id,
+          supervisor: group.supervisor,
+          supervisor_id: group.supervisor_id,
 
-          group_id: group.group_id._id,
+          group_id: group.group_id,
           students: newStudents,
 
-          course_id: group.course_id._id,
-          course_name: group.course_id.name,
+          course_id: group.course_id,
+          course_name: group.course_name,
 
           date: group.date,
         };
