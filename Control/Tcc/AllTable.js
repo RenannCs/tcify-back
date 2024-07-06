@@ -3,7 +3,7 @@ const Tcc = require("../../Schemas/Tcc");
 module.exports = async (request, response) => {
   Tcc.all()
     .then((data) => {
-      return data.map((tcc) => ({
+      const format = data.map((tcc) => ({
         _id: tcc.id,
         title: tcc.title,
 
@@ -18,6 +18,36 @@ module.exports = async (request, response) => {
 
         date: new Date(tcc.date).getFullYear().toString(),
       }));
+
+      let newFormat = [];
+      for (const group of format) {
+        let newStudents = "";
+        let first = true;
+        for (const student of group.students) {
+          if (!first) {
+            newStudents += ",";
+          }
+          newStudents += student.name;
+          first = false;
+        }
+        let newGroup = {
+          _id: group.id,
+          title: group.title,
+
+          supervisor: group.supervisor.name,
+          supervisor_id: group.supervisor._id,
+
+          group_id: group.group_id._id,
+          students: newStudents,
+
+          course_id: group.course_id._id,
+          course_name: group.course_id.name,
+
+          date: group.date,
+        };
+        newFormat.push(newGroup);
+      }
+      return newFormat;
     })
     .then((resolve) => {
       const arr = {
