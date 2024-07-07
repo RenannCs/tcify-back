@@ -7,44 +7,64 @@ module.exports = async (request, response) => {
         _id: tcc.id,
         title: tcc.title,
 
-        supervisor: tcc.supervisor.name,
-        supervisor_id: tcc.supervisor._id,
+        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
+        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
 
-        group_id: tcc.group_id._id,
-        students: tcc.group_id.students,
+        group_id: tcc.group_id ? tcc.group_id._id : null,
+        students: tcc.group_id ? tcc.group_id.students : null,
 
-        course_id: tcc.course_id._id,
-        course_name: tcc.course_id.name,
+        course_id: tcc.course_id ? tcc.course_id._id : null,
+        course_name: tcc.course_id ? tcc.course_id.name : null,
 
         date: new Date(tcc.date).getFullYear().toString(),
       }));
 
       let newFormat = [];
+      let newGroup;
       for (const group of format) {
-        let newStudents = "";
-        let first = true;
-        for (const student of group.students) {
-          if (!first) {
-            newStudents += ", ";
+        if (group.students) {
+          let newStudents = "";
+          let first = true;
+          for (const student of group.students) {
+            if (!first) {
+              newStudents += ", ";
+            }
+            newStudents += student.name;
+            first = false;
           }
-          newStudents += student.name;
-          first = false;
+          newGroup = {
+            _id: group._id,
+            title: group.title,
+
+            supervisor: group.supervisor ? group.supervisor : null,
+            supervisor_id: group.supervisor_id ? group.supervisor_id : null,
+
+            group_id: group.group_id ? group.group_id : null,
+            students: newStudents,
+
+            course_id: group.course_id ? group.course_id : null,
+            course_name: group.course_name ? group.course_name : null,
+
+            date: group.date,
+          };
+        }else{
+          newGroup = {
+            _id: group._id,
+            title: group.title,
+
+            supervisor: group.supervisor ? group.supervisor : null,
+            supervisor_id: group.supervisor_id ? group.supervisor_id : null,
+
+            group_id: group.group_id ? group.group_id : null,
+            students: null,
+
+            course_id: group.course_id ? group.course_id : null,
+            course_name: group.course_name ? group.course_name : null,
+
+            date: group.date,
+          }
         }
-        let newGroup = {
-          _id: group._id,
-          title: group.title,
 
-          supervisor: group.supervisor,
-          supervisor_id: group.supervisor_id,
-
-          group_id: group.group_id,
-          students: newStudents,
-
-          course_id: group.course_id,
-          course_name: group.course_name,
-
-          date: group.date,
-        };
         newFormat.push(newGroup);
       }
       return newFormat;
