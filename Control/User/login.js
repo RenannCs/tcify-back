@@ -5,11 +5,6 @@ module.exports = async (request, response) => {
   const userIn = request.body.register;
   const password = request.body.password;
 
-  /*
-    const database = new ModelDatabase();
-    await database.conect(); 
-    */
-
   User.login(userIn, password)
     .then((resolve) => {
       if (resolve == null) {
@@ -22,15 +17,16 @@ module.exports = async (request, response) => {
       }
 
       const JwtToken = new ModelJwtToken();
-
       const token = JwtToken.createToken({
         id: resolve.id,
         userType: resolve.user_type,
       });
 
+      // Append do token no objeto resolve
+      resolve.token = token;
+
       const arr = {
         data: resolve,
-        token: token,
         status: "SUCCESS",
         message: "Usuário logado com sucesso!",
       };
