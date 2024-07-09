@@ -4,6 +4,8 @@ const Database = require("./Model/Database")
 
 const routes = require('./Routes/routes')
 const cors = require('cors');
+
+
 routes(app);
 
 app.use(express.json());
