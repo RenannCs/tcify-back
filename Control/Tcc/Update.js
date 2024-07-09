@@ -1,6 +1,6 @@
 /**
  * Update de tcc
- * Pode alterar titulo, sumario , nota e status
+ * Pode alterar titulo, sumario , nota, status , curso
  */
 const Tcc = require("../../Schemas/Tcc");
 
@@ -36,6 +36,7 @@ module.exports = async (request, response) => {
   const summary = request.body.summary;
   const grade = request.body.grade;
   const status = request.body.status;
+  const course_id = request.body.course_id;
 
   const tcc = await Tcc.findById(id).exec();
 
@@ -50,6 +51,9 @@ module.exports = async (request, response) => {
   }
   if (status != undefined) {
     tcc.status = status;
+  }
+  if (course_id != undefined) {
+    tcc.course_id = course_id;
   }
   tcc
     .save()

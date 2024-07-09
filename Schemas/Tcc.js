@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const tccSchema = new mongoose.Schema(
   {
     title: String,
@@ -27,43 +26,8 @@ const tccSchema = new mongoose.Schema(
   },
   {
     statics: {
-      
-      single(id){
-          return this.findById(id)
-            .populate({
-              path: "group_id",
-              model: "Group",
-              select: "students",
-              populate: {
-                path: "students",
-                model: "User",
-                select: ["name", "email", "link", "linkedin", "image"],
-              },
-            })
-            .populate({
-              path: "group_id",
-              model: "Group",
-              select: "leader_id",
-              populate: {
-                path: "leader_id",
-                model: "User",
-                select: "name",
-              },
-            })
-            .populate({
-              path: "course_id",
-              model: "Course",
-              select: "name",
-            })
-            .populate({
-              path: "supervisor",
-              model: "User",
-              select: "name",
-            })
-            .exec();
-      },
-      all() {
-        return this.find({})
+      single(id) {
+        return this.findById(id)
           .populate({
             path: "group_id",
             model: "Group",
@@ -96,43 +60,125 @@ const tccSchema = new mongoose.Schema(
           })
           .exec();
       },
+      all() {
+        return this.find({})
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "students",
+            populate: {
+              path: "students",
+              model: "User",
+              select: [
+                "name",
+                "register",
+                "email",
+                "link",
+                "linkedin",
+                "image",
+              ],
+            },
+          })
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "leader_id",
+            populate: {
+              path: "leader_id",
+              model: "User",
+              select: "name",
+            },
+          })
+          .populate({
+            path: "course_id",
+            model: "Course",
+            select: "name",
+          })
+          .populate({
+            path: "supervisor",
+            model: "User",
+            select: "name",
+          })
+          .exec();
+      },
+      allFilter(filter) {
+        return this.find(filter)
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "students",
+            populate: {
+              path: "students",
+              model: "User",
+              select: [
+                "name",
+                "register",
+                "email",
+                "link",
+                "linkedin",
+                "image",
+              ],
+            },
+          })
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "leader_id",
+            populate: {
+              path: "leader_id",
+              model: "User",
+              select: "name",
+            },
+          })
+          .populate({
+            path: "course_id",
+            model: "Course",
+            select: "name",
+          })
+          .populate({
+            path: "supervisor",
+            model: "User",
+            select: "name",
+          })
+          .exec();
+      },
       existsByGroup(id) {
         return this.exists({ group_id: id }).exec();
       },
-      singleByGroup(id){
-        return this.findOne({group_id: id})
-            .populate({
-              path: "group_id",
-              model: "Group",
-              select: "students",
-              populate: {
-                path: "students",
-                model: "User",
-                select: ["name", "email", "link", "linkedin", "image"],
-              },
-            })
-            .populate({
-              path: "group_id",
-              model: "Group",
-              select: "leader_id",
-              populate: {
-                path: "leader_id",
-                model: "User",
-                select: "name",
-              },
-            })
-            .populate({
-              path: "course_id",
-              model: "Course",
-              select: "name",
-            })
-            .populate({
-              path: "supervisor",
+      singleByGroup(id) {
+        return this.findOne({ group_id: id })
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "students",
+            populate: {
+              path: "students",
+              model: "User",
+              select: ["name", "email", "link", "linkedin", "image"],
+            },
+          })
+          .populate({
+            path: "group_id",
+            model: "Group",
+            select: "leader_id",
+            populate: {
+              path: "leader_id",
               model: "User",
               select: "name",
-            })
-            .exec(); 
-      }
+            },
+          })
+          .populate({
+            path: "course_id",
+            model: "Course",
+            select: "name",
+          })
+          .populate({
+            path: "supervisor",
+            model: "User",
+            select: "name",
+          })
+          .exec();
+      },
     },
   }
 );

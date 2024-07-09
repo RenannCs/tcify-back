@@ -1,9 +1,12 @@
 const Tcc = require("../../Schemas/Tcc");
+const { ObjectId } = require("mongodb");
 
 module.exports = async (request, response) => {
-  Tcc.all()
+  const id = request.params.id;
+
+  Tcc.allFilter({ supervisor: new ObjectId(id) })
     .then((data) => {
-      return format = data.map((tcc) => ({
+      return (format = data.map((tcc) => ({
         _id: tcc.id,
 
         title: tcc.title,
@@ -27,11 +30,18 @@ module.exports = async (request, response) => {
         course_name: tcc.course_id ? tcc.course_id.name : null,
 
         date: new Date(tcc.date).getFullYear().toString(),
-      }));
-
-      
+      })));
     })
     .then((resolve) => {
+
+      if (resolve.length == 0) {
+        const arr = {
+          status: "SUCCESS",
+          message: "O professor não possui nenhum TCC!",
+        };
+        return response.status(200).send(arr);
+      }
+      
       const arr = {
         status: "SUCCESS",
         message: "TCC's recuperados com sucesso!",

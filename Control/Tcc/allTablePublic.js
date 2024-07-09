@@ -3,14 +3,11 @@ const Tcc = require("../../Schemas/Tcc");
 module.exports = async (request, response) => {
   Tcc.all()
     .then((data) => {
-      return format = data.map((tcc) => ({
+      return (format = data.map((tcc) => ({
         _id: tcc.id,
 
         title: tcc.title,
         summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade,
-
-        status: tcc.status,
 
         document: tcc.document ? tcc.document : null,
         monography: tcc.monography ? tcc.monography : null,
@@ -27,9 +24,7 @@ module.exports = async (request, response) => {
         course_name: tcc.course_id ? tcc.course_id.name : null,
 
         date: new Date(tcc.date).getFullYear().toString(),
-      }));
-
-      
+      })));
     })
     .then((resolve) => {
       const arr = {

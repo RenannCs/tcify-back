@@ -23,7 +23,8 @@ module.exports = async (request, response) => {
   const arrayStudentsRegister = request.body.students;
   const leader_register = request.body.leader_register;
   const supervisor = request.body.supervisor;
-  const title= request.body.title;
+  const title = request.body.title;
+  const course_id = request.body.course_id;
 
   if ((await User.exists({ register: leader_register }).exec()) == null) {
     const arr = {
@@ -65,7 +66,7 @@ module.exports = async (request, response) => {
   group.title = title;
   group.students = [leaderData.id];
   group.leader_id = leaderData.id;
-  group.course_id = leaderData.course_id;
+  group.course_id = course_id;
   group.supervisor = supervisor;
   group.status = "0";
 
