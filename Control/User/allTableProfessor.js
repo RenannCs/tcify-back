@@ -1,7 +1,22 @@
 const User = require("../../Schemas/User");
 
+const ModelJwtToken = require("../../Model/JwtToken");
+const JwtToken = new ModelJwtToken();
 module.exports = async (request, response) => {
-  User.allFilter({"user_type": "Professor"})
+  const authorizationHeader = request.headers.authorization;
+  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+
+  if (tokenValidationResult.status !== true) {
+    const arr = {
+      status: "ERROR",
+      message:
+        "Invalid token! If the problem persists, please contact our technical support.",
+      error: tokenValidationResult.error,
+    };
+    return response.status(401).send(arr);
+  }
+  
+  User.allFilter({ user_type: "Professor" })
     .then((data) => {
       return (dataFormat = data.map((user) => ({
         _id: user._id,

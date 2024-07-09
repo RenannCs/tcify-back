@@ -1,12 +1,3 @@
-/**
- * ATUALIZAR USUÁRIO
- *
- * Pode alterar  número de telefone, link, linkedin, email
- *
- * 
- */
-
-//const ModelDatabase = require("../../Model/Database");
 const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
@@ -27,10 +18,15 @@ module.exports = async (request, response) => {
   }
 
   const id = request.params.id;
+
+  const name = request.body.name;
+  const email = request.body.email;
+  const password = request.body.password;
   const phone_number = request.body.phone_number;
   const link = request.body.link;
   const linkedin = request.body.linkedin;
-  const email = request.body.email;
+  const user_type = request.body.user_type;
+  const enabled = request.body.enabled;
 
   if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
     const arr = {
@@ -42,17 +38,30 @@ module.exports = async (request, response) => {
 
   const user = await User.findById(id).exec();
 
+  if (name != undefined) {
+    user.name = name;
+  }
   if (email != undefined) {
     user.email = email;
+  }
+  if (password != undefined) {
+    user.password = password;
   }
   if (phone_number != undefined) {
     user.phone_number = phone_number;
   }
+
   if (link != undefined) {
     user.link = link;
   }
   if (linkedin != undefined) {
     user.linkedin = linkedin;
+  }
+  if (user_type != undefined) {
+    user.user_type = user_type;
+  }
+  if (enabled != undefined) {
+    user.enabled = enabled;
   }
 
   user
@@ -73,29 +82,4 @@ module.exports = async (request, response) => {
       };
       return response.status(200).send(arr);
     });
-
-  /*
-  user
-    .update()
-    .then((resolve) => {
-      const arr = {
-        status: "SUCCESS",
-        data: resolve,
-        message: "Usuário atualizado com sucesso!",
-      };
-      return response.status(200).send(arr);
-    })
-    .catch((reject) => {
-      const arr = {
-        status: "ERROR",
-        data: reject,
-        message: "Erro ao atualizar usuário!",
-      };
-      return response.status(400).send(arr);
-    });
-  /*
-        .finally(()=>{
-            database.desconnect();
-        })
-        */
 };
