@@ -6,8 +6,8 @@
 const readAllTCCs = require("../Control/Tcc/all");
 const allTableTCCs = require("../Control/TCC/allTable");
 const allTableAdminTCCs = require("../Control/TCC/allTableAdmin");
-const readTCCsByCourse = require("../Control/Tcc/allByCourse");
-const readTCCsByYear = require("../Control/Tcc/allByYear");
+// const readTCCsByCourse = require("../Control/Tcc/allByCourse");
+// const readTCCsByYear = require("../Control/Tcc/allByYear");
 const singleTCC = require("../Control/Tcc/single");
 const insertTCC = require("../Control/Tcc/insert");
 const updateTCC = require("../Control/Tcc/update");
@@ -94,9 +94,9 @@ module.exports = function (app) {
   app.get("/repository/tccs/tableAdmin", allTableAdminTCCs);
 
 
-  app.get("/repository/tccs/course/:id", readTCCsByCourse);
+  // app.get("/repository/tccs/course/:id", readTCCsByCourse);
   
-  app.get("/repository/tccs/year/:year", readTCCsByYear);
+  // app.get("/repository/tccs/year/:year", readTCCsByYear);
   
   app.get("/repository/tcc/:id", singleTCC);
 
@@ -155,11 +155,11 @@ module.exports = function (app) {
 
   app.get("/repository/users/table", allTableUsers);
 
-  app.get("/repository/users/table/administrador" , allTableAdmin);
+  app.get("/repository/users/table/administrator" , allTableAdmin);
 
   app.get("/repository/users/table/professor" , allTableProfessor);
 
-  app.get("/repository/users/table/estudantes" , allTableStudent);
+  app.get("/repository/users/table/students" , allTableStudent);
 
   app.get("/repository/user/:id", singleUser);
 
