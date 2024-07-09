@@ -19,55 +19,55 @@ module.exports = async (request, response) => {
         date: new Date(tcc.date).getFullYear().toString(),
       }));
 
-      let newFormat = [];
-      let newGroup;
-      for (const group of format) {
-        if (group.students) {
-          let newStudents = "";
-          let first = true;
-          for (const student of group.students) {
-            if (!first) {
-              newStudents += ", ";
-            }
-            newStudents += student.name;
-            first = false;
-          }
-          newGroup = {
-            _id: group._id,
-            title: group.title,
+      // let newFormat = [];
+      // let newGroup;
+      // for (const group of format) {
+      //   if (group.students) {
+      //     let newStudents = "";
+      //     let first = true;
+      //     for (const student of group.students) {
+      //       if (!first) {
+      //         newStudents += ", ";
+      //       }
+      //       newStudents += student.name;
+      //       first = false;
+      //     }
+      //     newGroup = {
+      //       _id: group._id,
+      //       title: group.title,
 
-            supervisor: group.supervisor ? group.supervisor : null,
-            supervisor_id: group.supervisor_id ? group.supervisor_id : null,
+      //       supervisor: group.supervisor ? group.supervisor : null,
+      //       supervisor_id: group.supervisor_id ? group.supervisor_id : null,
 
-            group_id: group.group_id ? group.group_id : null,
-            students: newStudents,
+      //       group_id: group.group_id ? group.group_id : null,
+      //       students: newStudents,
 
-            course_id: group.course_id ? group.course_id : null,
-            course_name: group.course_name ? group.course_name : null,
+      //       course_id: group.course_id ? group.course_id : null,
+      //       course_name: group.course_name ? group.course_name : null,
 
-            date: group.date,
-          };
-        }else{
-          newGroup = {
-            _id: group._id,
-            title: group.title,
+      //       date: group.date,
+      //     };
+      //   }else{
+      //     newGroup = {
+      //       _id: group._id,
+      //       title: group.title,
 
-            supervisor: group.supervisor ? group.supervisor : null,
-            supervisor_id: group.supervisor_id ? group.supervisor_id : null,
+      //       supervisor: group.supervisor ? group.supervisor : null,
+      //       supervisor_id: group.supervisor_id ? group.supervisor_id : null,
 
-            group_id: group.group_id ? group.group_id : null,
-            students: null,
+      //       group_id: group.group_id ? group.group_id : null,
+      //       students: null,
 
-            course_id: group.course_id ? group.course_id : null,
-            course_name: group.course_name ? group.course_name : null,
+      //       course_id: group.course_id ? group.course_id : null,
+      //       course_name: group.course_name ? group.course_name : null,
 
-            date: group.date,
-          }
-        }
+      //       date: group.date,
+      //     }
+      //   }
 
-        newFormat.push(newGroup);
-      }
-      return newFormat;
+      //   newFormat.push(newGroup);
+      // }
+      return format;
     })
     .then((resolve) => {
       const arr = {
