@@ -159,11 +159,11 @@ module.exports = function (app) {
 
   app.get("/repository/users/table", allTableUsers);
 
-  app.get("/repository/users/table/administrador", allTableAdmin);
+  app.get("/repository/users/table/administrator" , allTableAdmin);
 
   app.get("/repository/users/table/professor", allTableProfessor);
 
-  app.get("/repository/users/table/estudantes", allTableStudent);
+  app.get("/repository/users/table/students" , allTableStudent);
 
   app.get("/repository/user/:id", singleUser);
 
