@@ -32,7 +32,10 @@ const loginUser = require("../Control/User/login");
 const updatePasswordUser = require("../Control/User/updatePassword");
 const updateImageUser = require("../Control/User/updateImage");
 const studentCsv = require('../Control/User/csvStudent');
-const allTeachers = require('../Control/User/allTeachers')
+const allTeachers = require('../Control/User/allTableProfessor')
+const allTableAdmin = require('../Control/User/allTableAdm')
+const allTableProfessor = require('../Control/User/allTableProfessor');
+const allTableStudent = require("../Control/User/allTableStudent");
 
 /**
  * 
@@ -152,9 +155,16 @@ module.exports = function (app) {
 
   app.get("/repository/users/table", allTableUsers);
 
+  app.get("/repository/users/table/administrador" , allTableAdmin);
+
+  app.get("/repository/users/table/professor" , allTableProfessor);
+
+  app.get("/repository/users/table/estudantes" , allTableStudent);
+
   app.get("/repository/user/:id", singleUser);
 
   app.get("/repository/users/teachers" , allTeachers);
+
 
   /* ************** POSTS ************** */
   app.post("/repository/user", uploadLocal.any(), insertUser);
