@@ -197,7 +197,7 @@ module.exports = function (app) {
   /* ************** DELETE ************** */
   app.delete("/repository/user/:id", deleteUser);
 
-  app.delete("/repository/users/deleteMany" , deleteManyUsers);
+  app.delete("/repository/users/" , deleteManyUsers);
   /* ************** PUT ************** */
   app.put("/repository/user/password", updatePasswordUser);
 
