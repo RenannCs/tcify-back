@@ -6,8 +6,7 @@ const userSchema = new mongoose.Schema(
     name: String,
     course_id: {
       type: mongoose.Types.ObjectId,
-      ref : "Course",
-      
+      ref: "Course",
     },
     register: String,
     email: String,
@@ -17,6 +16,7 @@ const userSchema = new mongoose.Schema(
     linkedin: String,
     user_type: String,
     image: String,
+    enabled: Boolean,
   },
   {
     statics: {
@@ -72,6 +72,7 @@ const userSchema = new mongoose.Schema(
         return this.exists({
           $or: [{ register: user }, { email: user }],
           password: newPassword,
+          enabled: true
         }).exec();
       },
     },
@@ -85,7 +86,6 @@ userSchema.pre("save", function (next) {
   }
   next();
 });
-
 
 const ModelUser = mongoose.model("User", userSchema, "Users");
 
