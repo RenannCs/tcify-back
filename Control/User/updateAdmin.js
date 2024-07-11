@@ -27,6 +27,7 @@ module.exports = async (request, response) => {
   const linkedin = request.body.linkedin;
   const user_type = request.body.user_type;
   const enabled = request.body.enabled;
+  const course_id = request.body.course_id;
 
   if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
     const arr = {
@@ -62,6 +63,9 @@ module.exports = async (request, response) => {
   }
   if (enabled != undefined) {
     user.enabled = enabled;
+  }
+  if(course_id != undefined){
+    user.course_id = course_id;
   }
 
   user
