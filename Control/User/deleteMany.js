@@ -18,17 +18,17 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const arrayRegister = request.body.registers;
+  const arrayId = request.body.ids;
 
   let deletedCount = 0;
   let usuariosExcluidos = [];
-  for (let register of arrayRegister) {
+  for (let id of arrayId) {
     try {
-      const resp = await User.deleteOne({ register: register }).exec();
+      const resp = await User.deleteOne({ _id: id }).exec();
 
       if (resp.deletedCount == 1) {
         deletedCount += 1;
-        usuariosExcluidos.push(register);
+        usuariosExcluidos.push(id);
       }
     } catch {}
   }
