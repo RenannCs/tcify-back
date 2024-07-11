@@ -144,6 +144,8 @@ module.exports = function (app) {
   /* ************** DELETE ************** */
   app.delete("/repository/tcc/:id", deleteTCC);
 
+  app.delete("/repository/tccs/deleteMany" , require("../Control/Tcc/deleteMany"))
+
   /**
    * *******************************************************
    * *******************************************************
@@ -243,8 +245,12 @@ module.exports = function (app) {
 
   app.get("/repository/groups", allGroup);
 
+  app.get("/repository/groups/table" , require("../Control/Group/allTable"));
+
   /* ************** DELETE ************** */
   app.delete("/repository/group/:id", deleteGroup);
+
+  app.delete("/repository/groups/deleteMany" , require("../Control/Group/deleteMany"))
 
   /* ************** PATCH ************** */
   app.patch("/repository/group/insertStudent", insertStudentGroup);
