@@ -18,11 +18,12 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const arrayId = request.body.ids;
+  const _id_list = request.body._id_list;
+
 
   let deletedCount = 0;
   let usuariosExcluidos = [];
-  for (let id of arrayId) {
+  for (let id of _id_list) {
     try {
       const resp = await User.deleteOne({ _id: id }).exec();
 

@@ -164,7 +164,7 @@ module.exports = function (app) {
   );
 
   app.post(
-    "/repository/users/image/:id",
+    "/repository/user/image/:id",
     uploadLocal.fields([{ name: "image", maxCount: 1 }]),
     updateImageUser
   );
@@ -172,13 +172,13 @@ module.exports = function (app) {
   /* ************** PATCH ************** */
   app.patch("/repository/user/:id", updateUser);
 
-  app.patch("/repository/user/updateAdmin/:id" , require("../Control/User/updateAdmin"))
+  app.patch("/repository/admin/user/:id" , require("../Control/User/updateAdmin"))  
   
 
   /* ************** DELETE ************** */
   app.delete("/repository/user/:id", deleteUser);
 
-  app.delete("/repository/users/deleteMany" , deleteManyUsers);
+  app.delete("/repository/users/" , deleteManyUsers);
   /* ************** PUT ************** */
   app.put("/repository/user/password", updatePasswordUser);
 
