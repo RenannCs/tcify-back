@@ -11,8 +11,8 @@ module.exports = async (request, response) => {
       };
       return response.status(404).send(arr);
     }
-  } catch (err) {
-    if (err instanceof BSON.BSONError) {
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
       const arr = {
         status: "ERROR",
         message: "Id inválido!",

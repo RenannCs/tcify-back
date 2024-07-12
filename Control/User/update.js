@@ -3,11 +3,11 @@
  *
  * Pode alterar  número de telefone, link, linkedin, email
  *
- * 
+ *
  */
 
 //const ModelDatabase = require("../../Model/Database");
-const { ObjectId } = require("mongodb");
+const { ObjectId, BSON } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const JwtToken = new ModelJwtToken();
@@ -26,21 +26,38 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const id = request.params.id;
+  const _id = request.params._id;
   const phone_number = request.body.phone_number;
   const link = request.body.link;
   const linkedin = request.body.linkedin;
   const email = request.body.email;
 
-  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
-    const arr = {
-      status: "ERROR",
-      message: "Usuário não existe!",
-    };
-    return response.status(404).send(arr);
+  try {
+    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Usuário não existe!",
+      };
+      return response.status(404).send(arr);
+    }
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Id inválido!",
+      };
+      return response.status(400).send(arr);
+    } else {
+      const arr = {
+        status: "ERROR",
+        message: "Erro do servidor, tente novamente mais tarde!",
+        data: err,
+      };
+      return response.status(500).send(arr);
+    }
   }
 
-  const user = await User.findById(id).exec();
+  const user = await User.findById(_id).exec();
 
   if (email != undefined) {
     user.email = email;
@@ -73,29 +90,4 @@ module.exports = async (request, response) => {
       };
       return response.status(200).send(arr);
     });
-
-  /*
-  user
-    .update()
-    .then((resolve) => {
-      const arr = {
-        status: "SUCCESS",
-        data: resolve,
-        message: "Usuário atualizado com sucesso!",
-      };
-      return response.status(200).send(arr);
-    })
-    .catch((reject) => {
-      const arr = {
-        status: "ERROR",
-        data: reject,
-        message: "Erro ao atualizar usuário!",
-      };
-      return response.status(400).send(arr);
-    });
-  /*
-        .finally(()=>{
-            database.desconnect();
-        })
-        */
 };
