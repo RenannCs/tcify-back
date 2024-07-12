@@ -1,24 +1,5 @@
 /**
  *
- * IMPORTS PARA TCC
- *
- */
-
-const allTableTCCs = require("../Control/TCC/allTable");
-const allTableAdminTCCs = require("../Control/TCC/allTableAdmin");
-const allTableProfessorTcc = require("../Control/Tcc/allTableProfessor");
-const allTablePublic = require("../Control/Tcc/allTablePublic");
-const singleTCC = require("../Control/Tcc/single");
-const insertTCC = require("../Control/Tcc/insert");
-const updateTCC = require("../Control/Tcc/update");
-const deleteTCC = require("../Control/Tcc/Delete");
-const updateImageTcc = require("../Control/Tcc/updateImage");
-const updateMonography = require("../Control/Tcc/updateMonography");
-const updateDocument = require("../Control/Tcc/updateDocument");
-const updateZip = require("../Control/Tcc/updateZip");
-const singleTccByStudent = require("../Control/Tcc/singleByStudent");
-/**
- *
  * IMPORTS PARA USUARIOS
  *
  */
@@ -93,15 +74,15 @@ module.exports = function (app) {
 
   app.get("/repository/tccs/table", require("../Control/TCC/allTable"));
 
-  app.get("/repository/tccs/tableAdmin", allTableAdminTCCs);
+  app.get("/repository/tccs/tableAdmin", require("../Control/TCC/allTableAdmin"));
 
-  app.get("/repository/tcc/:id", singleTCC);
+  app.get("/repository/tcc/:id", require("../Control/Tcc/single"));
 
-  app.get("/repository/tcc/student/:id", singleTccByStudent);
+  app.get("/repository/tcc/student/:id", require("../Control/Tcc/singleByStudent"));
 
-  app.get("/repository/tccs/table/professor/:id" , allTableProfessorTcc);
+  app.get("/repository/tccs/table/professor/:id" , require("../Control/Tcc/allTableProfessor"));
 
-  app.get("/repository/tccs/table/public" , allTablePublic);
+  app.get("/repository/tccs/table/public" , require("../Control/Tcc/allTablePublic"));
 
   /* ************** POST ************** */
   app.post(
@@ -111,38 +92,38 @@ module.exports = function (app) {
       { name: "monography", maxCount: 1 },
       { name: "zip", maxCount: 1 },
     ]),
-    insertTCC
+    require("../Control/Tcc/insert")
   );
 
   app.post(
     "/repository/tcc/image/:id",
     uploadLocal.fields([{ name: "image", maxCount: 1 }]),
-    updateImageTcc
+    require("../Control/Tcc/updateImage")
   );
 
   /* ************** PATCH ************** */
-  app.patch("/repository/tcc/:id", uploadLocal.any(), updateTCC);
+  app.patch("/repository/tcc/:id", uploadLocal.any(), require("../Control/Tcc/update"));
 
   app.patch(
     "/repository/tcc/monography/:id",
     uploadLocal.fields([{ name: "monography", maxCount: 1 }]),
-    updateMonography
+    require("../Control/Tcc/updateMonography")
   );
 
   app.patch(
     "/repository/tcc/document/:id",
     uploadLocal.fields([{ name: "document", maxCount: 1 }]),
-    updateDocument
+    require("../Control/Tcc/updateDocument")
   );
 
   app.patch(
     "/repository/tcc/zip/:id",
     uploadLocal.fields([{ name: "zip", maxCount: 1 }]),
-    updateZip
+    require("../Control/Tcc/updateZip")
   );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/tcc/:id", deleteTCC);
+  app.delete("/repository/tcc/:id", require("../Control/Tcc/Delete"));
 
   app.delete("/repository/tccs/deleteMany" , require("../Control/Tcc/deleteMany"))
 
@@ -262,3 +243,25 @@ module.exports = function (app) {
   app.patch("/repository/group/accept", acceptGroup);
   //app.get('/teste' , sendemail)
 };
+
+
+/**
+ *
+ * IMPORTS PARA TCC
+ *
+ 
+
+const allTableTCCs = require("../Control/TCC/allTable");
+const allTableAdminTCCs = require("../Control/TCC/allTableAdmin");
+const allTableProfessorTcc = require("../Control/Tcc/allTableProfessor");
+const allTablePublic = require("../Control/Tcc/allTablePublic");
+const singleTCC = require("../Control/Tcc/single");
+const insertTCC = require("../Control/Tcc/insert");
+const updateTCC = require("../Control/Tcc/update");
+const deleteTCC = require("../Control/Tcc/Delete");
+const updateImageTcc = require("../Control/Tcc/updateImage");
+const updateMonography = require("../Control/Tcc/updateMonography");
+const updateDocument = require("../Control/Tcc/updateDocument");
+const updateZip = require("../Control/Tcc/updateZip");
+const singleTccByStudent = require("../Control/Tcc/singleByStudent");
+*/
