@@ -70,14 +70,6 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
   const course = await Course.findById(course_id).exec();
-  let user_typeStr = "";
-  if (user_type == "0") {
-    user_typeStr = "Aluno";
-  } else if (user_typeStr == "1") {
-    user_typeStr = "Professor";
-  } else {
-    user_typeStr = "Administrador";
-  }
 
   const email = new Email();
   email.dest = emailUser;
@@ -88,7 +80,7 @@ module.exports = async (request, response) => {
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
   Curso: ${course.name}<br>
-  Tipo de usuário: ${user_typeStr}<br>
+  Tipo de usuário: ${user_type}<br>
   Email: ${user.email}<br>
   Senha: ${password}<br>
   `;
@@ -104,6 +96,9 @@ module.exports = async (request, response) => {
   user
     .save()
     .then((result) => {
+      result.image = result.image
+        ? result.image
+        : `${process.env.API_PATH}Default/profile_picture_default.webp`;
       const arr = {
         data: result,
         status: "SUCCESS",
