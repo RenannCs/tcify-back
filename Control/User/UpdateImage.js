@@ -8,7 +8,8 @@ const imageSize = require("image-size");
 const fs = require("fs");
 
 const ModelJwtToken = require("../../Model/JwtToken");
-const { ObjectId } = require("mongodb");
+const { ObjectId, BSON } = require("mongodb");
+
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -25,26 +26,92 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const id = request.params.id;
+  const _id = request.params._id;
+  const image = request.file;
 
-  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
-    const arr = {
-      status: "ERROR",
-      message: "Usuário não encontrado!",
-    };
-    return response.status(404).send(arr);
+  //Verifica se o usuário existe
+  try {
+    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Usuário não encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Id inválido!",
+      };
+      return response.status(400).send(arr);
+    } else {
+      const arr = {
+        status: "ERROR",
+        message: "Erro do servidor, tente novamente mais tarde!",
+        data: err,
+      };
+      return response.status(500).send(arr);
+    }
   }
 
-  const user = await User.findById(id).exec();
+  if (!image) {
+    const arr = {
+      status: "ERROR",
+      message: "Imagem não enviada!",
+    };
+    return response.status(400).send(arr);
+  }
 
+  const user = await User.findById(_id).exec();
   const caminhoAntigo = user.image;
 
-  const novoCaminho = "Uploads/UsersImages/" + id + ".jpg";
+  const mimetype = image.mimetype;
+  const formatoAtual = mimetype.split("/")[1];
+  const formatosImagens = ["jpg", "jpeg", "png", "webp"];
 
-  const tamanhoMax = 1024 * 1024 * 10;
-  const image = request.files["image"];
+  //Verifica o formato da imagem
+  if (!formatosImagens.includes(formatoAtual)) {
+    //Apaga a imagem caso for invalida
+    fs.unlink(image.path, (error) => {
+      //Tratamento de erro caso não consiga excluir a image
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao processar a imagem!",
+          data: error,
+        };
+        return response.status(404).send(arr);
+      }
+    });
 
-  if (image[0].size > tamanhoMax) {
+    //Erro caso a imagem for invalida
+    const arr = {
+      status: "ERROR",
+      message: "Formato de imagem inválido!",
+    };
+    return response.status(415).send(arr);
+  }
+
+  const novoCaminho = "Uploads/UsersImages/" + _id + "." + formatoAtual;
+  const tamanhoMax = 1024 * 1024 * 10; //10mb
+
+  //Verifica o tamanho da imagem
+  if (image.size > tamanhoMax) {
+    //Exclui a imagem caso for muito grande
+    fs.unlink(image.path, (error) => {
+      //Tratamento de erro caso não consiga exlcuir a imagem
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao processar a imagem!",
+          data: error,
+        };
+        return response.status(404).send(arr);
+      }
+    });
+
+    //Erro para a imagem grande
     const arr = {
       status: "ERROR",
       message: "Imagem muito grande!",
@@ -52,21 +119,25 @@ module.exports = async (request, response) => {
     return response.status(413).send(arr);
   }
 
-  if (image == undefined) {
-    const arr = {
-      status: "ERROR",
-      message: "Imagem não foi encontrada!",
-    };
-    return response.status(404).send(arr);
-  }
-
-  const imagePath = image[0].path;
-
-  const dimensions = await imageSize(imagePath);
+  const dimensions = await imageSize(image.path);
   const { width, height } = dimensions;
 
+  //Verifica as dimensões da imagem
   if (width > 5000 || height > 5000) {
-    //database.desconnect();
+    //Exclui a imagem caso for invalida
+    fs.unlink(image.path, (error) => {
+      //Tratamento de erro para caso não consiga excluir a imagem
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao processar a imagem!",
+          data: error,
+        };
+        return response.status(404).send(arr);
+      }
+    });
+
+    //Envia ao excluir imagem
     const arr = {
       status: "ERROR",
       message: "As dimensões da imagem são muito grandes!",
@@ -74,25 +145,71 @@ module.exports = async (request, response) => {
     return response.status(413).send(arr);
   }
 
-  try {
-    if (caminhoAntigo != null) {
-      fs.unlink(caminhoAntigo, (error) => {});
+  //Verifica se o usuario possui imagem
+  if (caminhoAntigo != null) {
+    //Verifica se o caminho existe
+    if (fs.existsSync(caminhoAntigo)) {
+      //Exclui a imagem antiga
+      fs.unlink(caminhoAntigo, (error) => {
+        //Tratamento de erro para tentar exlcuir a imagem antiga
+        if (error) {
+          //Caso de erro, exclui a imagem atual para não houver conflito entre duas imagens
+          fs.unlink(image.path, (error) => {
+            //Tratamento de erro para excluir imagem atual
+            if (error) {
+              //Envia pelo erro da imagem nova
+              const arr = {
+                status: "ERROR",
+                message: "Ocorreu um erro ao processar a imagem!",
+                data: error,
+              };
+              return response.status(404).send(arr);
+            }
+          });
+
+          //Envia pelo erro da imagem antiga
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao excluir a imagem antiga!",
+            data: error,
+          };
+          return response.status(400).send(arr);
+        }
+      });
     }
-    fs.rename(image[0].path, novoCaminho, (error) => {});
-    user.image = novoCaminho;
-
-    await user.save();
-
-    const arr = {
-      status: "SUCCESS",
-      message: "Imagem atualizada com sucesso",
-    };
-    return response.status(200).send(arr);
-  } catch {
-    const arr = {
-      status: "ERROR",
-      message: "Ocorreu um erro ao procesar a imagem!",
-    };
-    return response.status(400).send(arr);
   }
+
+  //Renomeia a imagem nova
+  fs.rename(image.path, novoCaminho, (error) => {
+    //Tratamento de erro
+    if (error) {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao substuir a imagem!",
+        data: error,
+      };
+      return response.status(400).send(arr);
+    }
+  });
+
+  user.image = novoCaminho;
+  user
+    .save()
+    .then((resolve) => {
+      const arr = {
+        status: "SUCCESS",
+        message: "Imagem atualizada com sucesso",
+        data: resolve,
+      };
+      return response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      fs.unlink(novoCaminho, (error) => {});
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao atualizar o usuário!",
+        data: reject,
+      };
+      return response.status(500).send(arr);
+    });
 };
