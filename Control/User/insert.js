@@ -1,7 +1,7 @@
 /**
  * Adiciona um novo usuário qualquer [aluno, professor ou admin]
  *
- * Coloca nome, curso, email, senha, tipo usuario e registro
+ * Coloca nome, curso, email, senha, tipo usuario, registro, telefone, link
  */
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
@@ -29,6 +29,8 @@ module.exports = async (request, response) => {
   const emailUser = request.body.email;
   const user_type = request.body.user_type;
   const register = request.body.register;
+  const phone_number = request.body.phone_number;
+  const link = request.body.link;
 
   const strAll =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
@@ -46,6 +48,8 @@ module.exports = async (request, response) => {
   user.password = password;
   user.user_type = user_type;
   user.register = register;
+  user.phone_number = phone_number;
+  user.link = link;
 
   if ((await User.exists({ register: register })) != null) {
     const arr = {
