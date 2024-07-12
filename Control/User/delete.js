@@ -33,7 +33,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Usário excluído com sucesso",
+        message: "Usuário excluído com sucesso",
         data: resolve,
       };
       return response.status(200).send(arr);
