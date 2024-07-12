@@ -1,57 +1,10 @@
-/**
- *
- * IMPORTS PARA USUARIOS
- *
- */
-const readAllUsers = require("../Control/User/all");
-const allTableUsers = require("../Control/User/allTable");
-const singleUser = require("../Control/User/single");
-const insertUser = require("../Control/User/insert");
-const updateUser = require("../Control/User/update");
-const deleteUser = require("../Control/User/delete");
-const loginUser = require("../Control/User/login");
-const updatePasswordUser = require("../Control/User/updatePassword");
-const updateImageUser = require("../Control/User/updateImage");
-const studentCsv = require("../Control/User/csvStudent");
-const allTeachers = require("../Control/User/allTableProfessor");
-const allTableAdmin = require("../Control/User/allTableAdm");
-const allTableProfessor = require("../Control/User/allTableProfessor");
-const allTableStudent = require("../Control/User/allTableStudent");
-
-const deleteManyUsers = require("../Control/User/deleteMany");
-
-/**
- *
- * IMPORTS PARA CURSOS
- *
- */
-const readAllCourses = require("../Control/Course/all");
-const singleCourse = require("../Control/Course/single");
-const insertCourse = require("../Control/Course/insert");
-const updateCourse = require("../Control/Course/update");
-const deleteCourse = require("../Control/Course/delete");
-
-/**
- *
- * IMPORTS PARA GRUPOS
- *
- */
-const insertGroup = require("../Control/Group/insert");
-const singleGroupByStudent = require("../Control/Group/SingleByStudent");
-const singleGroupById = require("../Control/Group/Single");
-const deleteGroup = require("../Control/Group/delete");
-const insertStudentGroup = require("../Control/Group/insertStudent");
-const deleteStudentGroup = require("../Control/Group/deleteStudent");
-const acceptGroup = require("../Control/Group/accept");
-const allGroup = require("../Control/Group/all");
-const updateStatus = require("../Control/Group/updateStatus");
-//const sendemail = require('../Control/Email/testesend');
-
 module.exports = function (app) {
   const express = require("express");
   const multer = require("multer");
 
   const uploadLocal = multer({ dest: "Uploads/" });
+  const uploadsUserImages = multer({ dest: "Uploads/UsersImages" });
+
   app.use(express.json());
 
   app.use((req, res, next) => {
@@ -59,14 +12,8 @@ module.exports = function (app) {
     next();
   });
 
-  /**
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
-   * ------------------------ROTAS TCC----------------------
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
+  /*
+   * ---------------------------------------ROTAS TCC----------------------------------------------------------
    */
 
   /* ************** GETS ************** */
@@ -74,15 +21,27 @@ module.exports = function (app) {
 
   app.get("/repository/tccs/table", require("../Control/TCC/allTable"));
 
-  app.get("/repository/tccs/tableAdmin", require("../Control/TCC/allTableAdmin"));
+  app.get(
+    "/repository/tccs/tableAdmin",
+    require("../Control/TCC/allTableAdmin")
+  );
 
   app.get("/repository/tcc/:id", require("../Control/Tcc/single"));
 
-  app.get("/repository/tcc/student/:id", require("../Control/Tcc/singleByStudent"));
+  app.get(
+    "/repository/tcc/student/:id",
+    require("../Control/Tcc/singleByStudent")
+  );
 
-  app.get("/repository/tccs/table/professor/:id" , require("../Control/Tcc/allTableProfessor"));
+  app.get(
+    "/repository/tccs/table/professor/:id",
+    require("../Control/Tcc/allTableProfessor")
+  );
 
-  app.get("/repository/tccs/table/public" , require("../Control/Tcc/allTablePublic"));
+  app.get(
+    "/repository/tccs/table/public",
+    require("../Control/Tcc/allTablePublic")
+  );
 
   /* ************** POST ************** */
   app.post(
@@ -102,7 +61,11 @@ module.exports = function (app) {
   );
 
   /* ************** PATCH ************** */
-  app.patch("/repository/tcc/:id", uploadLocal.any(), require("../Control/Tcc/update"));
+  app.patch(
+    "/repository/tcc/:id",
+    uploadLocal.any(),
+    require("../Control/Tcc/update")
+  );
 
   app.patch(
     "/repository/tcc/monography/:id",
@@ -125,125 +88,142 @@ module.exports = function (app) {
   /* ************** DELETE ************** */
   app.delete("/repository/tcc/:id", require("../Control/Tcc/Delete"));
 
-  app.delete("/repository/tccs/deleteMany" , require("../Control/Tcc/deleteMany"))
+  app.delete(
+    "/repository/tccs/deleteMany",
+    require("../Control/Tcc/deleteMany")
+  );
 
-  /**
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
-   *------------------------ROTAS USERS-----------------------
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
+  /*
+   * ---------------------------------------ROTAS USERS----------------------------------------------------------
    */
 
   /* ************** GETS ************** */
-  app.get("/repository/users", readAllUsers);
+  app.get("/repository/users", require("../Control/User/all"));
 
-  app.get("/repository/users/table", allTableUsers);
+  app.get("/repository/users/table", require("../Control/User/allTable"));
 
-  app.get("/repository/users/table/administrator" , allTableAdmin);
+  app.get(
+    "/repository/users/table/administrator",
+    require("../Control/User/allTableAdm")
+  );
 
-  app.get("/repository/users/table/professor", allTableProfessor);
+  app.get(
+    "/repository/users/table/students",
+    require("../Control/User/allTableStudent")
+  );
 
-  app.get("/repository/users/table/students" , allTableStudent);
+  app.get("/repository/user/:id", require("../Control/User/single"));
 
-  app.get("/repository/user/:id", singleUser);
-
-  app.get("/repository/users/teachers", allTeachers);
+  app.get(
+    "/repository/users/teachers",
+    require("../Control/User/allTableProfessor")
+  );
 
   /* ************** POSTS ************** */
-  app.post("/repository/user", uploadLocal.any(), insertUser);
+  app.post(
+    "/repository/user",
+    uploadLocal.any(),
+    require("../Control/User/insert")
+  );
 
-  app.post("/repository/user/login", loginUser);
+  app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
     "/repository/users/csv",
     uploadLocal.fields([{ name: "data", maxCount: 1 }]),
-    studentCsv
+    require("../Control/User/csvStudent")
   );
 
   app.post(
-    "/repository/user/image/:id",
-    uploadLocal.fields([{ name: "image", maxCount: 1 }]),
-    updateImageUser
+    "/repository/user/image/:_id",
+    uploadsUserImages.single("image"),
+    require("../Control/User/updateImage")
   );
 
   /* ************** PATCH ************** */
-  app.patch("/repository/user/:id", updateUser);
+  app.patch("/repository/user/:_id", require("../Control/User/update"));
 
-  app.patch("/repository/admin/user/:id" , require("../Control/User/updateAdmin"))  
-  
+  app.patch(
+    "/repository/admin/user/:_id",
+    require("../Control/User/updateAdmin")
+  );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/user/:id", deleteUser);
+  app.delete("/repository/user/:id", require("../Control/User/delete"));
 
-  app.delete("/repository/users/" , deleteManyUsers);
+  app.delete("/repository/users/", require("../Control/User/deleteMany"));
   /* ************** PUT ************** */
-  app.put("/repository/user/password", updatePasswordUser);
+  app.put(
+    "/repository/user/password",
+    require("../Control/User/updatePassword")
+  );
 
-  /**
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
-   *------------------------ROTAS CURSO-----------------------
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
+  /*
+   * ---------------------------------------ROTAS COURSE-------------------------------------------------------
    */
 
   /* ************** GETS ************** */
-  app.get("/repository/courses", readAllCourses);
+  app.get("/repository/courses", require("../Control/Course/all"));
 
-  app.get("/repository/course/:id", singleCourse);
+  app.get("/repository/course/:id", require("../Control/Course/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/course", insertCourse);
+  app.post("/repository/course", require("../Control/Course/insert"));
 
   /* ************** PATCH ************** */
-  app.patch("/repository/course", updateCourse);
+  app.patch("/repository/course", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/course/:id", deleteCourse);
+  app.delete("/repository/course/:id", require("../Control/Course/delete"));
 
-  /**
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
-   *------------------------ROTAS GRUPO-----------------------
-   * *******************************************************
-   * *******************************************************
-   * *******************************************************
+  /*
+   * ---------------------------------------ROTAS GROUP----------------------------------------------------------
    */
 
   /* ************** POST ************** */
-  app.post("/repository/group", insertGroup);
+  app.post("/repository/group", require("../Control/Group/insert"));
 
   /* ************** GETS ************** */
-  app.get("/repository/group/singleByStudent/:id", singleGroupByStudent);
+  app.get(
+    "/repository/group/singleByStudent/:id",
+    require("../Control/Group/SingleByStudent")
+  );
 
-  app.get("/repository/group/singleById/:id", singleGroupById);
+  app.get(
+    "/repository/group/singleById/:id",
+    require("../Control/Group/Single")
+  );
 
-  app.get("/repository/groups", allGroup);
+  app.get("/repository/groups", require("../Control/Group/all"));
 
-  app.get("/repository/groups/table" , require("../Control/Group/allTable"));
+  app.get("/repository/groups/table", require("../Control/Group/allTable"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/group/:id", deleteGroup);
+  app.delete("/repository/group/:id", require("../Control/Group/delete"));
 
-  app.delete("/repository/groups/deleteMany" , require("../Control/Group/deleteMany"))
+  app.delete(
+    "/repository/groups/deleteMany",
+    require("../Control/Group/deleteMany")
+  );
 
   /* ************** PATCH ************** */
-  app.patch("/repository/group/insertStudent", insertStudentGroup);
+  app.patch(
+    "/repository/group/insertStudent",
+    require("../Control/Group/insertStudent")
+  );
 
-  app.patch("/repository/group/deleteStudent", deleteStudentGroup);
+  app.patch(
+    "/repository/group/deleteStudent",
+    require("../Control/Group/deleteStudent")
+  );
 
-  app.patch("/repository/group/updateStatus", updateStatus);
+  app.patch(
+    "/repository/group/updateStatus",
+    require("../Control/Group/updateStatus")
+  );
 
-  app.patch("/repository/group/accept", acceptGroup);
-  //app.get('/teste' , sendemail)
+  app.patch("/repository/group/accept", require("../Control/Group/accept"));
 };
-
 
 /**
  *
@@ -264,4 +244,53 @@ const updateMonography = require("../Control/Tcc/updateMonography");
 const updateDocument = require("../Control/Tcc/updateDocument");
 const updateZip = require("../Control/Tcc/updateZip");
 const singleTccByStudent = require("../Control/Tcc/singleByStudent");
+*/
+
+/**
+ *
+ * IMPORTS PARA USUARIOS
+ *
+ 
+const readAllUsers = require("../Control/User/all");
+const allTableUsers = require("../Control/User/allTable");
+const singleUser = require("../Control/User/single");
+const insertUser = require("../Control/User/insert");
+const updateUser = require("../Control/User/update");
+const deleteUser = require("../Control/User/delete");
+const loginUser = require("../Control/User/login");
+const updatePasswordUser = require("../Control/User/updatePassword");
+const updateImageUser = require("../Control/User/updateImage");
+const studentCsv = require("../Control/User/csvStudent");
+const allTeachers = require("../Control/User/allTableProfessor");
+const allTableAdmin = require("../Control/User/allTableAdm");
+const allTableProfessor = require("../Control/User/allTableProfessor");
+const allTableStudent = require("../Control/User/allTableStudent");
+const deleteManyUsers = require("../Control/User/deleteMany");
+*/
+
+/**
+ *
+ * IMPORTS PARA CURSOS
+ * 
+const readAllCourses = require("../Control/Course/all");
+const singleCourse = require("../Control/Course/single");
+const insertCourse = require("../Control/Course/insert");
+const updateCourse = require("../Control/Course/update");
+const deleteCourse = require("../Control/Course/delete");
+*/
+
+/**
+ *
+ * IMPORTS PARA GRUPOS
+ *
+ 
+const insertGroup = require("../Control/Group/insert");
+const singleGroupByStudent = require("../Control/Group/SingleByStudent");
+const singleGroupById = require("../Control/Group/Single");
+const deleteGroup = require("../Control/Group/delete");
+const insertStudentGroup = require("../Control/Group/insertStudent");
+const deleteStudentGroup = require("../Control/Group/deleteStudent");
+const acceptGroup = require("../Control/Group/accept");
+const allGroup = require("../Control/Group/all");
+const updateStatus = require("../Control/Group/updateStatus");
 */
