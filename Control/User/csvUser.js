@@ -46,9 +46,9 @@ module.exports = async (request, response) => {
 
             user.email = _user["E-mail"];
             user.register = _user["Registro"];
-            user.user_type = _user["Tipo_usuario"];
+            user.user_type = _user["Tipo de Usuário"];
             user.phone_number = _user["Telefone"];
-            user.link = _user["Link"]
+            user.link = _user["Link Externo"]
             user.enabled = true;
             const strAll =
               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
