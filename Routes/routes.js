@@ -129,13 +129,13 @@ module.exports = function (app) {
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/users/csv",
+    "/repository/student/upload/csv",
     uploadLocal.fields([{ name: "data", maxCount: 1 }]),
     require("../Control/User/csvStudent")
   );
 
   app.post(
-    "/repository/user/image/:_id",
+    "/repository/user/upload/image/:_id",
     uploadsUserImages.single("image"),
     require("../Control/User/updateImage")
   );
