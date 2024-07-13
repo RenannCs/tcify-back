@@ -105,22 +105,24 @@ module.exports = class Email {
   }
 
   async sendEmails(data) {
-    for (const user of data) {
-      const email = new Email();
-      email.dest = user.email;
-      email.subject = "Conectado ao repositório de TCC's da Univap Centro";
-      email.message = `
-            <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
-            <br>Seus dados:<br>
-            Nome: ${user.name}<br>
-            Registro: ${user.register}<br>
-            Curso: ${user.course_name}<br>
-            Tipo de usuário: ${user.user_type}<br>
-            Email: ${user.email}<br>
-            Senha: ${user.password}<br>
-            `;
-      await email.send();
-    }
+    try {
+      for (const user of data) {
+        const email = new Email();
+        email.dest = user.email;
+        email.subject = "Conectado ao repositório de TCC's da Univap Centro";
+        email.message = `
+              <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+              <br>Seus dados:<br>
+              Nome: ${user.name}<br>
+              Registro: ${user.register}<br>
+              Curso: ${user.course_name}<br>
+              Tipo de usuário: ${user.user_type}<br>
+              Email: ${user.email}<br>
+              Senha: ${user.password}<br>
+              `;
+        await email.send();
+      }
+    } catch {}
   }
 
   get message() {
