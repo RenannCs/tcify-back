@@ -21,7 +21,7 @@ module.exports = async (request, response) => {
 
         user_type: user.user_type,
 
-        enabled: user.enabled,
+        status: user.status,
       })));
     })
     .then((resolve) => {

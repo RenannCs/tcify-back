@@ -48,8 +48,8 @@ module.exports = async (request, response) => {
             user.register = _user["Registro"];
             user.user_type = _user["Tipo de Usuário"];
             user.phone_number = _user["Telefone"];
-            user.link = _user["Link Externo"]
-            user.enabled = true;
+            user.link = _user["Link Externo"];
+            user.status = true;
             const strAll =
               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
             let password = "";
@@ -72,7 +72,7 @@ module.exports = async (request, response) => {
             }
 
             let course;
-            if (_user["Tipo_usuario"] != "Administrador") {
+            if (_user["Tipo de Usuário"] != "Administrador") {
               if (
                 (await Course.exists({
                   name: _user["Curso"],
@@ -97,11 +97,22 @@ module.exports = async (request, response) => {
           } catch (error) {
             if (error instanceof BSON.BSONError) {
               erros.push({
-                usuário: _user["Nome"],
+                name: _user["Nome"],
+                register: _user["Registro"],
+                course_name: _user["Curso"],
+                user_type: _user["Tipo de Usuário"],
+                email: _user["E-mail"],
                 erro: "Id do curso inválido!",
               });
             } else {
-              erros.push({ user: _user["Nome"], error: error.message });
+              erros.push({
+                name: _user["Nome"],
+                register: _user["Registro"],
+                course_name: _user["Curso"],
+                user_type: _user["Tipo de Usuário"],
+                email: _user["E-mail"],
+                error: error.message,
+              });
             }
           }
         }
@@ -114,8 +125,10 @@ module.exports = async (request, response) => {
           errorsCount: erros.length,
         };
 
-        const email = new Email();
-        email.sendEmails(sucessos);
+        try {
+          const email = new Email();
+          email.sendEmails(sucessos);
+        } catch {}
 
         const arr = {
           status: "SUCCESS",

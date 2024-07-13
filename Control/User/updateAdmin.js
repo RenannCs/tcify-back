@@ -13,7 +13,7 @@ module.exports = async (request, response) => {
   const phone_number = request.body.phone_number;
   const link = request.body.link;
   const user_type = request.body.user_type;
-  const enabled = request.body.enabled;
+  const status = request.body.status;
   const course_id = request.body.course_id;
 
   let user;
@@ -46,7 +46,8 @@ module.exports = async (request, response) => {
       user.name = name;
     }
     if (email != undefined) {
-      if ((await User.exists({ email: email }).exec()) != null) {
+      const checkUser = await User.exists({ email: email }).exec();
+      if (checkUser != null && checkUser._id != _id) {
         const arr = {
           status: "ERROR",
           message: "Email já está em uso!",
@@ -67,8 +68,8 @@ module.exports = async (request, response) => {
     if (user_type != undefined) {
       user.user_type = user_type;
     }
-    if (enabled != undefined) {
-      user.enabled = enabled;
+    if (status != undefined) {
+      user.status = status;
     }
     if (course_id != undefined) {
       if (
@@ -93,7 +94,7 @@ module.exports = async (request, response) => {
       const arr = {
         status: "ERROR",
         message: "Erro do servidor, tente novamente mais tarde!",
-        data: err,
+        data: error,
       };
       return response.status(500).send(arr);
     }

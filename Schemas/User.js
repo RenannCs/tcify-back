@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
     linkedin: String,
     user_type: String,
     image: String,
-    enabled: Boolean,
+    status: Boolean,
   },
   {
     statics: {
@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema(
         return this.exists({
           $or: [{ register: user }, { email: user }],
           password: newPassword,
-          enabled: true
+          status: true
         }).exec();
       },
     },
