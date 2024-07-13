@@ -2,37 +2,42 @@ const nodemailer = require("nodemailer");
 const { parseConnectionUrl } = require("nodemailer/lib/shared");
 
 module.exports = class Email {
-    constructor(message = "" , dest = "" , subject = "" , title = "Repositório TCC's Univap Centro"){
-        this.message = message;
-        this.dest = dest;
-        this.subject = subject;
-        this.title = title;
-        this.port = process.env.EMAIL_PORT;
-        this.host = process.env.EMAIL_HOST;
-        this.email = process.env.EMAIL;
-        this.password = process.env.EMAIL_PASSWORD;
-        this.service = process.env.EMAIL_SERVICE;
-    }
+  constructor(
+    message = "",
+    dest = "",
+    subject = "",
+    title = "Repositório TCC's Univap Centro"
+  ) {
+    this.message = message;
+    this.dest = dest;
+    this.subject = subject;
+    this.title = title;
+    this.port = process.env.EMAIL_PORT;
+    this.host = process.env.EMAIL_HOST;
+    this.email = process.env.EMAIL;
+    this.password = process.env.EMAIL_PASSWORD;
+    this.service = process.env.EMAIL_SERVICE;
+  }
 
-    async send(){
-        const transporter = nodemailer.createTransport({
-            host: this.host,
-            port: this.port,
-            secure: false,
-            service: this.service,
-            auth:{
-                user: this.email,
-                pass: this.password,
-            },
-            debug: false,
-            logger: true
-        });
-            
-        const resp = await transporter.sendMail({
-            from: '"Repositorio TCC\'s Univap Centro" <repositoriotccsunivap@yahoo.com>',
-            to: this.dest,
-            subject: this.subject,
-            html: `
+  async send() {
+    const transporter = nodemailer.createTransport({
+      host: this.host,
+      port: this.port,
+      secure: false,
+      service: this.service,
+      auth: {
+        user: this.email,
+        pass: this.password,
+      },
+      debug: false,
+      logger: true,
+    });
+
+    const resp = await transporter.sendMail({
+      from: '"Repositorio TCC\'s Univap Centro" <repositoriotccsunivap@yahoo.com>',
+      to: this.dest,
+      subject: this.subject,
+      html: `
             <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,64 +99,82 @@ module.exports = class Email {
 </body>
 </html>
 
-            `
-        });
-        return resp;
-        
-    }
+            `,
+    });
+    return resp;
+  }
 
-    get message(){
-        return this._message;
+  async sendEmails(data) {
+    for (const user of data) {
+      const email = new Email();
+      email.dest = user.email;
+      email.subject = "Conectado ao repositório de TCC's da Univap Centro";
+      email.message = `
+            <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+            <br>Seus dados:<br>
+            Nome: ${user.name}<br>
+            Registro: ${user.register}<br>
+            Curso: ${user.course_name}<br>
+            Tipo de usuário: ${user.user_type}<br>
+            Email: ${user.email}<br>
+            Senha: ${user.password}<br>
+            `;
+      await email.send();
     }
-    set message(v){
-        this._message = v;
-    }
-    get dest(){
-        return this._dest;
-    }
-    set dest(v){
-        this._dest = v;
-    }
-    get subject(){
-        return this._subject;
-    }
-    set subject(v){
-        this._subject = v;
-    }
-    get title(){
-        return this._title;
-    }
-    set title(v){
-        this._title = v;
-    }
-    get port(){
-        return this._port;
-    }
-    set port(v){
-        this._port = v;
-    }
-    get host(){
-        return this._host;
-    }
-    set host(v){
-        this._host = v;
-    }
-    get email(){
-        return this._email;
-    }
-    set email(v){
-        this._email = v;
-    }
-    get password(){
-        return this._password;
-    }
-    set password(v){
-        this._password = v;
-    }
-    get service(){
-        return this._service;
-    }
-    set service(v){
-        this._service = v;
-    }
-}
+  }
+
+  get message() {
+    return this._message;
+  }
+  set message(v) {
+    this._message = v;
+  }
+  get dest() {
+    return this._dest;
+  }
+  set dest(v) {
+    this._dest = v;
+  }
+  get subject() {
+    return this._subject;
+  }
+  set subject(v) {
+    this._subject = v;
+  }
+  get title() {
+    return this._title;
+  }
+  set title(v) {
+    this._title = v;
+  }
+  get port() {
+    return this._port;
+  }
+  set port(v) {
+    this._port = v;
+  }
+  get host() {
+    return this._host;
+  }
+  set host(v) {
+    this._host = v;
+  }
+  get email() {
+    return this._email;
+  }
+  set email(v) {
+    this._email = v;
+  }
+  get password() {
+    return this._password;
+  }
+  set password(v) {
+    this._password = v;
+  }
+  get service() {
+    return this._service;
+  }
+  set service(v) {
+    this._service = v;
+  }
+};

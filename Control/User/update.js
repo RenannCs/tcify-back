@@ -13,32 +13,56 @@ const User = require("../../Schemas/User");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
-
   const _id = request.params._id;
   const phone_number = request.body.phone_number;
   const link = request.body.link;
   const linkedin = request.body.linkedin;
   const email = request.body.email;
 
+  let user;
   try {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+
+    if (tokenValidationResult.status !== true) {
+      const arr = {
+        status: "ERROR",
+        message:
+          "Invalid token! If the problem persists, please contact our technical support.",
+        error: tokenValidationResult.error,
+      };
+      return response.status(401).send(arr);
+    }
+
     if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
       const arr = {
         status: "ERROR",
         message: "Usuário não existe!",
       };
       return response.status(404).send(arr);
+    }
+
+    user = await User.findById(_id).exec();
+
+    if (email != undefined) {
+      if ((await User.exists({ email: email }).exec()) != null) {
+        const arr = {
+          status: "ERROR",
+          message: "Email já está em uso!",
+        };
+        return response.status(409).send(arr);
+      }
+
+      user.email = email;
+    }
+    if (phone_number != undefined) {
+      user.phone_number = phone_number;
+    }
+    if (link != undefined) {
+      user.link = link;
+    }
+    if (linkedin != undefined) {
+      user.linkedin = linkedin;
     }
   } catch (error) {
     if (error instanceof BSON.BSONError) {
@@ -57,21 +81,6 @@ module.exports = async (request, response) => {
     }
   }
 
-  const user = await User.findById(_id).exec();
-
-  if (email != undefined) {
-    user.email = email;
-  }
-  if (phone_number != undefined) {
-    user.phone_number = phone_number;
-  }
-  if (link != undefined) {
-    user.link = link;
-  }
-  if (linkedin != undefined) {
-    user.linkedin = linkedin;
-  }
-
   user
     .save()
     .then((resolve) => {
@@ -88,6 +97,6 @@ module.exports = async (request, response) => {
         data: reject,
         message: "Ocorreu um erro ao atualizar o usuário!",
       };
-      return response.status(200).send(arr);
+      return response.status(500).send(arr);
     });
 };

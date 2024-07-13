@@ -4,6 +4,7 @@ module.exports = function (app) {
 
   const uploadLocal = multer({ dest: "Uploads/" });
   const uploadsUserImages = multer({ dest: "Uploads/UsersImages" });
+  const uploadsCsv = multer({ dest: "Uploads/CSV" });
 
   app.use(express.json());
 
@@ -112,7 +113,7 @@ module.exports = function (app) {
     require("../Control/User/allTableStudent")
   );
 
-  app.get("/repository/user/:id", require("../Control/User/single"));
+  app.get("/repository/user/:_id", require("../Control/User/single"));
 
   app.get(
     "/repository/users/teachers",
@@ -120,18 +121,14 @@ module.exports = function (app) {
   );
 
   /* ************** POSTS ************** */
-  app.post(
-    "/repository/user",
-    uploadLocal.any(),
-    require("../Control/User/insert")
-  );
+  app.post("/repository/user", require("../Control/User/insert"));
 
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/users/upload/csv",
-    uploadLocal.fields([{ name: "data", maxCount: 1 }]),
-    require("../Control/User/csvStudent")
+    "/repository/user/upload/csv",
+    uploadsCsv.single("data"),
+    require("../Control/User/csvUser")
   );
 
   app.post(
@@ -149,7 +146,7 @@ module.exports = function (app) {
   );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/user/:id", require("../Control/User/delete"));
+  app.delete("/repository/user/:_id", require("../Control/User/delete"));
 
   app.delete("/repository/users/", require("../Control/User/deleteMany"));
   /* ************** PUT ************** */

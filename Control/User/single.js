@@ -1,10 +1,10 @@
 const User = require("../../Schemas/User");
 const { BSON, ObjectId } = require("mongodb");
 module.exports = async (request, response) => {
-  const id = request.params.id;
+  const _id = request.params._id;
 
   try {
-    if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
+    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
       const arr = {
         status: "ERROR",
         message: "Usuário não encontrado",
@@ -28,7 +28,7 @@ module.exports = async (request, response) => {
     }
   }
 
-  User.single(id)
+  User.single(_id)
     .then((data) => {
       return (format = {
         _id: data.id,
@@ -60,7 +60,7 @@ module.exports = async (request, response) => {
         message: "Ocorreu um erro ao recuperar o usário",
         data: reject,
       };
-      return response.status(400).send(arr);
+      return response.status(500).send(arr);
     });
   /*
   try {

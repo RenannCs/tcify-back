@@ -3,19 +3,28 @@ const User = require("../../Schemas/User");
 const ModelJwtToken = require("../../Model/JwtToken");
 const JwtToken = new ModelJwtToken();
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  try {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  if (tokenValidationResult.status !== true) {
+    if (tokenValidationResult.status !== true) {
+      const arr = {
+        status: "ERROR",
+        message:
+          "Invalid token! If the problem persists, please contact our technical support.",
+        error: tokenValidationResult.error,
+      };
+      return response.status(401).send(arr);
+    }
+  } catch (error) {
     const arr = {
       status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(401).send(arr);
+    return response.status(500).send(arr);
   }
-  
+
   User.allFilter({ user_type: "Professor" })
     .then((data) => {
       return (dataFormat = data.map((user) => ({
@@ -29,7 +38,9 @@ module.exports = async (request, response) => {
         email: user.email ? user.email : null,
         phone_number: user.phone_number ? user.phone_number : null,
         link: user.link ? user.link : null,
-        image: user.image ? user.image : "Default/profile_picture_default.webp",
+        image: user.image
+          ? `${process.env.API_PATH}${user.image}`
+          : `${process.env.API_PATH}Default/profile_picture_default.webp`,
 
         user_type: user.user_type,
 
@@ -43,5 +54,13 @@ module.exports = async (request, response) => {
         data: resolve,
       };
       return response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao buscar os usuários!",
+        data: reject,
+      };
+      return response.status(500).send(arr);
     });
 };
