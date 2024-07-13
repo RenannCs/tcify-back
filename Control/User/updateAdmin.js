@@ -17,7 +17,7 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const id = request.params.id;
+  const _id = request.params._id;
 
   const name = request.body.name;
   const email = request.body.email;
@@ -29,7 +29,7 @@ module.exports = async (request, response) => {
   const enabled = request.body.enabled;
   const course_id = request.body.course_id;
 
-  if ((await User.exists({ _id: new ObjectId(id) }).exec()) == null) {
+  if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
     const arr = {
       status: "ERROR",
       message: "Usuário não existe!",
@@ -37,7 +37,7 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
 
-  const user = await User.findById(id).exec();
+  const user = await User.findById(_id).exec();
 
   if (name != undefined) {
     user.name = name;
@@ -64,7 +64,7 @@ module.exports = async (request, response) => {
   if (enabled != undefined) {
     user.enabled = enabled;
   }
-  if(course_id != undefined){
+  if (course_id != undefined) {
     user.course_id = course_id;
   }
 
