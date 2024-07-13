@@ -29,7 +29,8 @@ module.exports = async (request, response) => {
         email: user.email ? user.email : null,
         phone_number: user.phone_number ? user.phone_number : null,
         link: user.link ? user.link : null,
-        image: user.image ? user.image : `${process.env.API_PATH}Default/profile_picture_default.webp`,
+        image: user.image ? `${process.env.API_PATH}${user.image}` : `${process.env.API_PATH}Default/profile_picture_default.webp`,
+
 
         user_type: user.user_type,
 
