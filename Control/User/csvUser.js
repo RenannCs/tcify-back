@@ -42,11 +42,11 @@ module.exports = async (request, response) => {
           try {
             const user = new User();
 
-            user.name = _user["name"];
+            user.name = _user["Nome"];
 
-            user.email = _user["email"];
-            user.register = _user["register"];
-            user.user_type = _user["user_type"];
+            user.email = _user["E-mail"];
+            user.register = _user["Registro"];
+            user.user_type = _user["Tipo_usuario"];
             user.enabled = true;
             const strAll =
               "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
@@ -58,26 +58,28 @@ module.exports = async (request, response) => {
             user.password = password;
 
             if (
-              (await User.exists({ register: _user["register"] }).exec()) !=
+              (await User.exists({ register: _user["Registro"] }).exec()) !=
               null
             ) {
               throw new Error("Registro já em uso!");
             }
-            if ((await User.exists({ email: _user["email"] }).exec()) != null) {
+            if (
+              (await User.exists({ email: _user["E-mail"] }).exec()) != null
+            ) {
               throw new Error("Email já em uso!");
             }
 
             let course;
-            if (_user["user_type"] != "Administrador") {
-              user.course_id = _user["course_id"];
+            if (_user["Tipo_usuario"] != "Administrador") {
               if (
                 (await Course.exists({
-                  _id: new ObjectId(_user["course_id"]),
+                  name: _user["Curso"],
                 })) == null
               ) {
                 throw new Error("Curso não existe!");
               }
-              course = await Course.findById(_user["course_id"]);
+              course = await Course.findOne({ name: _user["Curso"] }).exec();
+              user.course_id = course.id;
             }
 
             await user.save();
@@ -93,16 +95,16 @@ module.exports = async (request, response) => {
           } catch (error) {
             if (error instanceof BSON.BSONError) {
               erros.push({
-                usuário: _user["name"],
+                usuário: _user["Nome"],
                 erro: "Id do curso inválido!",
               });
             } else {
-              erros.push({ user: _user["name"], error: error.message });
+              erros.push({ user: _user["Nome"], error: error.message });
             }
           }
         }
 
-        fs.unlink(csv.path , ()=>{})
+        fs.unlink(csv.path, () => {});
         const data = {
           errors: erros,
           successes: sucessos,
