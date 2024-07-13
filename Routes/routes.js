@@ -126,7 +126,7 @@ module.exports = function (app) {
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/user/upload/csv",
+    "/repository/users/upload/csv",
     uploadsCsv.single("data"),
     require("../Control/User/csvUser")
   );
