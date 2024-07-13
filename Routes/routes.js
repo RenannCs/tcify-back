@@ -129,7 +129,7 @@ module.exports = function (app) {
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/student/upload/csv",
+    "/repository/user/upload/csv",
     uploadLocal.fields([{ name: "data", maxCount: 1 }]),
     require("../Control/User/csvStudent")
   );
