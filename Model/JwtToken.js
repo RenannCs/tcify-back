@@ -4,14 +4,14 @@ require('dotenv').config();
 class JwtToken {
     constructor() {
         this.secretKey = process.env.SECRET_KEY;
-        this.expireDate = 60 * 60 * 24;
+        //this.expireDate = 60 * 60 * 24;
     }
 
     createToken(payload) {
         if (!this.secretKey) {
             throw new Error("Secret key is not defined!");
         }
-        return jwt.sign({ data: payload }, this.secretKey, { expiresIn: this.expireDate });
+        return jwt.sign({ data: payload }, this.secretKey);
     }
 
 
@@ -19,7 +19,7 @@ class JwtToken {
         if (!this.secretKey) {
             throw new Error("Secret key is not defined!");
         }
-        return jwt.sign(this.secretKey, { expiresIn: this.expireDate });
+        return jwt.sign(this.secretKey);
     }
 
     validateToken(jwtToken) {
