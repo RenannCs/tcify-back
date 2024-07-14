@@ -196,6 +196,7 @@ module.exports = async (request, response) => {
   user
     .save()
     .then((resolve) => {
+      resolve.image = `${process.env.API_PATH}${resolve.image}`;
       const arr = {
         status: "SUCCESS",
         message: "Imagem atualizada com sucesso",
