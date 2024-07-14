@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
-
+const fs = require("fs");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -25,11 +25,17 @@ module.exports = async (request, response) => {
     let usuariosExcluidos = [];
     for (let _id of _id_list) {
       try {
-        const resp = await User.deleteOne({ _id: _id }).exec();
+        const resp = await User.findByIdAndDelete(_id).exec();
 
-        if (resp.deletedCount == 1) {
+        if (resp.image != null) {
+          if (fs.existsSync(resp.image)) {
+            fs.unlink(resp.image, () => {});
+          }
+        }
+
+        if (resp != null) {
           deletedCount += 1;
-          usuariosExcluidos.push(_id);
+          usuariosExcluidos.push(resp);
         }
       } catch {}
     }

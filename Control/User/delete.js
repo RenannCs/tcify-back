@@ -1,7 +1,7 @@
 const { ObjectId, BSON } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
-
+const fs = require("fs");
 const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
@@ -27,6 +27,24 @@ module.exports = async (request, response) => {
         message: "Usuário não existe!",
       };
       return response.status(404).send(arr);
+    }
+
+    const user = await User.findById(_id).exec();
+
+    if (user.image != null) {
+      if (fs.existsSync(user.image)) {
+        fs.unlink(user.image, (error) => {
+          if (error) {
+            const arr = {
+              status: "ERROR",
+              message:
+                "Ocorreu um erro ao excluir a imagem do usuário! Usuário não exlcuído!",
+              data: error,
+            };
+            return response.status(500).send(arr);
+          }
+        });
+      }
     }
   } catch (error) {
     if (error instanceof BSON.BSONError) {
