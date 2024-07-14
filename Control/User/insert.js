@@ -51,6 +51,7 @@ module.exports = async (request, response) => {
     user.register = register;
     user.phone_number = phone_number;
     user.link = link;
+    user.status = true;
 
     if ((await User.exists({ register: register })) != null) {
       const arr = {
