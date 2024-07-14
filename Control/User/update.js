@@ -87,7 +87,7 @@ module.exports = async (request, response) => {
       const arr = {
         status: "SUCCESS",
         data: resolve,
-        message: "Usuario atualizado com sucesso",
+        message: "Usuário atualizado com sucesso!",
       };
       return response.status(200).send(arr);
     })
