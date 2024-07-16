@@ -159,16 +159,16 @@ module.exports = function (app) {
   /* ************** GETS ************** */
   app.get("/repository/courses", require("../Control/Course/all"));
 
-  app.get("/repository/course/:id", require("../Control/Course/single"));
+  app.get("/repository/courses/:id", require("../Control/Course/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/course", require("../Control/Course/insert"));
+  app.post("/repository/courses", require("../Control/Course/insert"));
 
   /* ************** PATCH ************** */
-  app.patch("/repository/course", require("../Control/Course/update"));
+  app.patch("/repository/courses", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/course/:id", require("../Control/Course/delete"));
+  app.delete("/repository/courses/:id", require("../Control/Course/delete"));
 
   /*
    * ---------------------------------------ROTAS GROUP----------------------------------------------------------
