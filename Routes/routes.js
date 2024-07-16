@@ -20,7 +20,7 @@ module.exports = function (app) {
   /* ************** GETS ************** */
   app.get("/repository/tccs", require("../Control/Tcc/all"));
 
-  app.get("/repository/tccs/table", require("../Control/TCC/allTable"));
+  app.get("/repository/projects/", require("../Control/TCC/allTable"));
 
   app.get(
     "/repository/tccs/tableAdmin",
