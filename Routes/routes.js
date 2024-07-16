@@ -165,7 +165,7 @@ module.exports = function (app) {
   app.post("/repository/courses", require("../Control/Course/insert"));
 
   /* ************** PATCH ************** */
-  app.patch("/repository/courses", require("../Control/Course/update"));
+  app.put("/repository/courses", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
   app.delete("/repository/courses/:id", require("../Control/Course/delete"));
