@@ -87,12 +87,9 @@ module.exports = function (app) {
   );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/tcc/:id", require("../Control/Tcc/Delete"));
+  app.delete("/repository/project/:id", require("../Control/Tcc/Delete"));
 
-  app.delete(
-    "/repository/tccs/deleteMany",
-    require("../Control/Tcc/deleteMany")
-  );
+  app.delete("/repository/project/", require("../Control/Tcc/deleteMany"));
 
   /*
    * ---------------------------------------ROTAS USERS----------------------------------------------------------
