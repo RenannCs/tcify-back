@@ -108,18 +108,18 @@ module.exports = function (app) {
   app.get("/repository/user/:_id", require("../Control/User/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/user", require("../Control/User/insert"));
+  app.post("/repository/users", require("../Control/User/insert"));
 
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/users",
+    "/repository/users/csv",
     uploadsCsv.single("data"),
     require("../Control/User/csvUser")
   );
 
   /* ************** PATCH ************** */
-  
+
   app.patch("/repository/users/:_id", require("../Control/User/update"));
 
   app.patch(
@@ -128,12 +128,9 @@ module.exports = function (app) {
     require("../Control/User/image")
   );
 
-  app.patch(
-    "/repository/users/password",
-    require("../Control/User/password")
-  );
+  app.patch("/repository/users/password", require("../Control/User/password"));
 
-  app.patch("/repository/users/status" , require("../Control/User/usersStatus"));
+  app.patch("/repository/users/status", require("../Control/User/usersStatus"));
 
   //app.patch("/repository/users" ,  )
 
@@ -144,10 +141,7 @@ module.exports = function (app) {
 
   /* ************** PUT ************** */
 
-  app.put(
-    "/repository/users/:id",
-    require("../Control/User/updateAdmin")
-  );
+  app.put("/repository/users/:id", require("../Control/User/updateAdmin"));
 
   /*
    * ---------------------------------------ROTAS COURSE-------------------------------------------------------
