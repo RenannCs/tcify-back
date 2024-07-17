@@ -16,6 +16,33 @@ module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
+    //Verificar se o id do token existe
+    if (
+      (await User.exists({
+        _id: new ObjectId(tokenValidationResult.decoded.payload._id),
+      }).exec()) == null
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as condições do usuário!",
+      };
+      return response.status(403).send(arr);
+    }
+
+    //Verificar se o user é adm ou professor
+    if (
+      !["Administrador", "Professor"].includes(
+        tokenValidationResult.decoded.payload.user_type
+      )
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as permissões de usuário!",
+      };
+      return response.status(403).send(arr);
+    }
+
+    //Verificar o token
     if (tokenValidationResult.status !== true) {
       const arr = {
         status: "ERROR",

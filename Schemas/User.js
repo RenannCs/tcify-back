@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema(
       },
       login(user, password) {
         const newPassword = md5(password);
-        return this.exists({
+        return this.findOne({
           $or: [{ register: user }, { email: user }],
           password: newPassword,
           status: true

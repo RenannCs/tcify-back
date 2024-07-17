@@ -18,15 +18,19 @@ module.exports = async (request, response) => {
 
       const JwtToken = new ModelJwtToken();
       const token = JwtToken.createToken({
-        id: resolve.id,
-        userType: resolve.user_type,
+        _id: resolve.id,
+        user_type: resolve.user_type,
       });
 
       // Append do token no objeto resolve
-      resolve.token = token;
+      const format = {
+        _id: resolve._id,
+        user_type: resolve.user_type ? resolve.user_type : null,
+        token: token,
+      };
 
       const arr = {
-        data: resolve,
+        data: format,
         status: "SUCCESS",
         message: "Usuário logado com sucesso!",
       };

@@ -8,47 +8,79 @@ const fs = require("fs");
 const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let csv;
+  let mimetype;
+  let formato;
+  try {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
+    //Verificar se o id do token existe
+    if (
+      (await User.exists({
+        _id: new ObjectId(tokenValidationResult.decoded.payload._id),
+      }).exec()) == null
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as condições do usuário!",
+      };
+      return response.status(403).send(arr);
+    }
 
-  const csv = request.file;
-  const mimetype = csv.mimetype;
-  const formato = mimetype.split("/")[1];
+    //Verificar se o user é adm ou professor
+    if (
+      !["Administrador", "Professor"].includes(
+        tokenValidationResult.decoded.payload.user_type
+      )
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as permissões de usuário!",
+      };
+      return response.status(403).send(arr);
+    }
 
-  if (!csv) {
-    const arr = {
-      status: "ERROR",
-      message: "Arquivo CSV não enviado!",
-    };
-    return response.status(400).send(arr);
-  }
+    if (tokenValidationResult.status !== true) {
+      const arr = {
+        status: "ERROR",
+        message:
+          "Invalid token! If the problem persists, please contact our technical support.",
+        error: tokenValidationResult.error,
+      };
+      return response.status(401).send(arr);
+    }
 
-  if (formato != "csv") {
-    fs.unlink(csv.path, (error) => {
-      if (error) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao ler o arquivo!",
-        };
-        return response.status(500).send(arr);
-      }
-    });
-    const arr = {
-      status: "ERROR",
-      message: "Formato de arquivo inválido!",
-    };
-    return response.status(415).send(arr);
-  }
+    csv = request.file;
+    mimetype = csv.mimetype;
+    formato = mimetype.split("/")[1];
+
+    if (!csv) {
+      const arr = {
+        status: "ERROR",
+        message: "Arquivo CSV não enviado!",
+      };
+      return response.status(400).send(arr);
+    }
+
+    if (formato != "csv") {
+      fs.unlink(csv.path, (error) => {
+        if (error) {
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+          };
+          return response.status(500).send(arr);
+        }
+      });
+      const arr = {
+        status: "ERROR",
+        message: "Formato de arquivo inválido!",
+      };
+      return response.status(415).send(arr);
+    }
+  } catch {}
+
   let erros = [];
   let sucessos = [];
 
@@ -57,7 +89,7 @@ module.exports = async (request, response) => {
       const arr = {
         status: "ERROR",
         message: "Ocorreu um erro ao ler o arquivo Csv",
-        data: error
+        data: error,
       };
       return response.status(500).send(arr);
     }
