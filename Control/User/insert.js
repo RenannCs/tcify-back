@@ -95,26 +95,31 @@ module.exports = async (request, response) => {
       return response.status(409).send(arr);
     }
 
-    if (
-      (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
-    ) {
-      const arr = {
-        status: "ERROR",
-        message: "Curso não existe!",
-      };
-      return response.status(404).send(arr);
+    let course;
+    if (user_type != "Administrador") {
+      if (
+        (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
+      ) {
+        const arr = {
+          status: "ERROR",
+          message: "Curso não existe!",
+        };
+        return response.status(404).send(arr);
+      }
+      course = await Course.findById(course_id).exec();
     }
-    const course = await Course.findById(course_id).exec();
 
     const email = new Email();
     email.dest = emailUser;
     email.subject = "Conectado ao repositório de TCC's da Univap Centro";
     email.message = `
-  <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+  <br><p> Parabéns ${
+    user.name
+  }! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
   <br>Seus dados:<br>
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
-  Curso: ${course.name}<br>
+  Curso: ${user_type != "Administrador" ? course.name : "Administrador"}<br>
   Tipo de usuário: ${user_type}<br>
   Email: ${user.email}<br>
   Senha: ${password}<br>
