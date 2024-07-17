@@ -18,7 +18,7 @@ module.exports = function (app) {
    */
 
   /* ************** GETS ************** */
-  app.get("/repository/tccs", require("../Control/Tcc/all"));
+  //app.get("/repository/tccs", require("../Control/Tcc/all"));
 
   app.get("/repository/projects/", require("../Control/TCC/allTable"));
 
@@ -96,60 +96,55 @@ module.exports = function (app) {
    */
 
   /* ************** GETS ************** */
+
   app.get("/repository/users", require("../Control/User/all"));
 
-  app.get("/repository/users/table", require("../Control/User/allTable"));
+  app.get("/repository/users/administrator", require("../Control/User/allAdm"));
 
-  app.get(
-    "/repository/users/table/administrator",
-    require("../Control/User/allTableAdm")
-  );
+  app.get("/repository/users/students", require("../Control/User/allStudent"));
 
-  app.get(
-    "/repository/users/table/students",
-    require("../Control/User/allTableStudent")
-  );
+  app.get("/repository/users/teachers", require("../Control/User/allTeachers"));
 
   app.get("/repository/user/:_id", require("../Control/User/single"));
 
-  app.get(
-    "/repository/users/teachers",
-    require("../Control/User/allTableProfessor")
-  );
-
-  /* ************** POSTS ************** */
+  /* ************** POST ************** */
   app.post("/repository/user", require("../Control/User/insert"));
 
   app.post("/repository/user/login", require("../Control/User/login"));
 
   app.post(
-    "/repository/users/upload/csv",
+    "/repository/users",
     uploadsCsv.single("data"),
     require("../Control/User/csvUser")
   );
 
-  app.post(
-    "/repository/user/upload/image/:_id",
-    uploadsUserImages.single("image"),
-    require("../Control/User/updateImage")
-  );
-
   /* ************** PATCH ************** */
+  
   app.patch("/repository/user/:_id", require("../Control/User/update"));
 
   app.patch(
-    "/repository/admin/user/:_id",
-    require("../Control/User/updateAdmin")
+    "/repository/user/image/:_id",
+    uploadsUserImages.single("image"),
+    require("../Control/User/image")
   );
+
+  app.patch(
+    "/repository/user/password",
+    require("../Control/User/password")
+  );
+
+  //app.patch("/repository/users" ,  )
 
   /* ************** DELETE ************** */
   app.delete("/repository/user/:_id", require("../Control/User/delete"));
 
-  app.delete("/repository/users/", require("../Control/User/deleteMany"));
+  app.delete("/repository/users/", require("../Control/User/deleteUsers"));
+
   /* ************** PUT ************** */
+
   app.put(
-    "/repository/user/password",
-    require("../Control/User/updatePassword")
+    "/repository/admin/user/:_id",
+    require("../Control/User/updateAdmin")
   );
 
   /*

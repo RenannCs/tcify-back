@@ -3,22 +3,31 @@ const User = require("../../Schemas/User");
 module.exports = async (request, response) => {
   User.all()
     .then((data) => {
-      return (format = data.map((user) => ({
-        _id: user.id,
-        name: user.name,
-        course_id: user.course_id ? user.course_id._id : null,
-        course_name: user.course_id ? user.course_id.name : null,
+      return (dataFormat = data.map((user) => ({
+        _id: user._id,
         register: user.register,
+        name: user.name,
+
+        course_name: user.course_id ? user.course_id.name : "N/A",
+        course_id: user.course_id ? user.course_id.id : "N/A",
+
         email: user.email ? user.email : null,
-        user_type: user.user_type,
         phone_number: user.phone_number ? user.phone_number : null,
-        image: user.image ? user.image : "Default/profile_picture_default.webp",
+
+        link: user.link ? user.link : null,
+        image: user.image
+          ? `${process.env.API_PATH}${user.image}`
+          : `${process.env.API_PATH}Default/profile_picture_default.webp`,
+
+        user_type: user.user_type,
+
+        status: user.status,
       })));
     })
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Usuários recuperados com sucesso!",
+        message: "Dados recuperados com sucesso",
         data: resolve,
       };
       return response.status(200).send(arr);
