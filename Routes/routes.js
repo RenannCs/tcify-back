@@ -133,6 +133,8 @@ module.exports = function (app) {
     require("../Control/User/password")
   );
 
+  app.patch("/repository/users/status" , require("../Control/User/usersStatus"));
+
   //app.patch("/repository/users" ,  )
 
   /* ************** DELETE ************** */
@@ -159,8 +161,8 @@ module.exports = function (app) {
   /* ************** POST ************** */
   app.post("/repository/courses", require("../Control/Course/insert"));
 
-  /* ************** PATCH ************** */
-  app.put("/repository/courses", require("../Control/Course/update"));
+  /* ************** PUT ************** */
+  app.put("/repository/courses/:_id", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
   app.delete("/repository/courses/:id", require("../Control/Course/delete"));
