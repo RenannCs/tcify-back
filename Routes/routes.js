@@ -141,7 +141,7 @@ module.exports = function (app) {
 
   /* ************** PUT ************** */
 
-  app.put("/repository/users/:id", require("../Control/User/updateAdmin"));
+  app.put("/repository/users/:_id", require("../Control/User/updateAdmin"));
 
   /*
    * ---------------------------------------ROTAS COURSE-------------------------------------------------------
