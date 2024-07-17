@@ -17,7 +17,7 @@ module.exports = async (request, response) => {
     return response.status(401).send(arr);
   }
 
-  const id = request.body.id;
+  const id = request.params._id;
   const name = request.body.name;
 
   if ((await Course.exists({ _id: new ObjectId(id) })) == null) {
