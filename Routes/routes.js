@@ -120,16 +120,16 @@ module.exports = function (app) {
 
   /* ************** PATCH ************** */
   
-  app.patch("/repository/user/:_id", require("../Control/User/update"));
+  app.patch("/repository/users/:_id", require("../Control/User/update"));
 
   app.patch(
-    "/repository/user/image/:_id",
+    "/repository/usesr/image/:_id",
     uploadsUserImages.single("image"),
     require("../Control/User/image")
   );
 
   app.patch(
-    "/repository/user/password",
+    "/repository/users/password",
     require("../Control/User/password")
   );
 
@@ -138,14 +138,14 @@ module.exports = function (app) {
   //app.patch("/repository/users" ,  )
 
   /* ************** DELETE ************** */
-  app.delete("/repository/user/:_id", require("../Control/User/delete"));
+  app.delete("/repository/users/:_id", require("../Control/User/delete"));
 
   app.delete("/repository/users/", require("../Control/User/deleteUsers"));
 
   /* ************** PUT ************** */
 
   app.put(
-    "/repository/user/:_id",
+    "/repository/users/:_id",
     require("../Control/User/updateAdmin")
   );
 
