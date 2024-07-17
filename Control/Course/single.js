@@ -22,7 +22,7 @@ module.exports = async (request, response) => {
   if ((await Course.exists({ _id: new ObjectId(id) })) == null) {
     const arr = {
       status: "ERROR",
-      message: "Curso não existe",
+      message: "Curso não existe!",
     };
     return response.status(404).send(arr);
   }
@@ -32,7 +32,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Curso recuperado com sucesso",
+        message: "Curso recuperado com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -40,7 +40,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Oorreu um erro ao buscar o curso",
+        message: "Oorreu um erro ao buscar o curso!",
         data: reject,
       };
       return response.status(400).send(arr);

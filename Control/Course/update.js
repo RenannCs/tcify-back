@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
   if ((await Course.exists({ _id: new ObjectId(id) })) == null) {
     const arr = {
       status: "ERROR",
-      message: "Curso não existe",
+      message: "Curso não existe!",
     };
     return response.status(404).send(arr);
   }
@@ -36,7 +36,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Curso atualizado com sucesso",
+        message: "Curso atualizado com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -44,7 +44,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao atualizar o curso",
+        message: "Ocorreu um erro ao atualizar o curso!",
         data: reject,
       };
       return response.status(400).send(arr);

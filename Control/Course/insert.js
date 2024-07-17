@@ -28,7 +28,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Curso inserido com sucesso",
+        message: "Curso inserido com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -36,7 +36,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao inserir o curso",
+        message: "Ocorreu um erro ao inserir o curso!",
         data: reject,
       };
       return response.status(400).send(arr);

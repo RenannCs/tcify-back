@@ -32,7 +32,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Curso excluído com sucesso",
+        message: "Curso excluído com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -40,7 +40,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao excluir o curso",
+        message: "Ocorreu um erro ao excluir o curso!",
         data: reject,
       };
       return response.status(400).send(arr);

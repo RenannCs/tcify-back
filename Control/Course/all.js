@@ -6,7 +6,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        message: "Cursos retornados com sucesso",
+        message: "Cursos retornados com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -14,7 +14,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao buscar os cursos",
+        message: "Ocorreu um erro ao buscar os cursos!",
         data: reject,
       };
       return response.status(400).send(arr);
