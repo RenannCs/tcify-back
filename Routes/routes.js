@@ -123,7 +123,7 @@ module.exports = function (app) {
   app.patch("/repository/users/:_id", require("../Control/User/update"));
 
   app.patch(
-    "/repository/usesr/image/:_id",
+    "/repository/users/image/:_id",
     uploadsUserImages.single("image"),
     require("../Control/User/image")
   );
@@ -145,7 +145,7 @@ module.exports = function (app) {
   /* ************** PUT ************** */
 
   app.put(
-    "/repository/users/:_id",
+    "/repository/users/:id",
     require("../Control/User/updateAdmin")
   );
 
