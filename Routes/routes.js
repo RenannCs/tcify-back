@@ -145,7 +145,7 @@ module.exports = function (app) {
   /* ************** PUT ************** */
 
   app.put(
-    "/repository/admin/user/:_id",
+    "/repository/user/:_id",
     require("../Control/User/updateAdmin")
   );
 
