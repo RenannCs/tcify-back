@@ -89,7 +89,7 @@ module.exports = function (app) {
   /* ************** DELETE ************** */
   app.delete("/repository/project/:id", require("../Control/Tcc/Delete"));
 
-  app.delete("/repository/project/", require("../Control/Tcc/deleteMany"));
+  app.delete("/repository/projects", require("../Control/Tcc/deleteProjects"));
 
   /*
    * ---------------------------------------ROTAS USERS----------------------------------------------------------
@@ -119,7 +119,7 @@ module.exports = function (app) {
   );
 
   /* ************** PATCH ************** */
-  
+
   app.patch("/repository/user/:_id", require("../Control/User/update"));
 
   app.patch(
@@ -128,12 +128,9 @@ module.exports = function (app) {
     require("../Control/User/image")
   );
 
-  app.patch(
-    "/repository/user/password",
-    require("../Control/User/password")
-  );
+  app.patch("/repository/user/password", require("../Control/User/password"));
 
-  app.patch("/repository/users/status" , require("../Control/User/usersStatus"));
+  app.patch("/repository/users/status", require("../Control/User/usersStatus"));
 
   //app.patch("/repository/users" ,  )
 
@@ -165,7 +162,9 @@ module.exports = function (app) {
   app.put("/repository/courses/:_id", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/courses/:id", require("../Control/Course/delete"));
+  app.delete("/repository/course/:id", require("../Control/Course/delete"));
+
+  app.delete("/repository/courses", require("../Control/Course/deleteCourses"));
 
   /*
    * ---------------------------------------ROTAS GROUP----------------------------------------------------------

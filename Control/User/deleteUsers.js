@@ -8,7 +8,7 @@ module.exports = async (request, response) => {
   try {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
+    
     //Verificar se o id do token existe
     if (
       (await User.exists({
