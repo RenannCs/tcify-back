@@ -15,7 +15,7 @@ module.exports = async (request, response) => {
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
     const token_id = tokenValidationResult.decoded.payload._id;
-    const toke_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_user_type = tokenValidationResult.decoded.payload.user_type;
     const token_status = tokenValidationResult.status;
 
     

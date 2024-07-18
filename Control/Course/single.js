@@ -1,33 +1,34 @@
-const { ObjectId } = require("mongodb");
+const { ObjectId, BSON } = require("mongodb");
 const Course = require("../../Schemas/Course");
-//const ModelJwtToken = require('../../Model/JwtToken');
-
-//const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
-  /*const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }*/
-
-  const id = request.params.id;
-
-  if ((await Course.exists({ _id: new ObjectId(id) })) == null) {
-    const arr = {
-      status: "ERROR",
-      message: "Curso não existe!",
-    };
-    return response.status(404).send(arr);
+  const _id = request.params._id;
+  try {
+    if ((await Course.exists({ _id: new ObjectId(_id) })) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Curso não existe!",
+      };
+      return response.status(404).send(arr);
+    }
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Curso inválido",
+      };
+      return response.status(400).send(arr);
+    } else {
+      const arr = {
+        status: "ERROR",
+        message: "Erro do servidor, tente novamente mais tarde!",
+        data: error,
+      };
+      return response.status(500).send(arr);
+    }
   }
 
-  Course.findById(id)
+  Course.findById(_id)
     .exec()
     .then((resolve) => {
       const arr = {

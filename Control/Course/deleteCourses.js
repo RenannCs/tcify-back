@@ -9,40 +9,20 @@ module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    //Verificar se o id do token existe
-    if (
-      (await User.exists({
-        _id: new ObjectId(tokenValidationResult.decoded.payload._id),
-      }).exec()) == null
-    ) {
-      const arr = {
-        status: "ERROR",
-        message: "Operação negada devido as condições do usuário!",
-      };
-      return response.status(403).send(arr);
-    }
+    const token_id = tokenValidationResult.decoded.payload._id;
+    const token_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_status = tokenValidationResult.status;
 
-    //Verificar se o user é adm ou professor
     if (
-      !["Administrador", "Professor"].includes(
-        tokenValidationResult.decoded.payload.user_type
-      )
+      token_status == false ||
+      (await User.validateTokenId(token_id)) == false ||
+      User.validatePermission(token_user_type) == false
     ) {
       const arr = {
         status: "ERROR",
-        message: "Operação negada devido as permissões de usuário!",
+        message: "Operação negada devido as permissões do usuário!",
       };
       return response.status(403).send(arr);
-    }
-    //Verificar token
-    if (tokenValidationResult.status !== true) {
-      const arr = {
-        status: "ERROR",
-        message:
-          "Invalid token! If the problem persists, please contact our technical support.",
-        error: tokenValidationResult.error,
-      };
-      return response.status(401).send(arr);
     }
 
     const _id_list = request.body._id_list;

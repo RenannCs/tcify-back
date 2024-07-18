@@ -154,7 +154,7 @@ module.exports = function (app) {
   /* ************** GETS ************** */
   app.get("/repository/courses", require("../Control/Course/all"));
 
-  app.get("/repository/courses/:id", require("../Control/Course/single"));
+  app.get("/repository/courses/:_id", require("../Control/Course/single"));
 
   /* ************** POST ************** */
   app.post("/repository/courses", require("../Control/Course/insert"));
@@ -163,7 +163,7 @@ module.exports = function (app) {
   app.put("/repository/courses/:_id", require("../Control/Course/update"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/course/:id", require("../Control/Course/delete"));
+  app.delete("/repository/courses/:_id", require("../Control/Course/delete"));
 
   app.delete("/repository/courses", require("../Control/Course/deleteCourses"));
 
