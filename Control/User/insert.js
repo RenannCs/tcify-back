@@ -17,13 +17,13 @@ module.exports = async (request, response) => {
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
     const token_id = tokenValidationResult.decoded.payload._id;
-    const toke_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_user_type = tokenValidationResult.decoded.payload.user_type;
     const token_status = tokenValidationResult.status;
 
     if (
       token_status == false ||
       (await User.validateTokenId(token_id)) == false ||
-      User.validatePermission(toke_user_type) == false
+      User.validatePermission(token_user_type) == false
     ) {
       const arr = {
         status: "ERROR",
