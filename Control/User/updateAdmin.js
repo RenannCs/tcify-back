@@ -74,7 +74,7 @@ module.exports = async (request, response) => {
     }
     if (email != undefined) {
       const checkUser = await User.exists({ email: email }).exec();
-      if (checkUser != null && checkUser._id != _id) {
+      if ((checkUser != null) & (checkUser._id != _id)) {
         const arr = {
           status: "ERROR",
           message: "Email já está em uso!",

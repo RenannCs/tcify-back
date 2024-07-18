@@ -1,6 +1,50 @@
 const User = require("../../Schemas/User");
 
+const ModelJwtToken = require("../../Model/JwtToken");
+const JwtToken = new ModelJwtToken();
+const { ObjectId } = require("mongodb");
 module.exports = async (request, response) => {
+  try {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+
+    //Verificar se o id do token existe
+    if (
+      (await User.exists({
+        _id: new ObjectId(tokenValidationResult.decoded.payload._id),
+      }).exec()) == null
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as condições do usuário!",
+      };
+      return response.status(403).send(arr);
+    }
+
+    //Verificar se o user é adm ou professor
+    if (
+      !["Administrador", "Professor"].includes(
+        tokenValidationResult.decoded.payload.user_type
+      )
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as permissões de usuário!",
+      };
+      return response.status(403).send(arr);
+    }
+
+    //Verificar o token
+    if (tokenValidationResult.status !== true) {
+      const arr = {
+        status: "ERROR",
+        message:
+          "Invalid token! If the problem persists, please contact our technical support.",
+        error: tokenValidationResult.error,
+      };
+      return response.status(401).send(arr);
+    }
+  } catch (error) {}
   User.all()
     .then((data) => {
       return (dataFormat = data.map((user) => ({
@@ -8,8 +52,18 @@ module.exports = async (request, response) => {
         register: user.register,
         name: user.name,
 
-        course_name: user.course_id ? user.course_id.name : "N/A",
-        course_id: user.course_id ? user.course_id.id : "N/A",
+        course_id:
+          user.user_type == "Administrador"
+            ? "N/A"
+            : user.course_id
+            ? user.course_id._id
+            : null,
+        course_name:
+          user.user_type == "Administrador"
+            ? "N/A"
+            : user.course_id
+            ? user.course_id.name
+            : null,
 
         email: user.email ? user.email : null,
         phone_number: user.phone_number ? user.phone_number : null,

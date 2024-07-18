@@ -35,12 +35,26 @@ module.exports = async (request, response) => {
         name: data.name,
         register: data.register,
         email: data.email,
-        course_id: data.course_id ? data.course_id._id : null,
-        course_name: data.course_id ? data.course_id.name : null,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
         link: data.link ? data.link : null,
         linkedin: data.linkedin ? data.linkedin : null,
+
         phone_number: data.phone_number ? data.phone_number : null,
         user_type: data.user_type,
+
         image: data.image
           ? `${process.env.API_PATH}${data.image}`
           : `${process.env.API_PATH}Default/profile_picture_default.webp`,
@@ -62,26 +76,4 @@ module.exports = async (request, response) => {
       };
       return response.status(500).send(arr);
     });
-  /*
-  try {
-    const data = await User.single(id);
-    const format = {
-      _id: data.id,
-      name: data.name,
-      register: data.register,
-      email: data.email,
-      course_id: data.course_id ? data.course_id._id : null,
-      course_name: data.course_id ? data.course_id.name : null,
-      github: data.github ? data.github : null,
-      linkedin: data.linkedin ? data.linkedin : null,
-      phone_number: data.phone_number ? data.phone_number : null,
-      user_type: data.user_type,
-      image: data.image
-        ? `${process.env.API_PATH}${data.image}`
-        : `${process.env.API_PATH}Default/profile_picture_default.webp`,
-    };
-    
-  } catch {
-    
-  }*/
 };

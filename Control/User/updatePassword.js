@@ -70,17 +70,19 @@ module.exports = async (request, response) => {
 
   user
     .save()
-    .then(() => {
+    .then((resolve) => {
       const arr = {
         status: "SUCCESS",
         message: "Senha atualizada com sucesso!",
+        data: resolve
       };
       return response.status(200).send(arr);
     })
-    .catch(() => {
+    .catch((reject) => {
       const arr = {
         status: "ERROR",
         message: "Erro ao atualizar o senha!",
+        data: reject,
       };
       return response.status(500).send(arr);
     });

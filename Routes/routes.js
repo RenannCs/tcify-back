@@ -105,42 +105,42 @@ module.exports = function (app) {
 
   app.get("/repository/users/teachers", require("../Control/User/allTeachers"));
 
-  app.get("/repository/user/:_id", require("../Control/User/single"));
+  app.get("/repository/users/:_id", require("../Control/User/single"));
 
   /* ************** POST ************** */
   app.post("/repository/users", require("../Control/User/insert"));
 
-  app.post("/repository/user/login", require("../Control/User/login"));
+  app.post("/repository/users/login", require("../Control/User/login"));
 
   app.post(
     "/repository/users/csv",
     uploadsCsv.single("data"),
-    require("../Control/User/csvUser")
+    require("../Control/User/insertUsers")
   );
 
   /* ************** PATCH ************** */
 
-  app.patch("/repository/user/:_id", require("../Control/User/update"));
+  app.patch("/repository/users/:_id", require("../Control/User/update"));
 
   app.patch(
     "/repository/users/image/:_id",
     uploadsUserImages.single("image"),
-    require("../Control/User/image")
+    require("../Control/User/updateImage")
   );
 
   app.patch(
-    "/repository/user/password",
-    require("../Control/User/password")
+    "/repository/users/password",
+    require("../Control/User/updatePassword")
   );
 
-  app.patch("/repository/users/status", require("../Control/User/usersStatus"));
+  app.patch("/repository/users/status", require("../Control/User/updateUsersStatus"));
 
-  //app.patch("/repository/users" ,  )
+  
 
   /* ************** DELETE ************** */
   app.delete("/repository/users/:_id", require("../Control/User/delete"));
 
-  app.delete("/repository/users/", require("../Control/User/deleteUsers"));
+  app.delete("/repository/users", require("../Control/User/deleteUsers"));
 
   /* ************** PUT ************** */
 

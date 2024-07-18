@@ -81,7 +81,7 @@ module.exports = async (request, response) => {
           message: "Ocorreu um erro ao processar a imagem!",
           data: error,
         };
-        return response.status(404).send(arr);
+        return response.status(400).send(arr);
       }
     });
 
@@ -107,7 +107,7 @@ module.exports = async (request, response) => {
           message: "Ocorreu um erro ao processar a imagem!",
           data: error,
         };
-        return response.status(404).send(arr);
+        return response.status(400).send(arr);
       }
     });
 
@@ -133,7 +133,7 @@ module.exports = async (request, response) => {
           message: "Ocorreu um erro ao processar a imagem!",
           data: error,
         };
-        return response.status(404).send(arr);
+        return response.status(400).send(arr);
       }
     });
 
@@ -163,7 +163,7 @@ module.exports = async (request, response) => {
                 message: "Ocorreu um erro ao processar a imagem!",
                 data: error,
               };
-              return response.status(404).send(arr);
+              return response.status(400).send(arr);
             }
           });
 

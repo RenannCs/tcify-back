@@ -108,7 +108,7 @@ module.exports = async (request, response) => {
       }
       course = await Course.findById(course_id).exec();
     }
-
+    /*
     const email = new Email();
     email.dest = emailUser;
     email.subject = "Conectado ao repositório de TCC's da Univap Centro";
@@ -125,7 +125,7 @@ module.exports = async (request, response) => {
   Senha: ${password}<br>
   `;
 
-    email.send();
+    email.send();*/
   } catch (error) {
     if (error instanceof BSON.BSONError) {
       const arr = {
@@ -155,11 +155,11 @@ module.exports = async (request, response) => {
       };
       response.status(200).send(arr);
     })
-    .catch((error) => {
+    .catch((reject) => {
       const arr = {
         status: "ERROR",
         message: "Erro ao inserir usuário!",
-        error: error.message,
+        data: reject,
       };
       response.status(500).send(arr);
     });
