@@ -133,7 +133,7 @@ module.exports = function (app) {
     require("../Control/User/updatePassword")
   );
 
-  app.patch("/repository/users/status", require("../Control/User/updateUsersStatus"));
+  app.patch("/repository/users/status", require("../Control/User/updateStatus"));
 
   
 
