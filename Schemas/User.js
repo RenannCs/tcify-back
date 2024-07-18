@@ -42,6 +42,16 @@ const userSchema = new mongoose.Schema(
   },
   {
     statics: {
+      async validateTokenId(id) {
+        const resp = await this.exists({ _id: new ObjectId(id) }).exec();
+        if (resp == null) {
+          return false;
+        }
+        return true;
+      },
+      validatePermission(type) {
+        return ["Professor", "Administrador"].includes(type); 
+      },
       single(id) {
         return this.findById(id)
           .populate({

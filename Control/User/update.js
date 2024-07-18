@@ -21,50 +21,50 @@ module.exports = async (request, response) => {
 
   let user;
   try {
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  const authorizationHeader = request.headers.authorization;
+  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== true) {
-      const arr = {
-        status: "ERROR",
-        message:
-          "Invalid token! If the problem persists, please contact our technical support.",
-        error: tokenValidationResult.error,
-      };
-      return response.status(401).send(arr);
-    }
+  const token_id = tokenValidationResult.decoded.payload._id;
+  const toke_user_type = tokenValidationResult.decoded.payload.user_type;
+  const token_status = tokenValidationResult.status;
 
-    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário não existe!",
-      };
-      return response.status(404).send(arr);
-    }
+  if (
+    token_status == false ||
+    (await User.validateTokenId(token_id)) == false ||
+    token_id != _id
+  ) {
+    const arr = {
+      status: "ERROR",
+      message: "Operação negada devido as permissões do usuário!",
+    };
+    return response.status(403).send(arr);
+  }
 
-    user = await User.findById(_id).exec();
+  user = await User.findById(_id).exec();
 
-    if (email != undefined) {
-      const checkUser = await User.exists({ email: email }).exec();
-      if ((checkUser != null) & (checkUser._id != _id)) {
+  if (email != undefined) {
+    const checkUser = await User.exists({ email: email }).exec();
+    if (checkUser != null) {
+      if (checkUser._id != _id) {
         const arr = {
           status: "ERROR",
           message: "Email já está em uso!",
         };
         return response.status(409).send(arr);
       }
+    }
 
-      user.email = email;
-    }
-    if (phone_number != undefined) {
-      user.phone_number = phone_number;
-    }
-    if (link != undefined) {
-      user.link = link;
-    }
-    if (linkedin != undefined) {
-      user.linkedin = linkedin;
-    }
+    user.email = email;
+  }
+  if (phone_number != undefined) {
+    user.phone_number = phone_number;
+  }
+  if (link != undefined) {
+    user.link = link;
+  }
+  if (linkedin != undefined) {
+    user.linkedin = linkedin;
+  }
   } catch (error) {
     if (error instanceof BSON.BSONError) {
       const arr = {
@@ -76,7 +76,7 @@ module.exports = async (request, response) => {
       const arr = {
         status: "ERROR",
         message: "Erro do servidor, tente novamente mais tarde!",
-        data: err,
+        data: error,
       };
       return response.status(500).send(arr);
     }

@@ -14,17 +14,22 @@ const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
   const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
+    const token_id = tokenValidationResult.decoded.payload._id;
+    const toke_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_status = tokenValidationResult.status;
+
+    if (
+      token_status == false ||
+      (await User.validateTokenId(token_id)) == false
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Operação negada devido as permissões do usuário!",
+      };
+      return response.status(403).send(arr);
+    }
 
   const _id = request.params._id;
   const image = request.file;

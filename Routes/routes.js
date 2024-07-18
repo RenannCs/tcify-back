@@ -129,13 +129,14 @@ module.exports = function (app) {
   );
 
   app.patch(
-    "/repository/users/password",
+    "/repository/users/password/:_id",
     require("../Control/User/updatePassword")
   );
 
-  app.patch("/repository/users/status", require("../Control/User/updateStatus"));
-
-  
+  app.patch(
+    "/repository/users/update/status",
+    require("../Control/User/updateStatus")
+  );
 
   /* ************** DELETE ************** */
   app.delete("/repository/users/:_id", require("../Control/User/delete"));

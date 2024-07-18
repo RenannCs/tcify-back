@@ -4,7 +4,7 @@ const User = require("../../Schemas/User");
 const JwtToken = new ModelJwtToken();
 const md5 = require("md5");
 module.exports = async (request, response) => {
-  const _id = request.body._id;
+  const _id = request.params._id;
   const password = request.body.password;
   const newPassword = request.body.newPassword;
 
@@ -14,14 +14,20 @@ module.exports = async (request, response) => {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-    if (tokenValidationResult.status !== true) {
+    const token_id = tokenValidationResult.decoded.payload._id;
+    const toke_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_status = tokenValidationResult.status;
+
+    
+    if (
+      token_status == false ||
+      (await User.validateTokenId(token_id)) == false
+    ) {
       const arr = {
         status: "ERROR",
-        message:
-          "Invalid token! If the problem persists, please contact our technical support.",
-        error: tokenValidationResult.error,
+        message: "Operação negada devido as permissões do usuário!",
       };
-      return response.status(401).send(arr);
+      return response.status(403).send(arr);
     }
 
     if ((await User.exists({ _id: new ObjectId(_id) })) == null) {
