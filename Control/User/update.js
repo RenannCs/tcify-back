@@ -21,50 +21,55 @@ module.exports = async (request, response) => {
 
   let user;
   try {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  const token_id = tokenValidationResult.decoded.payload._id;
-  const token_user_type = tokenValidationResult.decoded.payload.user_type;
-  const token_status = tokenValidationResult.status;
+    const token_status = tokenValidationResult.status;
 
-  if (
-    token_status == false ||
-    (await User.validateTokenId(token_id)) == false ||
-    token_id != _id
-  ) {
-    const arr = {
-      status: "ERROR",
-      message: "Operação negada devido as permissões do usuário!",
-    };
-    return response.status(403).send(arr);
-  }
+    if (token_status) {
+      const token_id = tokenValidationResult.decoded.payload._id;
+      const token_user_type = tokenValidationResult.decoded.payload.user_type;
 
-  user = await User.findById(_id).exec();
-
-  if (email != undefined) {
-    const checkUser = await User.exists({ email: email }).exec();
-    if (checkUser != null) {
-      if (checkUser._id != _id) {
+      if ((await User.validateTokenId(token_id)) == false) {
         const arr = {
           status: "ERROR",
-          message: "Email já está em uso!",
+          message: "Operação negada devido as permissões do usuário!",
         };
-        return response.status(409).send(arr);
+        return response.status(403).send(arr);
       }
+    } else {
+      const arr = {
+        status: "ERROR",
+        message: "Token de validação inválido!",
+      };
+      return response.status(403).send(arr);
     }
 
-    user.email = email;
-  }
-  if (phone_number != undefined) {
-    user.phone_number = phone_number;
-  }
-  if (link != undefined) {
-    user.link = link;
-  }
-  if (linkedin != undefined) {
-    user.linkedin = linkedin;
-  }
+    user = await User.findById(_id).exec();
+
+    if (email != undefined) {
+      const checkUser = await User.exists({ email: email }).exec();
+      if (checkUser != null) {
+        if (checkUser._id != _id) {
+          const arr = {
+            status: "ERROR",
+            message: "Email já está em uso!",
+          };
+          return response.status(409).send(arr);
+        }
+      }
+
+      user.email = email;
+    }
+    if (phone_number != undefined) {
+      user.phone_number = phone_number;
+    }
+    if (link != undefined) {
+      user.link = link;
+    }
+    if (linkedin != undefined) {
+      user.linkedin = linkedin;
+    }
   } catch (error) {
     if (error instanceof BSON.BSONError) {
       const arr = {

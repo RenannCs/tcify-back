@@ -57,7 +57,7 @@ module.exports = async (request, response) => {
 
         image: data.image
           ? `${process.env.API_PATH}${data.image}`
-          : `${process.env.API_PATH}Default/profile_picture_default.webp`,
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
       });
     })
     .then((resolve) => {

@@ -12,7 +12,7 @@ module.exports = async (request, response) => {
         email: user.email ? user.email : null,
         user_type: user.user_type,
         phone_number: user.phone_number ? user.phone_number : null,
-        image: user.image ? user.image : "Default/profile_picture_default.webp",
+        image: user.image ? user.image : "${process.env.USER_PROFILE_PICTURE_DEFAULT}",
       })));
     })
     .then((resolve) => {

@@ -34,7 +34,7 @@ module.exports = async (request, response) => {
     for (let _id of _id_list) {
       try {
         const resp = await User.findByIdAndUpdate(_id, { status: status });
-
+        resp.status = status;
         if (resp != null) {
           updatedCount += 1;
           usuariosAtualizados.push(resp);
