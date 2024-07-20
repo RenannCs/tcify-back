@@ -113,7 +113,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", function (next) {
   const user = this;
-  user.name = user.name.trim() ? user.name.trim() : undefined;
+  user.name = user.name ? user.name.trim() : undefined;
   user.register = user.register ? user.register.trim() : undefined;
   user.email = user.email ? user.email.trim() : undefined;
   user.password = user.password ? user.password.trim() : undefined;
