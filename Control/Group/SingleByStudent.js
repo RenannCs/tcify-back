@@ -2,34 +2,37 @@
 retornar todos os alunos e os dados dos usuarios
 pesquisa feita pelo registro de usuario
 */
-//const ModelJwtToken = require('../../Model/JwtToken');
-//const JwtToken = new ModelJwtToken();
-
 const Group = require("../../Schemas/Group");
-
+const { BSON } = require("mongodb");
 module.exports = async (request, response) => {
-  /*const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let _id;
+  try {
+    _id = request.params._id;
 
-    if (tokenValidationResult.status !== true) {
-        const arr = {
-            status: 'ERROR',
-            message: 'Invalid token! If the problem persists, please contact our technical support.',
-            error: tokenValidationResult.error
-        };
-        return response.status(401).send(arr);
-    }*/
-
-  const id = request.params.id;
-
-  if ((await Group.existsByStudent(id)) == null) {
+    if ((await Group.existsByStudent(_id)) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Nenhum grupo foi encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Usuário inválido!",
+      };
+      return response.status(400).send(arr);
+    }
     const arr = {
       status: "ERROR",
-      message: "Nenhum grupo foi encontrado!",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(404).send(arr);
+    return response.status(400).send(arr);
   }
-  Group.findByStudentId(id)
+
+  Group.findByStudentId(_id)
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",

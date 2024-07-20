@@ -171,49 +171,42 @@ module.exports = function (app) {
    * ---------------------------------------ROTAS GROUP----------------------------------------------------------
    */
 
-  /* ************** POST ************** */
-  app.post("/repository/group", require("../Control/Group/insert"));
-
   /* ************** GETS ************** */
-  app.get(
-    "/repository/group/singleByStudent/:id",
-    require("../Control/Group/SingleByStudent")
-  );
-
-  app.get(
-    "/repository/group/singleById/:id",
-    require("../Control/Group/Single")
-  );
 
   app.get("/repository/groups", require("../Control/Group/all"));
 
-  app.get("/repository/groups/table", require("../Control/Group/allTable"));
+  app.get(
+    "/repository/groups/student/:_id",
+    require("../Control/Group/SingleByStudent")
+  );
+
+  app.get("/repository/groups/:_id", require("../Control/Group/Single"));
+
+  /* ************** POST ************** */
+  app.post("/repository/groups", require("../Control/Group/insert"));
 
   /* ************** DELETE ************** */
-  app.delete("/repository/group/:id", require("../Control/Group/delete"));
 
-  app.delete(
-    "/repository/groups/deleteMany",
-    require("../Control/Group/deleteMany")
-  );
+  app.delete("/repository/groups/:_id", require("../Control/Group/delete"));
+
+  app.delete("/repository/groups", require("../Control/Group/deleteGroups"));
 
   /* ************** PATCH ************** */
   app.patch(
-    "/repository/group/insertStudent",
+    "/repository/groups/insertStudent",
     require("../Control/Group/insertStudent")
   );
 
   app.patch(
-    "/repository/group/deleteStudent",
+    "/repository/groups/deleteStudent",
     require("../Control/Group/deleteStudent")
   );
 
-  app.patch(
-    "/repository/group/updateStatus",
-    require("../Control/Group/updateStatus")
-  );
+  app.patch("/repository/groups/accept", require("../Control/Group/accept"));
 
-  app.patch("/repository/group/accept", require("../Control/Group/accept"));
+  app.patch("/repository/groups/update/status" , require("../Control/Group/updateStatus"))
+  /* ************* PUT  ********** */
+  app.put("/repository/groups/:_id", require("../Control/Group/update"));
 };
 
 /**

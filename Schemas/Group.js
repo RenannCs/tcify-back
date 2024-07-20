@@ -1,22 +1,25 @@
+const mongodb = require("mongodb");
 const mongoose = require("mongoose");
-const Tcc = require("./Tcc")
+const User = require("./User");
+const Tcc = require("./Tcc");
 const groupSchema = new mongoose.Schema(
   {
     title: String,
-    students: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    students: {
+      required: true,
+      type: [mongoose.Types.ObjectId],
+      ref: "User",
+    },
 
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
+      required: true,
     },
     supervisor: {
       type: mongoose.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     tcc_id: {
       type: mongoose.Types.ObjectId,
@@ -28,6 +31,7 @@ const groupSchema = new mongoose.Schema(
     },
     status: String,
   },
+
   {
     statics: {
       single(id) {
@@ -63,7 +67,7 @@ const groupSchema = new mongoose.Schema(
           .populate({
             path: "students",
             model: "User",
-            select: ["name", "email", "link", "linkedin", "image"],
+            select: ["name", "register", "email", "link", "linkedin", "image"],
           })
           .populate({
             path: "leader_id",
@@ -94,7 +98,7 @@ const groupSchema = new mongoose.Schema(
           .populate({
             path: "students",
             model: "User",
-            select: ["name", "email", "link", "linkedin", "image"],
+            select: ["name", "register", "email", "link", "linkedin", "image"],
           })
           .populate({
             path: "leader_id",
@@ -121,6 +125,11 @@ const groupSchema = new mongoose.Schema(
   }
 );
 
+groupSchema.pre("save", function (next) {
+  const group = this;
+  group.title = group.title ? group.title.trim() : undefined;
+  next();
+});
 
 const ModelGroup = mongoose.model("Group", groupSchema, "Groups");
 

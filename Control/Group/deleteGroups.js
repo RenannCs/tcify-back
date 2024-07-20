@@ -1,12 +1,12 @@
+const { ObjectId, BSON } = require("mongodb");
+const User = require("../../Schemas/User");
+const Group = require("../../Schemas/Group");
+const Tcc = require("../../Schemas/Tcc");
+
 const ModelJwtToken = require("../../Model/JwtToken");
 const JwtToken = new ModelJwtToken();
 
-const Group = require("../../Schemas/Group");
-const User = require("../../Schemas/User");
-
 module.exports = async (request, response) => {
-  let status;
-  let _id_list;
   try {
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
@@ -34,34 +34,33 @@ module.exports = async (request, response) => {
       return response.status(403).send(arr);
     }
 
-    _id_list = request.body._id_list;
-    status = request.body.status;
+    const _id_list = request.body._id_list;
 
-    let updatedCount = 0;
-    let gruposAtualizados = [];
+    let deletedCount = 0;
+    let gruposExcluidos = [];
     for (let _id of _id_list) {
       try {
-        
-        const resp = await Group.findByIdAndUpdate(_id, {
-          status: status,
-        }).exec();
-
+        const resp = await Group.findByIdAndDelete(_id).exec();
+        if (resp.tcc_id != null) {
+          await Tcc.deleteOne({ _id: resp.tcc_id }).exec();
+        }
         if (resp != null) {
-          updatedCount += 1;
-          gruposAtualizados.push(resp);
+          deletedCount += 1;
+          gruposExcluidos.push(resp);
         }
       } catch {}
     }
 
     const data = {
-      updatedCount: updatedCount,
-      gruposAtualizados: gruposAtualizados,
+      deletedCount: deletedCount,
+      gruposExcluidos: gruposExcluidos,
     };
     const arr = {
-      status: "SUCCESS",
-      message: "Grupos atualizados!",
+      status: "SUCCES",
+      message: "Grupos excluídos!",
       data: data,
     };
+
     return response.status(200).send(arr);
   } catch (error) {
     const arr = {

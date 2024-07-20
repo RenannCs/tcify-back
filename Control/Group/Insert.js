@@ -3,84 +3,152 @@ const JwtToken = new ModelJwtToken();
 
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
+const Course = require("../../Schemas/Course");
 const Email = require("../../Model/Email");
-const { ObjectId } = require("mongodb");
+const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let group;
 
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
+  let arrayStudentsRegister;
+  let leader_register;
+  let supervisor;
+  let title;
+  let course_id;
 
-  const arrayStudentsRegister = request.body.students;
-  const leader_register = request.body.leader_register;
-  const supervisor = request.body.supervisor;
-  const title = request.body.title;
-  const course_id = request.body.course_id;
+  try {
+    const authorizationHeader = request.headers.authorization;
+    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
-  if ((await User.exists({ register: leader_register }).exec()) == null) {
-    const arr = {
-      status: "ERROR",
-      message: "Matrícula " + leader_register + " não existe!",
-    };
-    return response.status(404).send(arr);
-  }
+    const token_id = tokenValidationResult.decoded.payload._id;
+    const token_user_type = tokenValidationResult.decoded.payload.user_type;
+    const token_status = tokenValidationResult.status;
 
-  const leaderData = await User.findOne({ register: leader_register }).exec();
-
-  if ((await Group.existsByStudent(leaderData.id)) != null) {
-    const arr = {
-      status: "ERROR",
-      message: "Você já possuí grupo!",
-    };
-    return response.status(400).send(arr);
-  }
-
-  for (const _student of arrayStudentsRegister) {
-    if ((await User.exists({ register: _student }).exec()) == null) {
+    if (token_status) {
+      if (
+        (await User.validateTokenId(token_id)) == false ||
+        User.validatePermission(token_user_type) == false
+      ) {
+        const arr = {
+          status: "ERROR",
+          message: "Operação negada devido as permissões do usuário!",
+        };
+        return response.status(403).send(arr);
+      }
+    } else {
       const arr = {
         status: "ERROR",
-        message: "Matrícula " + _student + " não existe!",
+        message: "Token de validação inválido!",
+      };
+      return response.status(403).send(arr);
+    }
+
+    arrayStudentsRegister = request.body.students;
+    leader_register = request.body.leader_register;
+    supervisor = request.body.supervisor;
+    title = request.body.title;
+    course_id = request.body.course_id;
+
+    if ((await User.exists({ register: leader_register }).exec()) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Matrícula " + leader_register + " não existe!",
       };
       return response.status(404).send(arr);
     }
-    const student = await User.findOne({ register: _student }).exec();
-    if ((await Group.existsByStudent(student.id)) != null) {
+
+    const leaderData = await User.findOne({ register: leader_register }).exec();
+
+    if ((await Group.existsByStudent(leaderData.id)) != null) {
       const arr = {
         status: "ERROR",
-        message: "Aluno " + student.register + " já adicionado a um grupo",
+        message: "Você já possuí grupo!",
+      };
+      return response.status(409).send(arr);
+    }
+
+    if (
+      (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Curso não existe!",
+      };
+      return response.status(404).send(arr);
+    }
+    if (
+      (await User.exists({
+        $and: [{ _id: supervisor }, { user_type: "Professor" }],
+      }).exec()) == null
+    ) {
+      const arr = {
+        status: "ERROR",
+        message: "Supervisor não existe!",
+      };
+      return response.status(404).send(arr);
+    }
+    for (const _student of arrayStudentsRegister) {
+      if ((await User.exists({ register: _student }).exec()) == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Matrícula " + _student + " não existe!",
+        };
+        return response.status(404).send(arr);
+      }
+
+      const student = await User.findOne({ register: _student }).exec();
+      if ((await Group.existsByStudent(student.id)) != null) {
+        const arr = {
+          status: "ERROR",
+          message: "Aluno " + student.register + " já adicionado a um grupo!",
+        };
+        return response.status(409).send(arr);
+      }
+    }
+
+    group = new Group();
+    group.title = title;
+    group.students = [leaderData.id];
+    group.leader_id = leaderData.id;
+    group.course_id = course_id;
+    group.supervisor = supervisor;
+    group.status = "0";
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Curso inválido!",
       };
       return response.status(400).send(arr);
     }
-  }
-
-  const group = new Group();
-  group.title = title;
-  group.students = [leaderData.id];
-  group.leader_id = leaderData.id;
-  group.course_id = course_id;
-  group.supervisor = supervisor;
-  group.status = "0";
-
-  let novoGrupo;
-  try {
-    novoGrupo = await group.save();
-  } catch {
     const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao inserir o grupo",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(400).send(arr);
+    return response.status(500).send(arr);
   }
 
+  group
+    .save()
+    .then((resolve) => {
+      const arr = {
+        status: "SUCCESS",
+        message: "Grupo inserido com sucesso!",
+        data: resolve,
+      };
+      return response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao inserir o grupo!",
+        data: reject,
+      };
+      return response.status(500).send(arr);
+    });
+};
+/*
   for (const _student of arrayStudentsRegister) {
     const student = await User.findOne({ register: _student });
 
@@ -103,12 +171,4 @@ module.exports = async (request, response) => {
       email.title = "Você foi convidado para um grupo!";
       email.send();
     }
-  }
-
-  const arr = {
-    status: "SUCCESS",
-    message: "Grupo inserido com sucesso!",
-    data: novoGrupo,
-  };
-  return response.status(200).send(arr);
-};
+  }*/
