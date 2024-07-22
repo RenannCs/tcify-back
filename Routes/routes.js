@@ -22,6 +22,15 @@ module.exports = function (app) {
   const verifyTokenAll = require("../Middlewares/verifyTokenAll");
   const verifyTokenStudent = require("../Middlewares/verifyTokenStudent");
 
+  /* ************** Autenticação de Token ********************* */
+
+  app.post("/repository/auth", verifyTokenAll, (request , response) => {
+    const arr = {
+      status: "SUCCESS",
+      message: "Token validado com sucesso!",
+    };
+    return response.status(200).send(arr);
+  });
   /*
    * ---------------------------------------ROTAS TCC----------------------------------------------------------
    */

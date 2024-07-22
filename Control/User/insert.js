@@ -9,9 +9,11 @@ const Email = require("../../Model/Email");
 const Course = require("../../Schemas/Course");
 const { ObjectId, BSON } = require("mongodb");
 
+
 module.exports = async (request, response) => {
   const user = new User();
   try {
+
     const name = request.body.name;
     const course_id = request.body.course_id;
     const emailUser = request.body.email;
