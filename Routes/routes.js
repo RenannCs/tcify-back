@@ -3,7 +3,11 @@ module.exports = function (app) {
   const multer = require("multer");
 
   const uploadLocal = multer({ dest: "Uploads/" });
-  const uploadsUserImages = multer({ dest: "Uploads/UsersImages" });
+
+  const uploadsUserImages = multer({
+    dest: "Uploads/UsersImages",
+  });
+
   const uploadsCsv = multer({ dest: "Uploads/CSV" });
 
   app.use(express.json());
@@ -13,6 +17,11 @@ module.exports = function (app) {
     next();
   });
 
+  const verifyTokenAdmin = require("../Middlewares/verifyTokenAdmin");
+  const verifyTokenAdminTeacher = require("../Middlewares/verifyTokenAdminTeacher");
+  const verifyTokenAll = require("../Middlewares/verifyTokenAll");
+  const verifyTokenStudent = require("../Middlewares/verifyTokenStudent");
+
   /*
    * ---------------------------------------ROTAS TCC----------------------------------------------------------
    */
@@ -21,10 +30,7 @@ module.exports = function (app) {
 
   app.get("/repository/projects", require("../Control/Tcc/all"));
 
-  app.get(
-    "/repository/tccs/tableAdmin",
-    require("../Control/TCC/allTableAdmin")
-  );
+  app.get("/repository/tccs/admin", require("../Control/TCC/allTableAdmin"));
 
   app.get("/repository/tcc/:id", require("../Control/Tcc/single"));
 
@@ -44,12 +50,14 @@ module.exports = function (app) {
   );
 
   /* ************** POST ************** */
+
   app.post(
     "/repository/tcc",
     uploadLocal.fields([
       { name: "document", maxCount: 1 },
       { name: "monography", maxCount: 1 },
       { name: "zip", maxCount: 1 },
+      { name: "image", maxCount: 1 },
     ]),
     require("../Control/Tcc/insert")
   );
@@ -96,55 +104,95 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/users", require("../Control/User/all"));
+  app.get(
+    "/repository/users",
+    verifyTokenAdmin,
+    require("../Control/User/all")
+  );
 
-  app.get("/repository/users/administrator", require("../Control/User/allAdm"));
+  app.get(
+    "/repository/users/administrator",
+    verifyTokenAdmin,
+    require("../Control/User/allAdm")
+  );
 
-  app.get("/repository/users/students", require("../Control/User/allStudent"));
+  app.get(
+    "/repository/users/students",
+    verifyTokenAdminTeacher,
+    require("../Control/User/allStudent")
+  );
 
-  app.get("/repository/users/teachers", require("../Control/User/allTeachers"));
+  app.get(
+    "/repository/users/teachers",
+    verifyTokenAdmin,
+    require("../Control/User/allTeachers")
+  );
 
   app.get("/repository/users/:_id", require("../Control/User/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/users", require("../Control/User/insert"));
+  app.post(
+    "/repository/users",
+    verifyTokenAdmin,
+    require("../Control/User/insert")
+  );
 
   app.post("/repository/users/login", require("../Control/User/login"));
 
   app.post(
     "/repository/users/csv",
+    verifyTokenAdmin,
     uploadsCsv.single("data"),
     require("../Control/User/insertUsers")
   );
 
   /* ************** PATCH ************** */
 
-  app.patch("/repository/users/:_id", require("../Control/User/update"));
+  app.patch(
+    "/repository/users/:_id",
+    verifyTokenAll,
+    require("../Control/User/update")
+  );
 
   app.patch(
     "/repository/users/image/:_id",
+    verifyTokenAll,
     uploadsUserImages.single("image"),
     require("../Control/User/updateImage")
   );
 
   app.patch(
     "/repository/users/password/:_id",
+    verifyTokenAll,
     require("../Control/User/updatePassword")
   );
 
   app.patch(
     "/repository/users/update/status",
+    verifyTokenAdmin,
     require("../Control/User/updateStatus")
   );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/users/:_id", require("../Control/User/delete"));
+  app.delete(
+    "/repository/users/:_id",
+    verifyTokenAdmin,
+    require("../Control/User/delete")
+  );
 
-  app.delete("/repository/users", require("../Control/User/deleteUsers"));
+  app.delete(
+    "/repository/users",
+    verifyTokenAdmin,
+    require("../Control/User/deleteUsers")
+  );
 
   /* ************** PUT ************** */
 
-  app.put("/repository/users/:_id", require("../Control/User/updateAdmin"));
+  app.put(
+    "/repository/users/:_id",
+    verifyTokenAdmin,
+    require("../Control/User/updateAdmin")
+  );
 
   /*
    * ---------------------------------------ROTAS COURSE-------------------------------------------------------
@@ -203,7 +251,10 @@ module.exports = function (app) {
 
   app.patch("/repository/groups/accept", require("../Control/Group/accept"));
 
-  app.patch("/repository/groups/update/status" , require("../Control/Group/updateStatus"))
+  app.patch(
+    "/repository/groups/update/status",
+    require("../Control/Group/updateStatus")
+  );
   /* ************* PUT  ********** */
   app.put("/repository/groups/:_id", require("../Control/Group/update"));
 };

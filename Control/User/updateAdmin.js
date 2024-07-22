@@ -1,8 +1,6 @@
 const { ObjectId, BSON } = require("mongodb");
-const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const Course = require("../../Schemas/Course");
-const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
   const _id = request.params._id;
@@ -19,33 +17,6 @@ module.exports = async (request, response) => {
   let user;
 
   try {
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    const token_status = tokenValidationResult.status;
-
-    if (token_status) {
-      const token_id = tokenValidationResult.decoded.payload._id;
-      const token_user_type = tokenValidationResult.decoded.payload.user_type;
-      
-      if (
-        (await User.validateTokenId(token_id)) == false ||
-        User.validatePermission(token_user_type) == false
-      ) {
-        const arr = {
-          status: "ERROR",
-          message: "Operação negada devido as permissões do usuário!",
-        };
-        return response.status(403).send(arr);
-      }
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Token de validação inválido!",
-      };
-      return response.status(403).send(arr);
-    }
-
     if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
       const arr = {
         status: "ERROR",
