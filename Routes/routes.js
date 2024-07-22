@@ -204,15 +204,31 @@ module.exports = function (app) {
   app.get("/repository/courses/:_id", require("../Control/Course/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/courses", require("../Control/Course/insert"));
+  app.post(
+    "/repository/courses",
+    verifyTokenAdmin,
+    require("../Control/Course/insert")
+  );
 
   /* ************** PUT ************** */
-  app.put("/repository/courses/:_id", require("../Control/Course/update"));
+  app.put(
+    "/repository/courses/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Course/update")
+  );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/courses/:_id", require("../Control/Course/delete"));
+  app.delete(
+    "/repository/courses/:_id",
+    verifyTokenAdmin,
+    require("../Control/Course/delete")
+  );
 
-  app.delete("/repository/courses", require("../Control/Course/deleteCourses"));
+  app.delete(
+    "/repository/courses",
+    verifyTokenAdmin,
+    require("../Control/Course/deleteCourses")
+  );
 
   /*
    * ---------------------------------------ROTAS GROUP----------------------------------------------------------
