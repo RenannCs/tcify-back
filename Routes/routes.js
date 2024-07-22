@@ -236,7 +236,11 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/groups", require("../Control/Group/all"));
+  app.get(
+    "/repository/groups",
+    verifyTokenAdminTeacher,
+    require("../Control/Group/all")
+  );
 
   app.get(
     "/repository/groups/student/:_id",
@@ -246,22 +250,36 @@ module.exports = function (app) {
   app.get("/repository/groups/:_id", require("../Control/Group/Single"));
 
   /* ************** POST ************** */
-  app.post("/repository/groups", require("../Control/Group/insert"));
+  app.post(
+    "/repository/groups",
+    verifyTokenAll,
+    require("../Control/Group/insert")
+  );
 
   /* ************** DELETE ************** */
 
-  app.delete("/repository/groups/:_id", require("../Control/Group/delete"));
+  app.delete(
+    "/repository/groups/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Group/delete")
+  );
 
-  app.delete("/repository/groups", require("../Control/Group/deleteGroups"));
+  app.delete(
+    "/repository/groups",
+    verifyTokenAdminTeacher,
+    require("../Control/Group/deleteGroups")
+  );
 
   /* ************** PATCH ************** */
   app.patch(
     "/repository/groups/insertStudent",
+    verifyTokenAll,
     require("../Control/Group/insertStudent")
   );
 
   app.patch(
     "/repository/groups/deleteStudent",
+    verifyTokenAll,
     require("../Control/Group/deleteStudent")
   );
 
@@ -269,10 +287,15 @@ module.exports = function (app) {
 
   app.patch(
     "/repository/groups/update/status",
+    verifyTokenAdminTeacher,
     require("../Control/Group/updateStatus")
   );
   /* ************* PUT  ********** */
-  app.put("/repository/groups/:_id", require("../Control/Group/update"));
+  app.put(
+    "/repository/groups/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Group/update")
+  );
 };
 
 /**

@@ -1,40 +1,9 @@
-const ModelJwtToken = require("../../Model/JwtToken");
-const JwtToken = new ModelJwtToken();
-
 const Group = require("../../Schemas/Group");
-const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
   let status;
   let _id_list;
   try {
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    const token_status = tokenValidationResult.status;
-
-    if (token_status) {
-      const token_id = tokenValidationResult.decoded.payload._id;
-      const token_user_type = tokenValidationResult.decoded.payload.user_type;
-      
-      if (
-        (await User.validateTokenId(token_id)) == false ||
-        User.validatePermission(token_user_type) == false
-      ) {
-        const arr = {
-          status: "ERROR",
-          message: "Operação negada devido as permissões do usuário!",
-        };
-        return response.status(403).send(arr);
-      }
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Token de validação inválido!",
-      };
-      return response.status(403).send(arr);
-    }
-
     _id_list = request.body._id_list;
     status = request.body.status;
 
@@ -42,7 +11,6 @@ module.exports = async (request, response) => {
     let gruposAtualizados = [];
     for (let _id of _id_list) {
       try {
-        
         const resp = await Group.findByIdAndUpdate(_id, {
           status: status,
         }).exec();

@@ -1,6 +1,3 @@
-const ModelJwtToken = require("../../Model/JwtToken");
-const JwtToken = new ModelJwtToken();
-
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
 const Course = require("../../Schemas/Course");
@@ -17,30 +14,6 @@ module.exports = async (request, response) => {
   let course_id;
 
   try {
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    const token_status = tokenValidationResult.status;
-
-    if (token_status) {
-      const token_id = tokenValidationResult.decoded.payload._id;
-      const token_user_type = tokenValidationResult.decoded.payload.user_type;
-
-      if ((await User.validateTokenId(token_id)) == false) {
-        const arr = {
-          status: "ERROR",
-          message: "Operação negada devido as permissões do usuário!",
-        };
-        return response.status(403).send(arr);
-      }
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Token de validação inválido!",
-      };
-      return response.status(403).send(arr);
-    }
-
     arrayStudentsRegister = request.body.students;
     leader_register = request.body.leader_register;
     supervisor = request.body.supervisor;
