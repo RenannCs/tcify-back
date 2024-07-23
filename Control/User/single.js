@@ -15,7 +15,7 @@ module.exports = async (request, response) => {
     if (error instanceof BSON.BSONError) {
       const arr = {
         status: "ERROR",
-        message: "Id inválido!",
+        message: "Usuário inválido!",
       };
       return response.status(400).send(arr);
     } else {

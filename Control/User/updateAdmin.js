@@ -7,6 +7,7 @@ module.exports = async (request, response) => {
 
   const name = request.body.name;
   const email = request.body.email;
+  const register = request.body.register;
   const password = request.body.password;
   const phone_number = request.body.phone_number;
   const link = request.body.link;
@@ -58,7 +59,7 @@ module.exports = async (request, response) => {
     if (status != undefined) {
       user.status = status;
     }
-    if (course_id != undefined) {
+    if ((course_id != null) & (course_id != undefined)) {
       if (
         (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
       ) {
@@ -70,21 +71,27 @@ module.exports = async (request, response) => {
       }
       user.course_id = course_id;
     }
-  } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Id inválido!",
-      };
-      return response.status(400).send(arr);
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Erro do servidor, tente novamente mais tarde!",
-        data: error,
-      };
-      return response.status(500).send(arr);
+
+    if (register != undefined) {
+      const checkUser = await User.exists({ register: register }).exec();
+      if (checkUser != null) {
+        if (checkUser._id != user.id) {
+          const arr = {
+            status: "ERROR",
+            message: "Email já está em uso!",
+          };
+          return response.status(409).send(arr);
+        }
+      }
+      user.register = register;
     }
+  } catch (error) {
+    const arr = {
+      status: "ERROR",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
+    };
+    return response.status(500).send(arr);
   }
 
   user
