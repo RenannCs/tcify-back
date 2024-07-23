@@ -1,0 +1,363 @@
+[{
+  "_id": {
+    "$oid": "669844add5dad17b232396a2"
+  },
+  "name": "Super Admin",
+  "email": "123@gmail.com",
+  "register": "0000001",
+  "user_type": "Administrador",
+  "phone_number": "1194sas85158",
+  "link": "linkedin.link",
+  "status": true,
+  "password": "202cb962ac59075b964b07152d234b70",
+  "course_id": {
+    "$oid": "666da2bd91af7d6a607f717e"
+  },
+  "__v": 0,
+  "image": "Uploads/UsersImages/669844add5dad17b232396a2.jpeg"
+},
+{
+  "_id": {
+    "$oid": "669b39c1f92952926863dce1"
+  },
+  "status": true,
+  "name": "Isabele Pires",
+  "email": "isabelepires@gmail.com",
+  "register": "50220123",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "link": "123.link",
+  "password": "c01d0dab5b2d8021891658fe2a41564f",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c1f92952926863dce7"
+  },
+  "status": true,
+  "name": "Marina Ribeiro",
+  "email": "marinaribeiro4612@gmail.com",
+  "register": "50220666",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "link": "123.link",
+  "password": "c4227c902f35656cdda842d2bd023d07",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c1f92952926863dced"
+  },
+  "status": true,
+  "name": "Mileny Sabrina",
+  "email": "milenysabrina98@gmail",
+  "register": "50220789",
+  "user_type": "Estudante",
+  "link": "123.link",
+  "password": "ff03ae1b9349d692e547ad2529571a11",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c1f92952926863dcf3"
+  },
+  "status": true,
+  "name": "Enzo Lelis",
+  "email": "enzolelis12@gmail.com",
+  "register": "50220159",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "link": "123.link",
+  "password": "d7eaf40a656cb081ab812b816a977f53",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c1f92952926863dcf9"
+  },
+  "status": true,
+  "name": "Renan Cordeiro Santo",
+  "email": "rcordeiro945@gmail.com",
+  "register": "50220404",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "password": "560a65cb5d836a12517d3f6489e5f28d",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dcff"
+  },
+  "status": true,
+  "name": "Thiago Bitencourt Sancho",
+  "email": "thiagosancho2006@gmail.com",
+  "register": "50220434",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "password": "1e4296e5145ced61bcf71581eb645b72",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd05"
+  },
+  "status": true,
+  "name": "Rayssa Texeira Brito",
+  "email": "rayssateixeira@gmail.com",
+  "register": "50220731",
+  "user_type": "Estudante",
+  "link": "123.link",
+  "password": "ea91bb9f1222f81fa9534b223c4a380a",
+  "course_id": {
+    "$oid": "666da2bd91af7d6a607f717e"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd0b"
+  },
+  "status": true,
+  "name": "Giovanna Alckmin",
+  "email": "giovannalckmin@gmail.com",
+  "register": "50220951",
+  "user_type": "Estudante",
+  "password": "468b58bc45ce0dde2fb6a3535a89942d",
+  "course_id": {
+    "$oid": "666da2bd91af7d6a607f717e"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd11"
+  },
+  "status": true,
+  "name": "Camila Cunha",
+  "email": "camilacunha@gmail.com",
+  "register": "50220357",
+  "user_type": "Estudante",
+  "link": "123.link",
+  "password": "3f061809c165bee90487361830d97e8f",
+  "course_id": {
+    "$oid": "666da2bd91af7d6a607f717e"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd17"
+  },
+  "status": true,
+  "name": "Matheus Cavalerio",
+  "email": "matheuscavaleiro36@gmail.com",
+  "register": "50220456",
+  "user_type": "Estudante",
+  "password": "d5bd92e3d923762b8e3bae040135199b",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd1d"
+  },
+  "status": true,
+  "name": "Giovana Franco",
+  "email": "gigifrancosantos@gmail.com",
+  "register": "50220654",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "link": "123.link",
+  "password": "8a71d1ec6bb60581789b14715cf9a5d8",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd23"
+  },
+  "status": true,
+  "name": "Beatriz Faria",
+  "email": "beatrizfariamendes@gmail.com",
+  "register": "50220852",
+  "user_type": "Estudante",
+  "password": "1a559ce34b67f7d2f20ca5d6247ff850",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c2f92952926863dd29"
+  },
+  "status": true,
+  "name": "Kauê Cordeiro de Abreu",
+  "email": "kauecordeiro@gmail.com",
+  "register": "50220039",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "link": "123.link",
+  "password": "68a51175419ab18630b7a5a7d98b9ead",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd2f"
+  },
+  "status": true,
+  "name": "Kethlin Gouveia",
+  "email": "gouveiakethlin@gmail.com",
+  "register": "50220733",
+  "user_type": "Estudante",
+  "phone_number": "11948521814",
+  "password": "728fe817fd9e164e455bf0b56dd3258a",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd35"
+  },
+  "status": true,
+  "name": "Guilherme Cordeiro",
+  "email": "guilhermecordeiro@gmail.com",
+  "register": "50220746",
+  "user_type": "Estudante",
+  "password": "8a981203a86045bfb0b806cee2f85631",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd3b"
+  },
+  "status": true,
+  "name": "Alberson Wander Sá dos Santos",
+  "email": "thiagosancho20061@gmail.com",
+  "register": "502206477",
+  "user_type": "Administrador",
+  "link": "123.link",
+  "password": "e4c83de0c0651e5e1ba2c06944b920b7",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd3f"
+  },
+  "status": true,
+  "name": "Ana Paula",
+  "email": "anapaula@gmail.com",
+  "register": "502204537",
+  "user_type": "Administrador",
+  "link": "123.link",
+  "password": "86d446416dac3adfd28e6d59dcafc89d",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd43"
+  },
+  "status": true,
+  "name": "Hélio Esperidião",
+  "email": "helioesperidiao@gmail.com",
+  "register": "502205265",
+  "user_type": "Professor",
+  "password": "4c9d0a00712578484ec5581f47394eaf",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd49"
+  },
+  "status": true,
+  "name": "Marcia Máia",
+  "email": "marciomaia@gmail.com",
+  "register": "502206345",
+  "user_type": "Professor",
+  "link": "123.link",
+  "password": "a2eb216afb0740c9b7b6b3ec0e4be10f",
+  "course_id": {
+    "$oid": "666da2bd91af7d6a607f717e"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd4f"
+  },
+  "status": true,
+  "name": "Adriana Nakahara",
+  "email": "adriananakahara@gmail.com",
+  "register": "502204285",
+  "user_type": "Professor",
+  "phone_number": "11948521814",
+  "password": "aeb4cbe4f7bf94581f90ee85de0b98f5",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd55"
+  },
+  "status": true,
+  "name": "Bruno Michel",
+  "email": "brunomichel@gmail.com",
+  "register": "502204846",
+  "user_type": "Professor",
+  "link": "123.link",
+  "password": "220c26bd757aeb440fea456aabd363ec",
+  "course_id": {
+    "$oid": "666da2b791af7d6a607f717b"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "669b39c3f92952926863dd5b"
+  },
+  "status": true,
+  "name": "Tatiana Roberta Bitencourt Sancho",
+  "email": "tatianasancho2020@gmail.com",
+  "register": "502207548",
+  "user_type": "Estudante",
+  "password": "b320fcf90f59f36df34cbae1e9e67d9c",
+  "course_id": {
+    "$oid": "66831ee9dfed1adc24ab1340"
+  },
+  "__v": 0
+}]
