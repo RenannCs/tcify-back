@@ -42,13 +42,13 @@ module.exports = function (app) {
   /* ************** GETS ************** */
 
   app.get(
-    "/repository/projects/all/administrator",
+    "/repository/projects",
     verifyTokenAdminTeacher,
     require("../Control/Tcc/all")
   );
 
   app.get(
-    "/repository/projects/all/teacher/:_id",
+    "/repository/projects/teacher/:_id",
     verifyTokenAdminTeacher,
     require("../Control/Tcc/allTeacher")
   );
@@ -61,7 +61,7 @@ module.exports = function (app) {
   );
 
   app.get(
-    "/repository/projects/all/public",
+    "/repository/projects/public",
     require("../Control/Tcc/allPublic")
   );
 
