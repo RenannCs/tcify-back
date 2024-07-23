@@ -32,7 +32,7 @@ module.exports = async (request, response) => {
     return response.status(400).send(arr);
   }
 
-  Group.findByStudentId(_id)
+  Group.findByStudent(_id)
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",

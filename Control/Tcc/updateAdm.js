@@ -3,16 +3,25 @@
  * Pode alterar titulo, sumario
  */
 const Tcc = require("../../Schemas/Tcc");
-
+const User = require("../../Schemas/User");
+const Course = require("../../Schemas/Course");
+const Group = require("../../Schemas/Group");
 const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
   let tcc;
 
+  let _id;
+
   let title;
   let summary;
+  let grade;
+  let status;
+  let group_id;
+  let course_id;
+  let supervisor;
   try {
-    const _id = request.params._id;
+    _id = request.params._id;
 
     if ((await Tcc.exists({ _id: new ObjectId(_id) }).exec()) == null) {
       const arr = {
@@ -24,6 +33,11 @@ module.exports = async (request, response) => {
 
     title = request.body.title;
     summary = request.body.summary;
+    grade = request.body.grade;
+    status = request.body.status;
+    group_id = request.body.group_id;
+    course_id = request.body.course_id;
+    supervisor = request.body.supervisor;
 
     tcc = await Tcc.findById(_id).exec();
 
@@ -33,14 +47,51 @@ module.exports = async (request, response) => {
     if (summary != undefined) {
       tcc.summary = summary;
     }
-  } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "TCC inválido!",
-      };
-      return response.status(400).send(arr);
+    if (grade != undefined) {
+      tcc.grade = grade;
     }
+    if (status != undefined) {
+      tcc.status = status;
+    }
+    if (group_id != undefined) {
+      if (
+        (await Group.exists({ _id: new ObjectId(group_id) }).exec()) == null
+      ) {
+        const arr = {
+          status: "ERROR",
+          message: "Grupo não existe!",
+        };
+        return response.status(404).send(arr);
+      }
+      tcc.group_id = group_id;
+    }
+    if (course_id != undefined) {
+      if (
+        (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
+      ) {
+        const arr = {
+          status: "ERROR",
+          message: "Curso não existe!",
+        };
+        return response.status(404).send(arr);
+      }
+      tcc.course_id = course_id;
+    }
+    if (supervisor != undefined) {
+      if (
+        (await User.exists({
+          $and: [{ _id: new ObjectId(supervisor) }, { user_type: "Professor" }],
+        }).exec()) == null
+      ) {
+        const arr = {
+          status: "ERROR",
+          message: "Supervisor não existe!",
+        };
+        return response.status(404).send(arr);
+      }
+      tcc.supervisor = supervisor;
+    }
+  } catch (error) {
     const arr = {
       status: "ERROR",
       message: "Erro de servidor, tente novamente mais tarde!",

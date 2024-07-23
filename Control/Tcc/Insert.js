@@ -9,111 +9,328 @@
 
 const Tcc = require("../../Schemas/Tcc");
 const Group = require("../../Schemas/Group");
-const ModelJwtToken = require("../../Model/JwtToken");
-//const fs = require('fs');
-const { ObjectId } = require("mongodb");
-const JwtToken = new ModelJwtToken();
 
+const { ObjectId, BSON } = require("mongodb");
+const fs = require("fs");
+const fs_extra = require("fs-extra");
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let tcc;
 
-  if (tokenValidationResult.status !== true) {
+  let title;
+  let summary;
+  let supervisor;
+  let group_id;
+  let course_id;
+
+  let monography;
+  let monography_path = "";
+
+  let document;
+  let document_path = "";
+
+  let zip;
+  let zip_path = "";
+
+  let image;
+  let image_path = "";
+
+  try {
+    summary = request.body.summary;
+    group_id = request.body.group_id;
+
+    const group = await Group.findById(new ObjectId(group_id)).exec();
+
+    if (group == null) {
+      await fs_extra.emptyDir("Temp");
+      const arr = {
+        status: "ERROR",
+        message: "Grupo não existe!",
+      };
+      return response.status(404).send(arr);
+    }
+    if ((await Tcc.findOne({ group_id: group_id }).exec()) != null) {
+      await fs_extra.emptyDir("Temp");
+      const arr = {
+        status: "ERROR",
+        message: "Grupo já possui TCC!",
+      };
+      return response.status(409).send(arr);
+    }
+    supervisor = group.supervisor;
+    course_id = group.course_id;
+    title = group.title;
+
+    tcc = new Tcc();
+    tcc.id = new ObjectId();
+
+    tcc.title = title;
+    tcc.summary = summary;
+    tcc.group_id = group_id;
+    tcc.supervisor = supervisor;
+    tcc.course_id = course_id;
+
+    group.tcc_id = tcc.id;
+    await group.save();
+    //Tratamento da monografia
+    const arrMonography = request.files["monography"];
+    if (arrMonography != undefined) {
+      monography = arrMonography[0];
+
+      const tipoMonografia = ["pdf", "docx"];
+      const mimeMonografia = monography.mimetype;
+      const tipoMonografiaAtual = mimeMonografia.split("/")[1];
+
+      //Verifica o tipo da monografia
+      if (!tipoMonografia.includes(tipoMonografiaAtual)) {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Formato da monografia inválido!",
+        };
+        return response.status(415).send(arr);
+      }
+      /***********************************************/
+
+      //Verifica o tamanho da monografia
+      if (monography.size > 1024 * 1024 * 80) {
+        //80mb
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Monografia muito grande!",
+        };
+        return response.status(413).send(arr);
+      }
+      /**********************************************/
+
+      monography_path =
+        "Uploads/Monographys/" + tcc.id + "." + tipoMonografiaAtual;
+
+      //Salva a manografia
+
+      tcc.monography = monography_path;
+      /**********************************************************/
+    }
+    /**************************************************************************/
+
+    //Tratamento documento
+    const arrDocument = request.files["document"];
+    if (arrDocument != undefined) {
+      document = arrDocument[0];
+
+      const tipoDocument = ["pdf", "docx"];
+      const mimeDocument = document.mimetype;
+      const tipoDocumentAtual = mimeDocument.split("/")[1];
+
+      if (!tipoDocument.includes(tipoDocumentAtual)) {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Tipo do documento inválido!",
+        };
+        return response.status(415).send(arr);
+      }
+
+      if (document.size > 1024 * 1024 * 50) {
+        await fs_extra.emptyDir("Temp");
+        const arr = {
+          status: "ERROR",
+          message: "Documento muito grande!",
+        };
+        return response.status(413).send(arr);
+      }
+
+      document_path = "Uploads/Documents/" + tcc.id + "." + tipoDocumentAtual;
+
+      tcc.document = document_path;
+    }
+    /****************************************************************************/
+
+    //Tratamento arquivo zip
+    const arrZip = request.files["zip"];
+    if (arrZip != undefined) {
+      zip = arrZip[0];
+
+      const mimeZip = zip.mimetype;
+      const tipoZipAtual = mimeZip.split("/")[1];
+      if (tipoZipAtual != "zip") {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Arquivo Zip inválido!",
+        };
+        return response.status(415).send(arr);
+      }
+
+      if (zip.size > 1024 * 1024 * 100) {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Arquivo Zip muito grande!",
+        };
+        return response.status(413).send(arr);
+      }
+
+      zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
+
+      tcc.zip = zip_path;
+    }
+    /*********************************************************/
+    //Tratamento da imagem
+    const arrImage = request.files["image"];
+    if (arrImage != undefined) {
+      image = arrImage[0];
+
+      const tipoImagem = ["png", "jpg", "jpeg", "webp"];
+      const mimeImage = image.mimetype;
+      const tipoImagemAtual = mimeImage.split("/")[1];
+
+      if (!tipoImagem.includes(tipoImagemAtual)) {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Tipo de imagem inválido!",
+        };
+        return response.status(415).send(arr);
+      }
+
+      if (image.size > 1024 * 1024 * 20) {
+        await fs_extra.emptyDir("Temp");
+
+        const arr = {
+          status: "ERROR",
+          message: "Tamanho da imagem muito grande!",
+        };
+        return response.status(413).send(arr);
+      }
+
+      image_path = "Uploads/TccsImages/" + tcc.id + "." + tipoImagemAtual;
+
+      tcc.image = image_path;
+    }
+
+    /*****************************************************************/
+
+    if (monography_path != "") {
+      fs.rename(monography.path, monography_path, (error) => {
+        if (error) {
+          fs_extra.emptyDirSync("Temp");
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+
+    if (document_path != "") {
+      fs.rename(document.path, document_path, (error) => {
+        if (error) {
+          fs.unlink(monography_path, (error) => {});
+          fs_extra.emptyDirSync("Temp");
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+
+    if (zip_path != "") {
+      fs.rename(zip.path, zip_path, (error) => {
+        if (error) {
+          fs.unlink(monography_path, (error) => {});
+          fs.unlink(document_path, (error) => {});
+
+          fs_extra.emptyDirSync("Temp");
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+
+    if (image_path != "") {
+      fs.rename(image.path, image_path, (error) => {
+        if (error) {
+          fs.unlink(monography_path, (error) => {});
+          fs.unlink(document_path, (error) => {});
+          fs.unlink(zip_path, (error) => {});
+          fs_extra.emptyDirSync("Temp");
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+  } catch (error) {
+    await fs_extra.emptyDir("Temp");
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "Grupo inválido!",
+        data: error,
+      };
+      return response.status(400).send(arr);
+    }
     const arr = {
       status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
+      message: "Erro de servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(401).send(arr);
+    return response.status(500).send(arr);
   }
-  /*
-    const monography = request.files["monography"];
-    let monographyPath = undefined;
-    
-    if(monography != undefined){
-        fs.rename(monography[0].path , "Uploads/Monographys/" + monography[0].filename + ".pdf" , (erro)=> {});
-        monographyPath = "Uploads/Monographys/" + monography[0].filename + ".pdf";
-    }
-    
-    const document = request.files["document"];
-    let documentPath = undefined
-    if (document != undefined){
-        fs.rename(document[0].path , "Uploads/Documents/" + document[0].filename + ".pdf" , (erro)=>{});
-        documentPath = "Uploads/Documents/" + document[0].filename + ".pdf";
-    }
-
-    const zip = request.files["zip"];
-    let zipPath = undefined
-    if (zip != undefined){
-        fs.rename(zip[0].path , "Uploads/Zips/" + zip[0].filename + ".zip" , (erro)=>{});
-        zipPath = "Uploads/Zips/" + zip[0].filename + ".zip";
-    }
-*/
-
-  const summary = request.body.summary;
-  //const supervisor = request.body.supervisor;
-  const group_id = request.body.group_id;
-
-  const date = new Date();
-
-  if ((await Group.exists({ _id: new ObjectId(group_id) })) == null) {
-    const arr = {
-      status: "ERROR",
-      message: "Grupo não existe",
-    };
-    return response.status(404).send(arr);
-  }
-
-  if ((await Tcc.existsByGroup(group_id)) != null) {
-    const arr = {
-      status: "ERROR",
-      message: "Grupo já possui TCC!",
-    };
-    return response.status(419).send(arr);
-  }
-
-  const group = await Group.findById(group_id).exec();
-
-  const tcc = new Tcc();
-
-  tcc.title = group.title;
-  tcc.summary = summary;
-  tcc.supervisor = group.supervisor;
-  tcc.date = date.toISOString();
-  tcc.group_id = group_id;
-  tcc.course_id = group.course_id;
-  tcc.status = 0;
-  tcc.grade = 0;
-  //tcc.image = "Default/tcc_image_default.png";
-
-  /*tcc.monography = monographyPath;
-    tcc.document = documentPath;
-    tcc.zip = zipPath;*/
 
   tcc
     .save()
+    .then((data) => {
+      return Tcc.single(data.id);
+    })
     .then((resolve) => {
-      group.tcc_id = resolve.id;
-      group.save();
+      if (resolve.monography != null) {
+        resolve.monography = process.env.API_PATH + resolve.monography;
+      }
+      if (resolve.document != null) {
+        resolve.document = process.env.API_PATH + resolve.document;
+      }
+      if (resolve.zip != null) {
+        resolve.zip = process.env.API_PATH + resolve.zip;
+      }
+      if (resolve.image != null) {
+        resolve.image = process.env.API_PATH + resolve.image;
+      } else {
+        resolve.image = process.env.API_PATH + process.env.TCC_PICTURE_DEFAULT;
+      }
       const arr = {
         status: "SUCCESS",
-        message: "TCC adicionado com sucesso!",
+        message: "TCC inserido com sucesso!",
         data: resolve,
       };
-      response.status(200).send(arr);
+      return response.status(200).send(arr);
     })
     .catch((reject) => {
+      fs_extra.emptyDirSync("Temp");
       const arr = {
-        data: reject,
         status: "ERROR",
-        message: "Ocorreu um erro ao adicionar o TCC!",
+        message: "Ocorreu um erro ao inserir o TCC!",
+        data: reject,
       };
-      response.status(400).send(arr);
+      return response.status(500).send(arr);
     });
-  /*
-    .finally(()=>{
-        database.desconnect();
-    })
-    */
 };

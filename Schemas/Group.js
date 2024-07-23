@@ -93,7 +93,7 @@ const groupSchema = new mongoose.Schema(
       existsByStudent(id) {
         return this.exists({ students: id }).exec();
       },
-      findByStudentId(id) {
+      findByStudent(id) {
         return this.findOne({ students: id })
           .populate({
             path: "students",

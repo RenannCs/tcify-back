@@ -2,11 +2,28 @@ const mongoose = require("mongoose");
 
 const tccSchema = new mongoose.Schema(
   {
-    title: String,
-    summary: String,
-    grade: Number,
-    date: Date,
-    status: String,
+    title: {
+      type: String,
+      required: true,
+    },
+    summary: {
+      type: String,
+    },
+    grade: {
+      type: Number,
+      default: 0,
+    },
+    date: {
+      type: Date,
+      default: function () {
+        const date = new Date();
+        return date.toISOString();
+      },
+    },
+    status: {
+      type: String,
+      default: "0",
+    },
     document: String,
     monography: String,
     zip: String,
@@ -182,6 +199,14 @@ const tccSchema = new mongoose.Schema(
     },
   }
 );
+
+tccSchema.pre("save", function (next) {
+  const tcc = this;
+  tcc.title = tcc.title ? tcc.title.trim() : undefined;
+  tcc.summary = tcc.summary ? tcc.summary.trim() : undefined;
+
+  next(); 
+});
 
 const tccModel = mongoose.model("TCC", tccSchema, "TCCs");
 

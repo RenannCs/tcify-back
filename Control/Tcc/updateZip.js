@@ -1,27 +1,27 @@
+/**
+ * CONTROLE DE IMAGEM.
+ *
+ * Pode fazer a inserção de uma imagem nova ou atualizar
+ * uma já existente. Altera também no Banco de Dados.
+ */
+
 const Tcc = require("../../Schemas/Tcc");
-const ModelJwtToken = require("../../Model/JwtToken");
-const JwtToken = new ModelJwtToken();
+
 const fs = require("fs");
 
-const { ObjectId } = require("mongodb");
-
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let _id;
+  let zip;
+  let zip_path;
+  let tcc;
 
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
+  try {
+  _id = request.params._id;
+  zip = request.file;
 
-  const id = request.params.id;
+  tcc = await Tcc.findById(_id).exec();
 
-  if ((await Tcc.exists({ _id: new ObjectId(id) }).exec()) == null) {
+  if (tcc == null) {
     const arr = {
       status: "ERROR",
       message: "TCC não existe!",
@@ -29,62 +29,158 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
 
-  const zip = request.files["zip"];
-  const dataTcc = await Tcc.findById(id).exec();
-  const oldPath = dataTcc.zip;
+  if (zip == undefined) {
+    const arr = {
+      status: "ERROR",
+      message: "Nenhum arquivo foi enviado!",
+    };
+    return response.status(404).send(arr);
+  }
 
-  fs.stat(zip[0].path, (erro, data) => {
-    if (erro) {
+  if (zip.size > 1024 * 1024 * 100) {
+    fs.unlink(zip.path, (error) => {
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao ler o arquivo!",
+          data: error,
+        };
+        return response.status(500).send(arr);
+      }
+    });
+    const arr = {
+      status: "ERROR",
+      message: "Arquivo muito grande!",
+    };
+    return response.status(413).send(arr);
+  }
+
+  
+  const mimeDocumento = zip.mimetype;
+  const tipoDocumentoAtual = mimeDocumento.split("/")[1];
+
+  if (tipoDocumentoAtual != "zip") {
+    fs.unlink(zip.path, (error) => {
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao ler o arquivo!",
+          data: error,
+        };
+        return response.status(500).send(arr);
+      }
+    });
+    const arr = {
+      status: "ERROR",
+      message: "Tipo de arquivo inválido",
+    };
+    return response.status(415).send(arr);
+  }
+
+  if (tcc.zip != null) {
+    if (fs.existsSync(tcc.zip)) {
+      fs.unlink(tcc.zip, (error) => {
+        if (error) {
+          fs.unlink(zip.path, (error) => {
+            if (error) {
+              const arr = {
+                status: "ERROR",
+                message: "Ocorreu um erro ao ler o arquivo!",
+                data: error,
+              };
+              return response.status(500).send(arr);
+            }
+          });
+
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+  }
+
+  zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
+  tcc.zip = zip_path;
+
+  fs.rename(zip.path, zip_path, (error) => {
+    if (error) {
       const arr = {
         status: "ERROR",
         message: "Ocorreu um erro ao ler o arquivo!",
+        data: error,
       };
-      return response.status(404).send(arr);
-    }
-    if (data.size > 1024 * 1024 * 50) {
-      const arr = {
-        status: "ERROR",
-        message: "Arquivo muito grande!",
-      };
-      return response.status(413).send(arr);
+      return response.status(500).send(arr);
     }
   });
-
-  if (oldPath) {
-    fs.unlink(oldPath, (erro) => {
-      if (erro) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao excluir arquivo antigo!",
-        };
-        return response.status(400).send(arr);
-      }
-    });
-  }
-
-  fs.rename(zip[0].path, "Uploads/Zips/" + zip[0].filename + ".zip", (erro) => {
-    if (erro) {
-      const arr = {
-        status: "ERROR",
-        message: "Ocorreu um erro ao salvar o arquivo!",
-      };
-      return response.status(400).send(arr);
-    }
-  });
-  const tcc = await Tcc.findById(id).exec();
-  tcc.zip = "Uploads/Zips/" + zip[0].filename + ".zip";
-  try {
-    await tcc.save();
-    const arr = {
-      status: "SUCCESS",
-      message: "Zip atualizado com sucesso!",
-    };
-    return response.status(200).send(arr);
-  } catch {
+  } catch (error) {
     const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao atualizar o Tcc!",
+      message: "Erro de servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(400).send(arr);
+    return response.status(500).send(arr);
   }
+
+  tcc
+    .save()
+    .then((data) => {
+      return Tcc.single(data.id);
+    })
+    .then((tcc) => {
+      return (dataFormat = {
+        _id: tcc.id,
+
+        title: tcc.title ? tcc.title : null,
+        summary: tcc.summary ? tcc.summary : null,
+        grade: tcc.grade ? tcc.grade : null,
+
+        status: tcc.status ? tcc.status : null,
+
+        document: tcc.document
+          ? `${process.env.API_PATH}${tcc.document}`
+          : null,
+
+        monography: tcc.monography
+          ? `${process.env.API_PATH}${tcc.monography}`
+          : null,
+
+        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+        image: tcc.image
+          ? `${process.env.API_PATH}${tcc.image}`
+          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
+        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+
+        group_id: tcc.group_id ? tcc.group_id._id : null,
+        students: tcc.group_id ? tcc.group_id.students : null,
+
+        course_id: tcc.course_id ? tcc.course_id._id : null,
+        course_name: tcc.course_id ? tcc.course_id.name : null,
+
+        date: new Date(tcc.date).getFullYear().toString(),
+      });
+    })
+    .then((resolve) => {
+      const arr = {
+        data: resolve,
+        status: "SUCCESS",
+        message: "TCC atualizado com sucesso!",
+      };
+      response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      fs.unlink(zip_path, (error) => {});
+      const arr = {
+        data: reject,
+        status: "ERROR",
+        message: "Ocorreu um erro ao atualizar o TCC",
+      };
+      response.status(200).send(arr);
+    });
 };

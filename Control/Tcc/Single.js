@@ -1,46 +1,69 @@
 const Tcc = require("../../Schemas/Tcc");
-const { ObjectId } = require("mongodb");
+const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
-  /*
+  let _id;
+  try {
+    _id = request.params._id;
 
-    const database = new ModelDatabase();
-    await database.conect();
-    */
-
-  const id = request.params.id;
-
-  if ((await Tcc.exists({ _id: new ObjectId(id) }).exec()) == null) {
+    if ((await Tcc.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Nenhum TCC encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
+  } catch (error) {
+    if (error instanceof BSON.BSONError) {
+      const arr = {
+        status: "ERROR",
+        message: "TCC inválido!",
+      };
+      return response.status(400).send(arr);
+    }
     const arr = {
       status: "ERROR",
-      message: "Nenhum TCC encontrado!",
+      message: "Erro de servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(404).send(arr);
+    return response.status(500).send(arr);
   }
 
-  Tcc.single(id)
+  Tcc.single(_id)
     .then((tcc) => {
       return (dataFormat = {
         _id: tcc.id,
-        title: tcc.title,
-        summary: tcc.summary,
 
-        supervisor: tcc.supervisor.name,
-        supervisor_id: tcc.supervisor._id,
+        title: tcc.title ? tcc.title : null,
+        summary: tcc.summary ? tcc.summary : null,
+        grade: tcc.grade ? tcc.grade : null,
+
+        status: tcc.status ? tcc.status : null,
+
+        document: tcc.document
+          ? `${process.env.API_PATH}${tcc.document}`
+          : null,
+
+        monography: tcc.monography
+          ? `${process.env.API_PATH}${tcc.monography}`
+          : null,
+
+        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+        image: tcc.image
+          ? `${process.env.API_PATH}${tcc.image}`
+          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
+        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+
+        group_id: tcc.group_id ? tcc.group_id._id : null,
+        students: tcc.group_id ? tcc.group_id.students : null,
+
+        course_id: tcc.course_id ? tcc.course_id._id : null,
+        course_name: tcc.course_id ? tcc.course_id.name : null,
 
         date: new Date(tcc.date).getFullYear().toString(),
-
-        course_name: tcc.course_id.name,
-        course_id: tcc.course_id._id,
-
-        status: tcc.status,
-        grade: tcc.grade,
-
-        group_id: tcc.group_id._id,
-        students: tcc.group_id.students,
-
-        leader: tcc.group_id.leader_id.name,
-        leader_id: tcc.group_id.leader_id._id,
       });
     })
     .then((resolve) => {
@@ -54,39 +77,8 @@ module.exports = async (request, response) => {
     .catch(() => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao recuperar os TCC's!",
+        message: "Ocorreu um erro ao recuperar o TCC!",
       };
-      return response.status(400).send(arr);
+      return response.status(500).send(arr);
     });
-
-  /*
-
-  try{
-    const data = await tcc.allFields(fields);
-    const format = data.map((tcc)=>({
-      _id: tcc._id,
-      title: tcc.title,
-      summary: tcc.summary ? tcc.summary : null,
-      grade: tcc.grade ? tcc.grade : null,
-      supervisor: tcc.supervisor,
-      supervisor_id: tcc.supervisor_id,
-      date: new Date(tcc.date).getFullYear().toString(),
-      status: tcc.status,
-      students: tcc.students,
-      course_id: tcc.course_id,
-      course_name: tcc.course_name
-    }))
-    const arr = {
-      status: "SUCCESS",
-      message: "TCC's recuperados com sucesso!",
-      data: format
-    };
-    return response.status(200).send(arr);
-  }catch {
-    const arr ={ 
-      status: "ERROR",
-      message: "Ocorreu um erro ao buscar os TCC's"
-    };
-    return response.status(400).send(arr);
-  }*/
 };

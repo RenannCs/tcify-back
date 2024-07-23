@@ -2,7 +2,11 @@ module.exports = function (app) {
   const express = require("express");
   const multer = require("multer");
 
-  const uploadLocal = multer({ dest: "Uploads/" });
+  const uploadTemp = multer({ dest: "Temp" });
+  const uploadDocuments = multer({ dest: "Uploads/Documents" });
+  const uploadmMonography = multer({ dest: "Uploads/Monographys" });
+  const uploadTccsImages = multer({ dest: "Uploads/TccsImages" });
+  const uploadZip = multer({ dest: "Uploads/Zips" });
 
   const uploadsUserImages = multer({
     dest: "Uploads/UsersImages",
@@ -24,7 +28,7 @@ module.exports = function (app) {
 
   /* ************** Autenticação de Token ********************* */
 
-  app.post("/repository/auth", verifyTokenAll, (request , response) => {
+  app.post("/repository/auth", verifyTokenAll, (request, response) => {
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
@@ -37,32 +41,36 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/projects", require("../Control/Tcc/all"));
-
-  app.get("/repository/tccs/admin", require("../Control/TCC/allTableAdmin"));
-
-  app.get("/repository/tcc/:id", require("../Control/Tcc/single"));
+  app.get(
+    "/repository/projects/all/administrator",
+    verifyTokenAdminTeacher,
+    require("../Control/Tcc/all")
+  );
 
   app.get(
-    "/repository/tcc/student/:id",
+    "/repository/projects/all/teacher/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Tcc/allTeacher")
+  );
+
+  app.get("/repository/projects/:_id", require("../Control/Tcc/single"));
+
+  app.get(
+    "/repository/projects/student/:_id",
     require("../Control/Tcc/singleByStudent")
   );
 
   app.get(
-    "/repository/tccs/table/professor/:id",
-    require("../Control/Tcc/allTableProfessor")
-  );
-
-  app.get(
-    "/repository/tccs/table/public",
-    require("../Control/Tcc/allTablePublic")
+    "/repository/projects/all/public",
+    require("../Control/Tcc/allPublic")
   );
 
   /* ************** POST ************** */
 
   app.post(
-    "/repository/tcc",
-    uploadLocal.fields([
+    "/repository/projects",
+    verifyTokenAll,
+    uploadTemp.fields([
       { name: "document", maxCount: 1 },
       { name: "monography", maxCount: 1 },
       { name: "zip", maxCount: 1 },
@@ -71,42 +79,60 @@ module.exports = function (app) {
     require("../Control/Tcc/insert")
   );
 
-  app.post(
-    "/repository/tcc/image/:id",
-    uploadLocal.fields([{ name: "image", maxCount: 1 }]),
-    require("../Control/Tcc/updateImage")
-  );
-
   /* ************** PATCH ************** */
+
   app.patch(
-    "/repository/tcc/:id",
-    uploadLocal.any(),
+    "/repository/projects/:_id",
+    verifyTokenAll,
     require("../Control/Tcc/update")
   );
 
   app.patch(
-    "/repository/tcc/monography/:id",
-    uploadLocal.fields([{ name: "monography", maxCount: 1 }]),
+    "/repository/projects/monography/:_id",
+    verifyTokenAll,
+    uploadTemp.single("monography"),
     require("../Control/Tcc/updateMonography")
   );
 
   app.patch(
-    "/repository/tcc/document/:id",
-    uploadLocal.fields([{ name: "document", maxCount: 1 }]),
+    "/repository/projects/image/:_id",
+    verifyTokenAll,
+    uploadTemp.single("image"),
+    require("../Control/Tcc/updateImage")
+  );
+
+  app.patch(
+    "/repository/projects/document/:_id",
+    verifyTokenAll,
+    uploadTemp.single("document"),
     require("../Control/Tcc/updateDocument")
   );
 
   app.patch(
-    "/repository/tcc/zip/:id",
-    uploadLocal.fields([{ name: "zip", maxCount: 1 }]),
+    "/repository/projects/zip/:_id",
+    uploadTemp.single("zip"),
     require("../Control/Tcc/updateZip")
   );
 
   /* ************** DELETE ************** */
-  app.delete("/repository/project/:id", require("../Control/Tcc/Delete"));
+  app.delete(
+    "/repository/projects/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Tcc/Delete")
+  );
 
-  app.delete("/repository/projects", require("../Control/Tcc/deleteProjects"));
+  app.delete(
+    "/repository/projects",
+    verifyTokenAdminTeacher,
+    require("../Control/Tcc/deleteProjects")
+  );
 
+  /*****************PUT *********** */
+  app.put(
+    "/repository/projects/:_id",
+    verifyTokenAdminTeacher,
+    require("../Control/Tcc/updateAdm")
+  );
   /*
    * ---------------------------------------ROTAS USERS----------------------------------------------------------
    */

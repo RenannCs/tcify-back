@@ -1,26 +1,27 @@
+/**
+ * CONTROLE DE IMAGEM.
+ *
+ * Pode fazer a inserção de uma imagem nova ou atualizar
+ * uma já existente. Altera também no Banco de Dados.
+ */
+
 const Tcc = require("../../Schemas/Tcc");
-const ModelJwtToken = require("../../Model/JwtToken");
-const JwtToken = new ModelJwtToken();
+
 const fs = require("fs");
 
-const { ObjectId } = require("mongodb");
 module.exports = async (request, response) => {
-  const authorizationHeader = request.headers.authorization;
-  const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+  let _id;
+  let document;
+  let document_path;
+  let tcc;
 
-  if (tokenValidationResult.status !== true) {
-    const arr = {
-      status: "ERROR",
-      message:
-        "Invalid token! If the problem persists, please contact our technical support.",
-      error: tokenValidationResult.error,
-    };
-    return response.status(401).send(arr);
-  }
+  try {
+  _id = request.params._id;
+  document = request.file;
 
-  const id = request.params.id;
+  tcc = await Tcc.findById(_id).exec();
 
-  if ((await Tcc.exists({ _id: new ObjectId(id) }).exec()) == null) {
+  if (tcc == null) {
     const arr = {
       status: "ERROR",
       message: "TCC não existe!",
@@ -28,66 +29,158 @@ module.exports = async (request, response) => {
     return response.status(404).send(arr);
   }
 
-  const document = request.files["document"];
-  const dataTcc = await Tcc.findOne({ _id: new ObjectId(id) }).exec();
-  const oldPath = dataTcc.document;
+  if (document == undefined) {
+    const arr = {
+      status: "ERROR",
+      message: "Nenhum documento foi enviado!",
+    };
+    return response.status(404).send(arr);
+  }
 
-  fs.stat(document[0].path, (erro, data) => {
-    if (erro) {
+  if (document.size > 1024 * 1024 * 50) {
+    fs.unlink(document.path, (error) => {
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao ler o arquivo!",
+          data: error,
+        };
+        return response.status(500).send(arr);
+      }
+    });
+    const arr = {
+      status: "ERROR",
+      message: "Documento muito grande!",
+    };
+    return response.status(413).send(arr);
+  }
+
+  const tipoDocumento = ["pdf", "docx"];
+  const mimeDocumento = document.mimetype;
+  const tipoDocumentoAtual = mimeDocumento.split("/")[1];
+
+  if (!tipoDocumento.includes(tipoDocumentoAtual)) {
+    fs.unlink(document.path, (error) => {
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao ler o arquivo!",
+          data: error,
+        };
+        return response.status(500).send(arr);
+      }
+    });
+    const arr = {
+      status: "ERROR",
+      message: "Tipo de documento inválido",
+    };
+    return response.status(415).send(arr);
+  }
+
+  if (tcc.document != null) {
+    if (fs.existsSync(tcc.document)) {
+      fs.unlink(tcc.document, (error) => {
+        if (error) {
+          fs.unlink(document.path, (error) => {
+            if (error) {
+              const arr = {
+                status: "ERROR",
+                message: "Ocorreu um erro ao ler o arquivo!",
+                data: error,
+              };
+              return response.status(500).send(arr);
+            }
+          });
+
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+    }
+  }
+
+  document_path = "Uploads/Documents/" + tcc.id + "." + tipoDocumentoAtual;
+  tcc.document = document_path;
+
+  fs.rename(document.path, document_path, (error) => {
+    if (error) {
       const arr = {
         status: "ERROR",
         message: "Ocorreu um erro ao ler o arquivo!",
+        data: error,
       };
-      return response.status(404).send(arr);
-    }
-    if (data.size > 1024 * 1024 * 10) {
-      const arr = {
-        status: "ERROR",
-        message: "Arquivo muito grande!",
-      };
-      return response.status(413).send(arr);
+      return response.status(500).send(arr);
     }
   });
-
-  if (oldPath != undefined) {
-    fs.unlink(oldPath, (erro) => {
-      if (erro) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao excluir arquivo antigo!",
-        };
-        return response.status(400).send(arr);
-      }
-    });
-  }
-
-  fs.rename(
-    document[0].path,
-    "Uploads/Documents/" + document[0].filename + ".pdf",
-    (erro) => {
-      if (erro) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao salvar o arquivo!",
-        };
-        return response.status(400).send(arr);
-      }
-    }
-  );
-  const tcc = await Tcc.findById(id).exec();
-  tcc.document = "Uploads/Documents/" + document[0].filename + ".pdf";
-  try {
-    await tcc.save();
-    const arr = {
-      status: "SUCCESS",
-      message: "Documento atualizada com sucesso!",
-    };
-    return response.status(200).send(arr);
-  } catch {
+  } catch (error) {
     const arr = {
       status: "ERROR",
-      message: "Ocorreu um erro ao atualizar o Tcc!",
+      message: "Erro de servidor, tente novamente mais tarde!",
+      data: error,
     };
-    return response.status(400).send(arr);
+    return response.status(500).send(arr);
   }
+
+  tcc
+    .save()
+    .then((data) => {
+      return Tcc.single(data.id);
+    })
+    .then((tcc) => {
+      return (dataFormat = {
+        _id: tcc.id,
+
+        title: tcc.title ? tcc.title : null,
+        summary: tcc.summary ? tcc.summary : null,
+        grade: tcc.grade ? tcc.grade : null,
+
+        status: tcc.status ? tcc.status : null,
+
+        document: tcc.document
+          ? `${process.env.API_PATH}${tcc.document}`
+          : null,
+
+        monography: tcc.monography
+          ? `${process.env.API_PATH}${tcc.monography}`
+          : null,
+
+        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+        image: tcc.image
+          ? `${process.env.API_PATH}${tcc.image}`
+          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
+        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+
+        group_id: tcc.group_id ? tcc.group_id._id : null,
+        students: tcc.group_id ? tcc.group_id.students : null,
+
+        course_id: tcc.course_id ? tcc.course_id._id : null,
+        course_name: tcc.course_id ? tcc.course_id.name : null,
+
+        date: new Date(tcc.date).getFullYear().toString(),
+      });
+    })
+    .then((resolve) => {
+      const arr = {
+        data: resolve,
+        status: "SUCCESS",
+        message: "TCC atualizado com sucesso!",
+      };
+      response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      fs.unlink(document_path, (error) => {});
+      const arr = {
+        data: reject,
+        status: "ERROR",
+        message: "Ocorreu um erro ao atualizar o TCC",
+      };
+      response.status(200).send(arr);
+    });
 };
