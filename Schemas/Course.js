@@ -7,6 +7,10 @@ const courseSchema = new mongoose.Schema({
     required: true,
   },
   description: String,
+  status: {
+    type: String,
+    default: "0",
+  },
 });
 
 courseSchema.pre("save", function (next) {

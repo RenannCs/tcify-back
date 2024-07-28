@@ -8,7 +8,7 @@ module.exports = async (request, response) => {
     const _id = request.params._id;
     const name = request.body.name;
     const description = request.body.description;
-
+    const status = request.body.status;
     if ((await Course.exists({ _id: new ObjectId(_id) })) == null) {
       const arr = {
         status: "ERROR",
@@ -20,6 +20,7 @@ module.exports = async (request, response) => {
     course = await Course.findById(_id);
     course.name = name;
     course.description = description;
+    course.status = status;
   } catch (error) {
     if (error instanceof BSON.BSONError) {
       const arr = {
