@@ -7,28 +7,28 @@ const { ObjectId, BSON } = require("mongodb");
 module.exports = async (request, response) => {
   let group;
 
-  let arrayStudentsRegister;
-  let leader_register;
-  let supervisor;
+  let students;
+  let leader_id;
+  let supervisor_id;
   let title;
   let course_id;
 
   try {
-    arrayStudentsRegister = request.body.students;
-    leader_register = request.body.leader_register;
-    supervisor = request.body.supervisor;
+    students = request.body.students;
+    leader_id = request.body.leader_id;
+    supervisor_id = request.body.supervisor_id;
     title = request.body.title;
     course_id = request.body.course_id;
 
-    if ((await User.exists({ register: leader_register }).exec()) == null) {
+    if ((await User.exists({ _id: leader_id }).exec()) == null) {
       const arr = {
         status: "ERROR",
-        message: "Matrícula " + leader_register + " não existe!",
+        message: "Matrícula " + leader_id + " não existe!",
       };
       return response.status(404).send(arr);
     }
 
-    const leaderData = await User.findOne({ register: leader_register }).exec();
+    const leaderData = await User.findOne({ _id: leader_id }).exec();
 
     if ((await Group.existsByStudent(leaderData.id)) != null) {
       const arr = {
@@ -49,17 +49,17 @@ module.exports = async (request, response) => {
     }
     if (
       (await User.exists({
-        $and: [{ _id: supervisor }, { user_type: "Professor" }],
+        $and: [{ _id: supervisor_id }, { user_type: "Professor" }],
       }).exec()) == null
     ) {
       const arr = {
         status: "ERROR",
-        message: "Supervisor não existe!",
+        message: "Orientador não existe!",
       };
       return response.status(404).send(arr);
     }
-    for (const _student of arrayStudentsRegister) {
-      if ((await User.exists({ register: _student }).exec()) == null) {
+    for (const _student of students) {
+      if ((await User.exists({ _id: _student }).exec()) == null) {
         const arr = {
           status: "ERROR",
           message: "Matrícula " + _student + " não existe!",
@@ -67,11 +67,11 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
       }
 
-      const student = await User.findOne({ register: _student }).exec();
+      const student = await User.findOne({ _id: _student }).exec();
       if ((await Group.existsByStudent(student.id)) != null) {
         const arr = {
           status: "ERROR",
-          message: "Aluno " + student.register + " já adicionado a um grupo!",
+          message: "Aluno " + student.name + " já adicionado a um grupo!",
         };
         return response.status(409).send(arr);
       }
@@ -82,7 +82,7 @@ module.exports = async (request, response) => {
     group.students = [leaderData.id];
     group.leader_id = leaderData.id;
     group.course_id = course_id;
-    group.supervisor = supervisor;
+    group.supervisor = supervisor_id;
     group.status = "0";
   } catch (error) {
     if (error instanceof BSON.BSONError) {
@@ -120,10 +120,10 @@ module.exports = async (request, response) => {
     });
 };
 /*
-  for (const _student of arrayStudentsRegister) {
+  for (const _student of students) {
     const student = await User.findOne({ register: _student });
 
-    if (_student != leader_register) {
+    if (_student != leader_id) {
       const email = new Email();
       email.dest = student.email;
       email.subject = "Convite para grupo";
