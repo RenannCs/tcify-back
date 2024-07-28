@@ -52,8 +52,8 @@ module.exports = function (app) {
     verifyTokenAdminTeacher,
     require("../Control/Tcc/allTeacher")
   );
-  
-  app.get("/repository/projects/public", require("../Control/Tcc/allPublic"));
+
+  app.get("/repository/public/projects", require("../Control/Tcc/allPublic"));
 
   app.get("/repository/projects/:_id", require("../Control/Tcc/single"));
 
