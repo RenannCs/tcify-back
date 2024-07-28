@@ -10,13 +10,13 @@ module.exports = async (request, response) => {
 
         course_id:
           user.user_type == "Administrador"
-            ? "N/A"
+            ? null
             : user.course_id
             ? user.course_id._id
             : null,
         course_name:
           user.user_type == "Administrador"
-            ? "N/A"
+            ? null
             : user.course_id
             ? user.course_id.name
             : null,

@@ -5,12 +5,10 @@ module.exports = async (request, response) => {
   try {
     const name = request.body.name;
     const description = request.body.description;
-    const status = request.body.status;
 
     course = new Course();
     course.name = name;
     course.description = description;
-    course.status = status;
   } catch (error) {
     const arr = {
       status: "ERROR",
