@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
     if ((await User.exists({ _id: leader_id }).exec()) == null) {
       const arr = {
         status: "ERROR",
-        message: "Matrícula " + leader_id + " não existe!",
+        message: "Um ou mais alunos não foram encontrados!",
       };
       return response.status(404).send(arr);
     }
@@ -62,7 +62,7 @@ module.exports = async (request, response) => {
       if ((await User.exists({ _id: _student }).exec()) == null) {
         const arr = {
           status: "ERROR",
-          message: "Matrícula " + _student + " não existe!",
+          message: "Um ou mais alunos não foram encontrados!",
         };
         return response.status(404).send(arr);
       }

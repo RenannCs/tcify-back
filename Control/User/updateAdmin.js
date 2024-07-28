@@ -16,7 +16,7 @@ module.exports = async (request, response) => {
   const course_id = request.body.course_id;
 
   let user;
-
+  
   try {
     if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
       const arr = {
@@ -32,6 +32,7 @@ module.exports = async (request, response) => {
       user.name = name;
     }
     if (email != undefined) {
+     
       const checkUser = await User.exists({ email: email }).exec();
       if (checkUser != null) {
         if (checkUser._id != _id) {
@@ -78,7 +79,7 @@ module.exports = async (request, response) => {
         if (checkUser._id != user.id) {
           const arr = {
             status: "ERROR",
-            message: "Email já está em uso!",
+            message: "Registro já está em uso!",
           };
           return response.status(409).send(arr);
         }
