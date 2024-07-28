@@ -52,17 +52,14 @@ module.exports = function (app) {
     verifyTokenAdminTeacher,
     require("../Control/Tcc/allTeacher")
   );
+  
+  app.get("/repository/projects/public", require("../Control/Tcc/allPublic"));
 
   app.get("/repository/projects/:_id", require("../Control/Tcc/single"));
 
   app.get(
     "/repository/projects/student/:_id",
     require("../Control/Tcc/singleByStudent")
-  );
-
-  app.get(
-    "/repository/projects/public",
-    require("../Control/Tcc/allPublic")
   );
 
   /* ************** POST ************** */
