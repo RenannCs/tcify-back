@@ -11,9 +11,8 @@ module.exports = async (request, response) => {
 
     const token_id = tokenValidationResult.decoded.payload._id;
 
-    const _id_list = request.body._id_list;
+    const _id_list = request.body;
 
-    //Verificar se o id do token esta na lista de usuarios
     if (_id_list.includes(token_id)) {
       const arr = {
         status: "ERROR",
