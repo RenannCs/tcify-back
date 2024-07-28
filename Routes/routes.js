@@ -28,7 +28,7 @@ module.exports = function (app) {
 
   /* ************** Autenticação de Token ********************* */
 
-  app.post("/repository/auth", verifyTokenAll, (request, response) => {
+  app.post("/repository/users/auth", verifyTokenAll, (request, response) => {
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
