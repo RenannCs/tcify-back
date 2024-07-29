@@ -18,6 +18,7 @@ module.exports = async (request, response, next) => {
           ["Professor", "Administrador", "Estudante"].includes(user.user_type) &
           (user.user_type == token_user_type)
         ) {
+          request.user = user;
           next();
         } else {
           const arr = {
