@@ -33,9 +33,7 @@ module.exports = function (app) {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
       data: {
-        name: request.user.name,
-        register: request.user.register,
-        user_type: request.user.user_type,
+        user: request.user,
       },
     };
     return response.status(200).send(arr);
