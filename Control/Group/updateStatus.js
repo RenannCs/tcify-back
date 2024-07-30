@@ -4,7 +4,7 @@ module.exports = async (request, response) => {
   let status;
   let _id_list;
   try {
-    _id_list = request.body._id_list;
+    _id_list = request.body;
     status = request.body.status;
 
     let updatedCount = 0;

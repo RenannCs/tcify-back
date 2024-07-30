@@ -2,7 +2,7 @@ const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
   const status = request.body.status;
-  const _id_list = request.body._id_list;
+  const _id_list = request.body;
 
   try {
     let updatedCount = 0;

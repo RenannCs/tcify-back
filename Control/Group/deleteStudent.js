@@ -100,9 +100,32 @@ module.exports = async (request, response) => {
 
     await group.save();
 
+    const data = await Group.single(group.id);
+    const format = {
+      _id: data._id,
+
+      title: data.title ? data.title : null,
+
+      students: data.students,
+
+      course_id: data.course_id ? data.course_id._id : null,
+      course_name: data.course_id ? data.course_id.name : null,
+
+      supervisor: data.supervisor ? data.supervisor.name : null,
+      supervisor_id: data.supervisor ? data.supervisor._id : null,
+
+      tcc: data.tcc_id ? data.tcc_id : null,
+
+      leader: data.leader_id ? data.leader_id.name : null,
+      leader_id: data.leader_id ? data.leader_id._id : null,
+
+      status: data.status ? data.status : null,
+    };
+
     const arr = {
       status: "SUCCESS",
       message: "Aluno excluído com sucesso!",
+      data: format,
     };
     return response.status(200).send(arr);
   } catch (error) {

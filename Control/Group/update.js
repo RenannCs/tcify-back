@@ -86,6 +86,29 @@ module.exports = async (request, response) => {
 
   group
     .save()
+    .then(async (group) => {
+      const data = await Group.single(group.id);
+      return (format = {
+        _id: data._id,
+
+        title: data.title ? data.title : null,
+
+        students: data.students,
+
+        course_id: data.course_id ? data.course_id._id : null,
+        course_name: data.course_id ? data.course_id.name : null,
+
+        supervisor: data.supervisor ? data.supervisor.name : null,
+        supervisor_id: data.supervisor ? data.supervisor._id : null,
+
+        tcc: data.tcc_id ? data.tcc_id : null,
+
+        leader: data.leader_id ? data.leader_id.name : null,
+        leader_id: data.leader_id ? data.leader_id._id : null,
+
+        status: data.status ? data.status : null,
+      });
+    })
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",

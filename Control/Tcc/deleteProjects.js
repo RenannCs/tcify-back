@@ -2,7 +2,7 @@ const Tcc = require("../../Schemas/Tcc");
 const fs = require("fs");
 module.exports = async (request, response) => {
   try {
-    const _id_list = request.body._id_list;
+    const _id_list = request.body;
 
     let deletedCount = 0;
     let tccsExcluidos = [];
