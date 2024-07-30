@@ -297,6 +297,12 @@ module.exports = function (app) {
     require("../Control/Group/insert")
   );
 
+  app.post(
+    "/repository/groups/administrator",
+    verifyTokenAdminTeacher,
+    require("../Control/Group/insertAdmin")
+  );
+
   /* ************** DELETE ************** */
 
   app.delete(
