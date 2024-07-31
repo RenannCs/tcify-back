@@ -10,7 +10,7 @@ module.exports = async (request, response) => {
   let _id;
   let title;
   let course_id;
-  let supervisor;
+  let supervisor_id;
   let tcc_id;
   let status;
   try {
@@ -28,7 +28,7 @@ module.exports = async (request, response) => {
 
     title = request.body.title;
     course_id = request.body.course_id;
-    supervisor = request.body.supervisor;
+    supervisor_id = request.body.supervisor_id;
     tcc_id = request.body.tcc_id;
     status = request.body.status;
 
@@ -50,19 +50,19 @@ module.exports = async (request, response) => {
       }
       group.course_id = course_id;
     }
-    if (supervisor != undefined) {
+    if (supervisor_id != undefined) {
       if (
         (await User.exists({
-          $and: [{ _id: supervisor }, { user_type: "Professor" }],
+          $and: [{ _id: supervisor_id }, { user_type: "Professor" }],
         }).exec()) == null
       ) {
         const arr = {
           status: "ERROR",
-          message: "Supervisor não existe!",
+          message: "supervisor_id não existe!",
         };
         return response.status(404).send(arr);
       }
-      group.supervisor = supervisor;
+      group.supervisor_id = supervisor_id;
     }
 
     if (tcc_id != undefined) {
@@ -98,8 +98,8 @@ module.exports = async (request, response) => {
         course_id: data.course_id ? data.course_id._id : null,
         course_name: data.course_id ? data.course_id.name : null,
 
-        supervisor: data.supervisor ? data.supervisor.name : null,
-        supervisor_id: data.supervisor ? data.supervisor._id : null,
+        supervisor_id: data.supervisor_id ? data.supervisor_id.name : null,
+        supervisor_id_id: data.supervisor_id ? data.supervisor._id : null,
 
         tcc: data.tcc_id ? data.tcc_id : null,
 
