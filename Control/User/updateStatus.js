@@ -1,7 +1,7 @@
 const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
-  const status = request.body.status;
+  const status = request.params.status;
   const _id_list = request.body;
 
   try {

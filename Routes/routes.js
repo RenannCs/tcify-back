@@ -209,7 +209,7 @@ module.exports = function (app) {
   );
 
   app.patch(
-    "/repository/users/update/status",
+    "/repository/users/status/:status",
     verifyTokenAdmin,
     require("../Control/User/updateStatus")
   );
