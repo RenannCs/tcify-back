@@ -1,23 +1,23 @@
-name,email,register,course_id,user_type
-Isabele Pires,isabelepires@gmail.com,50220123,666da2b791af7d6a607f717b,Estudante
-Marina Ribeiro,marinaribeiro4612@gmail.com,50220666,666da2b791af7d6a607f717b,Estudante
-Mileny Sabrina,milenysabrina98@gmail,50220789,666da2b791af7d6a607f717b,Estudante
-Enzo Lelis,enzolelis12@gmail.com,50220159,666da2b791af7d6a607f717b,Estudante
-Renan Cordeiro Santo,rcordeiro945@gmail.com,50220404,666da2b791af7d6a607f717b,Estudante
-Thiago Bitencourt Sancho,thiagosancho20061@gmail.com,50220434,666da2b791af7d6a607f717b,Estudante
-Rayssa Texeira Brito,rayssateixeira@gmail.com,50220731,666da2bd91af7d6a607f717e,Estudante
-Giovanna Alckmin,giovannalckmin@gmail.com,50220951,666da2bd91af7d6a607f717e,Estudante
-Camila Cunha,camilacunha@gmail.com,50220357,666da2bd91af7d6a607f717e,Estudante
-Matheus Cavalerio,matheuscavaleiro36@gmail.com,50220456,666da2b791af7d6a607f717b,Estudante
-Giovana Franco,gigifrancosantos@gmail.com,50220654,666da2b791af7d6a607f717b,Estudante
-Beatriz Faria,beatrizfariamendes@gmail.com,50220852,666da2b791af7d6a607f717b,Estudante
-Kauê Cordeiro de Abreu,kauecordeiro@gmail.com,50220039,666da2b791af7d6a607f717b,Estudante
-Kethlin Gouveia,gouveiakethlin@gmail.com,50220733,666da2b791af7d6a607f717b,Estudante
-Guilherme Cordeiro,guilhermecordeiro@gmail.com,50220746,666da2b791af7d6a607f717b,Estudante
-Alberson Wander Sá dos Santos,thiagosancho2006@gmail.com,502206477,,Administrador
-Ana Paula,anapaula@gmail.com,502204537,,Administrador
-Hélio Esperidião,helioesperidiao@gmail.com,502205265,666da2b791af7d6a607f717b,Professor
-Marcia Máia,marciomaia@gmail.com,502206345,666da2bd91af7d6a607f717e,Professor,
-Adriana Nakahara,adriananakahara@gmail.com,502204285,666da2b791af7d6a607f717b,Professor
-Bruno Michel,brunomichel@gmail.com,502204846,666da2b791af7d6a607f717b,Professor
-Tatiana Roberta Bitencourt Sancho,tatianasancho2020@gmail.com,502207548,66831ee9dfed1adc24ab1340,Estudante
+Nome,E-mail,Registro,Curso,Tipo de Usuário,Link Externo,Telefone,Status
+Isabele Pires,isabelepires@gmail.com,50220123,Informática,Estudante,123.link,11948521814,,
+Marina Ribeiro,marinaribeiro4612@gmail.com,50220666,Informática,Estudante,123.link,11948521814,,
+Mileny Sabrina,milenysabrina98@gmail,50220789,Informática,Estudante,123.link,,,
+Enzo Lelis,enzolelis12@gmail.com,50220159,Informática,Estudante,123.link,11948521814,,
+Renan Cordeiro Santo,rcordeiro945@gmail.com,50220404,Informática,Estudante,,11948521814,,
+Thiago Bitencourt Sancho,thiagosancho2006@gmail.com,50220434,Informática,Estudante,,11948521814,,
+Rayssa Texeira Brito,rayssateixeira@gmail.com,50220731,Química,Estudante,123.link,,,
+Giovanna Alckmin,giovannalckmin@gmail.com,50220951,Química,Estudante,,,,
+Camila Cunha,camilacunha@gmail.com,50220357,Química,Estudante,123.link,,,
+Matheus Cavalerio,matheuscavaleiro36@gmail.com,50220456,Informática,Estudante,,,,
+Giovana Franco,gigifrancosantos@gmail.com,50220654,Informática,Estudante,123.link,11948521814,,
+Beatriz Faria,beatrizfariamendes@gmail.com,50220852,Informática,Estudante,,,,
+Kauê Cordeiro de Abreu,kauecordeiro@gmail.com,50220039,Informática,Estudante,123.link,11948521814,,
+Kethlin Gouveia,gouveiakethlin@gmail.com,50220733,Informática,Estudante,,11948521814,,
+Guilherme Cordeiro,guilhermecordeiro@gmail.com,50220746,Informática,Estudante,,,,
+Alberson Wander Sá dos Santos,thiagosancho20061@gmail.com,502206477,,Administrador,123.link,,,
+Ana Paula,anapaula@gmail.com,502204537,,Administrador,123.link,,,
+Hélio Esperidião,helioesperidiao@gmail.com,502205265,Informática,Professor,,,,
+Marcia Máia,marciomaia@gmail.com,502206345,Química,Professor,123.link,,,
+Adriana Nakahara,adriananakahara@gmail.com,502204285,Informática,Professor,,11948521814,,
+Bruno Michel,brunomichel@gmail.com,502204846,Informática,Professor,123.link,,,
+Tatiana Roberta Bitencourt Sancho,tatianasancho2020@gmail.com,502207548,Administração,Estudante,,,,
