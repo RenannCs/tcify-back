@@ -2,7 +2,6 @@ const User = require("../../Schemas/User");
 const Course = require("../../Schemas/Course");
 const Email = require("../../Model/Email");
 
-
 const Papa = require("papaparse");
 const fs = require("fs");
 const { ObjectId, BSON } = require("mongodb");
@@ -12,7 +11,6 @@ module.exports = async (request, response) => {
   let mimetype;
   let formato;
   try {
-
     csv = request.file;
     mimetype = csv.mimetype;
     formato = mimetype.split("/")[1];
@@ -96,16 +94,17 @@ module.exports = async (request, response) => {
               const user = new User();
 
               user.name = _user["Nome"];
-
               user.email = _user["E-mail"];
               user.register = _user["Registro"];
-              if (_user["Registro"] == "") {
-                throw new Error("Registro não pode ser vazio");
-              }
               user.user_type = _user["Tipo de Usuário"];
               user.phone_number = _user["Telefone"];
               user.link = _user["Link Externo"];
               user.status = true;
+
+              if (_user["Registro"] == "") {
+                throw new Error("Registro não pode ser vazio");
+              }
+
               const strAll =
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
               let password = "";
@@ -127,6 +126,14 @@ module.exports = async (request, response) => {
                 throw new Error("Email já em uso!");
               }
 
+              if (
+                !["Administrador", "Professor", "Estudante"].includes(
+                  _user["Tipo de Usuário"]
+                )
+              ) {
+                throw new Error("Tipo de usário inválido!");
+              }
+              
               let course;
               if (_user["Tipo de Usuário"] != "Administrador") {
                 if (
