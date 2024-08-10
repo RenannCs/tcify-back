@@ -27,7 +27,7 @@
   "user_type": "Estudante",
   "phone_number": "11948521814",
   "link": "123.link",
-  "password": "c01d0dab5b2d8021891658fe2a41564f",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -44,7 +44,7 @@
   "user_type": "Estudante",
   "phone_number": "11948521814",
   "link": "123.link",
-  "password": "c4227c902f35656cdda842d2bd023d07",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -60,7 +60,7 @@
   "register": "50220789",
   "user_type": "Estudante",
   "link": "123.link",
-  "password": "ff03ae1b9349d692e547ad2529571a11",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -77,7 +77,7 @@
   "user_type": "Estudante",
   "phone_number": "11948521814",
   "link": "123.link",
-  "password": "d7eaf40a656cb081ab812b816a977f53",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -93,7 +93,7 @@
   "register": "50220404",
   "user_type": "Estudante",
   "phone_number": "11948521814",
-  "password": "560a65cb5d836a12517d3f6489e5f28d",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -109,7 +109,7 @@
   "register": "50220434",
   "user_type": "Estudante",
   "phone_number": "11948521814",
-  "password": "1e4296e5145ced61bcf71581eb645b72",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -125,7 +125,7 @@
   "register": "50220731",
   "user_type": "Estudante",
   "link": "123.link",
-  "password": "ea91bb9f1222f81fa9534b223c4a380a",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2bd91af7d6a607f717e"
   },
@@ -140,7 +140,7 @@
   "email": "giovannalckmin@gmail.com",
   "register": "50220951",
   "user_type": "Estudante",
-  "password": "468b58bc45ce0dde2fb6a3535a89942d",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2bd91af7d6a607f717e"
   },
@@ -156,7 +156,7 @@
   "register": "50220357",
   "user_type": "Estudante",
   "link": "123.link",
-  "password": "3f061809c165bee90487361830d97e8f",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2bd91af7d6a607f717e"
   },
@@ -171,7 +171,7 @@
   "email": "matheuscavaleiro36@gmail.com",
   "register": "50220456",
   "user_type": "Estudante",
-  "password": "d5bd92e3d923762b8e3bae040135199b",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -188,7 +188,7 @@
   "user_type": "Estudante",
   "phone_number": "11948521814",
   "link": "123.link",
-  "password": "8a71d1ec6bb60581789b14715cf9a5d8",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -203,7 +203,7 @@
   "email": "beatrizfariamendes@gmail.com",
   "register": "50220852",
   "user_type": "Estudante",
-  "password": "1a559ce34b67f7d2f20ca5d6247ff850",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -220,7 +220,7 @@
   "user_type": "Estudante",
   "phone_number": "11948521814",
   "link": "123.link",
-  "password": "68a51175419ab18630b7a5a7d98b9ead",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -236,7 +236,7 @@
   "register": "50220733",
   "user_type": "Estudante",
   "phone_number": "11948521814",
-  "password": "728fe817fd9e164e455bf0b56dd3258a",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -251,7 +251,7 @@
   "email": "guilhermecordeiro@gmail.com",
   "register": "50220746",
   "user_type": "Estudante",
-  "password": "8a981203a86045bfb0b806cee2f85631",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -267,7 +267,7 @@
   "register": "502206477",
   "user_type": "Administrador",
   "link": "123.link",
-  "password": "e4c83de0c0651e5e1ba2c06944b920b7",
+  "password": "202cb962ac59075b964b07152d234b70",
   "__v": 0
 },
 {
@@ -280,7 +280,7 @@
   "register": "502204537",
   "user_type": "Administrador",
   "link": "123.link",
-  "password": "86d446416dac3adfd28e6d59dcafc89d",
+  "password": "202cb962ac59075b964b07152d234b70",
   "__v": 0
 },
 {
@@ -292,7 +292,7 @@
   "email": "helioesperidiao@gmail.com",
   "register": "502205265",
   "user_type": "Professor",
-  "password": "4c9d0a00712578484ec5581f47394eaf",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -308,7 +308,7 @@
   "register": "502206345",
   "user_type": "Professor",
   "link": "123.link",
-  "password": "a2eb216afb0740c9b7b6b3ec0e4be10f",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2bd91af7d6a607f717e"
   },
@@ -324,7 +324,7 @@
   "register": "502204285",
   "user_type": "Professor",
   "phone_number": "11948521814",
-  "password": "aeb4cbe4f7bf94581f90ee85de0b98f5",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -340,7 +340,7 @@
   "register": "502204846",
   "user_type": "Professor",
   "link": "123.link",
-  "password": "220c26bd757aeb440fea456aabd363ec",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "666da2b791af7d6a607f717b"
   },
@@ -355,7 +355,7 @@
   "email": "tatianasancho2020@gmail.com",
   "register": "502207548",
   "user_type": "Estudante",
-  "password": "b320fcf90f59f36df34cbae1e9e67d9c",
+  "password": "202cb962ac59075b964b07152d234b70",
   "course_id": {
     "$oid": "66831ee9dfed1adc24ab1340"
   },

@@ -13,6 +13,8 @@ module.exports = async (request, response) => {
   let supervisor_id;
   let tcc_id;
   let status;
+  let students;
+  let leader_id;
   try {
     _id = request.params._id;
 
@@ -31,6 +33,8 @@ module.exports = async (request, response) => {
     supervisor_id = request.body.supervisor_id;
     tcc_id = request.body.tcc_id;
     status = request.body.status;
+    students = request.body.students;
+    leader_id = request.body.leader_id;
 
     if (title != undefined) {
       group.title = title;
@@ -58,11 +62,11 @@ module.exports = async (request, response) => {
       ) {
         const arr = {
           status: "ERROR",
-          message: "supervisor_id não existe!",
+          message: "Supervisor não existe!",
         };
         return response.status(404).send(arr);
       }
-      group.supervisor_id = supervisor_id;
+      group.supervisor = supervisor_id;
     }
 
     if (tcc_id != undefined) {
@@ -74,6 +78,26 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
       }
       group.tcc_id = tcc_id;
+    }
+
+    if (students != undefined) {
+      for (let _student of students) {
+        let _group = await Group.existsByStudent(_student);
+        if (_group != null) {
+          if (_group._id != _id) {
+            const arr = {
+              status: "ERROR",
+              message: "Um dos alunos já possui grupo!",
+            };
+            return response.status(409).send(arr);
+          }
+        }
+      }
+      group.students = students;
+    }
+
+    if (leader_id != undefined) {
+      group.leader_id = leader_id;
     }
   } catch (error) {
     const arr = {
