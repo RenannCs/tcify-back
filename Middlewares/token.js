@@ -15,9 +15,10 @@ module.exports = async (request, response, next) => {
       const user = await User.findById(token_id).exec();
       if (user != null) {
         if (
-          (user.user_type == "Administrador") &
-          (token_user_type == "Administrador")
+          ["Professor", "Administrador", "Estudante"].includes(user.user_type) &
+          (user.user_type == token_user_type)
         ) {
+          request.userLogged = user;
           next();
         } else {
           const arr = {

@@ -10,9 +10,23 @@ module.exports = async (request, response, next) => {
 
     if (tokenResult.status) {
       const token_id = tokenResult.decoded.payload._id;
+      const token_user_type = tokenResult.decoded.payload.user_type;
+
       const user = await User.findById(token_id).exec();
       if (user != null) {
-        next();
+        if (
+          (user.user_type == "Administrador") &
+          (token_user_type == "Administrador")
+        ) {
+          request.userLogged = user;
+          next();
+        } else {
+          const arr = {
+            status: "ERROR",
+            message: "Operação negada devido as permissões do usuário!",
+          };
+          return response.status(403).send(arr);
+        }
       } else {
         const arr = {
           status: "ERROR",
