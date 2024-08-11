@@ -13,32 +13,6 @@ module.exports = async (request, response) => {
   const _id = request.params._id;
   const image = request.file;
 
-  //Verifica se o usuário existe
-  try {
-    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário não encontrado!",
-      };
-      return response.status(404).send(arr);
-    }
-  } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Id inválido!",
-      };
-      return response.status(400).send(arr);
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Erro do servidor, tente novamente mais tarde!",
-        data: err,
-      };
-      return response.status(500).send(arr);
-    }
-  }
-
   if (!image) {
     const arr = {
       status: "ERROR",
@@ -48,6 +22,13 @@ module.exports = async (request, response) => {
   }
 
   const user = await User.findById(_id).exec();
+  if (user == null) {
+    const arr = {
+      status: "ERROR",
+      message: "Usuário não encontrado!",
+    };
+    return response.status(404).send(arr);
+  }
   const caminhoAntigo = user.image;
 
   const mimetype = image.mimetype;
@@ -179,8 +160,41 @@ module.exports = async (request, response) => {
   user.image = novoCaminho;
   user
     .save()
+    .then(async (data) => {
+      //Popula o curso, mas adiciona mais uma requisição
+
+      data = await data.populate("course_id");
+      return (format = {
+        _id: data.id,
+        name: data.name,
+        register: data.register,
+        email: data.email,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
+        link: data.link ? data.link : null,
+        linkedin: data.linkedin ? data.linkedin : null,
+
+        phone_number: data.phone_number ? data.phone_number : null,
+        user_type: data.user_type,
+
+        image: data.image
+          ? `${process.env.API_PATH}${data.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+      });
+    })
     .then((resolve) => {
-      resolve.image = `${process.env.API_PATH}${resolve.image}`;
       const arr = {
         status: "SUCCESS",
         message: "Imagem atualizada com sucesso",

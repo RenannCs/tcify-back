@@ -16,7 +16,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    email: String,
+    email: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -36,8 +39,15 @@ const userSchema = new mongoose.Schema(
     },
     image: String,
     status: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "0",
+    },
+    date: {
+      type: Date,
+      default: function () {
+        const date = new Date();
+        return date.toISOString();
+      },
     },
   },
   {
@@ -50,7 +60,7 @@ const userSchema = new mongoose.Schema(
         return true;
       },
       validatePermission(type) {
-        return ["Professor", "Administrador"].includes(type); 
+        return ["Professor", "Administrador"].includes(type);
       },
       single(id) {
         return this.findById(id)
@@ -104,7 +114,7 @@ const userSchema = new mongoose.Schema(
         return this.findOne({
           $or: [{ register: user }, { email: user }],
           password: newPassword,
-          status: true,
+          status: "1",
         }).exec();
       },
     },

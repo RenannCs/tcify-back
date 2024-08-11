@@ -1,11 +1,10 @@
-const { ObjectId } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const fs = require("fs");
-const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
   try {
+    const JwtToken = new ModelJwtToken();
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -27,7 +26,7 @@ module.exports = async (request, response) => {
       try {
         const resp = await User.findByIdAndDelete(_id).exec();
 
-        if (resp.image != null) {
+        if (resp.image) {
           if (fs.existsSync(resp.image)) {
             fs.unlink(resp.image, () => {});
           }

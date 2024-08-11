@@ -1,13 +1,12 @@
-const { ObjectId, BSON } = require("mongodb");
 const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const fs = require("fs");
-const JwtToken = new ModelJwtToken();
 
 module.exports = async (request, response) => {
   const _id = request.params._id;
 
   try {
+    const JwtToken = new ModelJwtToken();
     const authorizationHeader = request.headers.authorization;
     const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
 
@@ -21,41 +20,7 @@ module.exports = async (request, response) => {
       };
       return response.status(403).send(arr);
     }
-
-    //Verificar se o usuário a ser excluído existe
-    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário não existe!",
-      };
-      return response.status(404).send(arr);
-    }
-
-    const user = await User.findById(_id).exec();
-
-    if (user.image != null) {
-      if (fs.existsSync(user.image)) {
-        fs.unlink(user.image, (error) => {
-          if (error) {
-            const arr = {
-              status: "ERROR",
-              message:
-                "Ocorreu um erro ao excluir a imagem do usuário! Usuário não exlcuído!",
-              data: error,
-            };
-            return response.status(500).send(arr);
-          }
-        });
-      }
-    }
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro do servidor, tente novamente mais tarde!",
@@ -66,7 +31,58 @@ module.exports = async (request, response) => {
 
   User.findByIdAndDelete(_id)
     .exec()
+    .then(async (data) => {
+      if (data == null) {
+        return null;
+      }
+
+      if (data.image) {
+        if (fs.existsSync(data.image)) {
+          fs.unlink(data.image, (error) => {});
+        }
+      }
+      //Menos uma requisição sem popular
+      //return data;
+      //Adiciona mais uma requisição mas popula o curso
+      data = await data.populate("course_id");
+      return (format = {
+        _id: data.id,
+        name: data.name,
+        register: data.register,
+        email: data.email,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
+        link: data.link ? data.link : null,
+        linkedin: data.linkedin ? data.linkedin : null,
+
+        phone_number: data.phone_number ? data.phone_number : null,
+        user_type: data.user_type,
+
+        image: data.image
+          ? `${process.env.API_PATH}${data.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+      });
+    })
     .then((resolve) => {
+      if (resolve == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Usuário não existe!",
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
         message: "Usuário excluído com sucesso!",
@@ -75,9 +91,16 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.name == "CastError") {
+        const arr = {
+          status: "ERROR",
+          message: "Usuário inválido!",
+        };
+        return response.status(400).send(arr);
+      }
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao tentar excluir o usuário!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       return response.status(500).send(arr);

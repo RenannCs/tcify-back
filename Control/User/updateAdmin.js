@@ -1,4 +1,4 @@
-const { ObjectId, BSON } = require("mongodb");
+const { ObjectId } = require("mongodb");
 const User = require("../../Schemas/User");
 const Course = require("../../Schemas/Course");
 
@@ -16,33 +16,20 @@ module.exports = async (request, response) => {
   const course_id = request.body.course_id;
 
   let user;
-  
+
   try {
-    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+    user = await User.findById(_id).exec();
+    if (user == null) {
       const arr = {
         status: "ERROR",
-        message: "Usuário não existe!",
+        message: "Usuário não encontrado!",
       };
       return response.status(404).send(arr);
     }
-
-    user = await User.findById(_id).exec();
-
     if (name != undefined) {
       user.name = name;
     }
     if (email != undefined) {
-     
-      const checkUser = await User.exists({ email: email }).exec();
-      if (checkUser != null) {
-        if (checkUser._id != _id) {
-          const arr = {
-            status: "ERROR",
-            message: "Email já está em uso!",
-          };
-          return response.status(409).send(arr);
-        }
-      }
       user.email = email;
     }
     if (password != undefined) {
@@ -74,29 +61,61 @@ module.exports = async (request, response) => {
     }
 
     if (register != undefined) {
-      const checkUser = await User.exists({ register: register }).exec();
-      if (checkUser != null) {
-        if (checkUser._id != user.id) {
-          const arr = {
-            status: "ERROR",
-            message: "Registro já está em uso!",
-          };
-          return response.status(409).send(arr);
-        }
-      }
       user.register = register;
     }
   } catch (error) {
-    const arr = {
-      status: "ERROR",
-      message: "Erro do servidor, tente novamente mais tarde!",
-      data: error,
-    };
-    return response.status(500).send(arr);
+    if (error.name == "CastError") {
+      const arr = {
+        status: "ERROR",
+        message: "Usuário inválido!",
+      };
+      return response.status(400).send(arr);
+    } else {
+      const arr = {
+        status: "ERROR",
+        message: "Erro do servidor, tente novamente mais tarde!",
+        data: error,
+      };
+      return response.status(500).send(arr);
+    }
   }
 
   user
     .save()
+    .then(async (data) => {
+      //Popula o curso, mas adiciona mais uma requisição
+
+      data = await data.populate("course_id");
+      return (format = {
+        _id: data.id,
+        name: data.name,
+        register: data.register,
+        email: data.email,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
+        link: data.link ? data.link : null,
+        linkedin: data.linkedin ? data.linkedin : null,
+
+        phone_number: data.phone_number ? data.phone_number : null,
+        user_type: data.user_type,
+
+        image: data.image
+          ? `${process.env.API_PATH}${data.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+      });
+    })
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
@@ -106,10 +125,27 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.errorResponse) {
+        if (reject.errorResponse) {
+          if (Object.keys(reject.errorResponse.keyPattern)[0] == "email") {
+            const arr = {
+              status: "ERROR",
+              message: "Email já está em uso!",
+            };
+            return response.status(409).send(arr);
+          } else {
+            const arr = {
+              status: "ERROR",
+              message: "Registro já está em uso!",
+            };
+            return response.status(409).send(arr);
+          }
+        }
+      }
       const arr = {
         status: "ERROR",
         data: reject,
-        message: "Ocorreu um erro ao atualizar o usuário!",
+        message: "Erro de servidor, tente novamente mais tarde!",
       };
       return response.status(500).send(arr);
     });

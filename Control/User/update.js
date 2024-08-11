@@ -5,9 +5,6 @@
  *
  *
  */
-
-//const ModelDatabase = require("../../Model/Database");
-const { ObjectId, BSON } = require("mongodb");
 const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
@@ -21,18 +18,14 @@ module.exports = async (request, response) => {
   try {
     user = await User.findById(_id).exec();
 
+    if (user == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Usuário não encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
     if (email != undefined) {
-      const checkUser = await User.exists({ email: email }).exec();
-      if (checkUser != null) {
-        if (checkUser._id != _id) {
-          const arr = {
-            status: "ERROR",
-            message: "Email já está em uso!",
-          };
-          return response.status(409).send(arr);
-        }
-      }
-
       user.email = email;
     }
     if (phone_number != undefined) {
@@ -45,7 +38,7 @@ module.exports = async (request, response) => {
       user.linkedin = linkedin;
     }
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
+    if (error.name == "CastError") {
       const arr = {
         status: "ERROR",
         message: "Usuário inválido!",
@@ -63,7 +56,42 @@ module.exports = async (request, response) => {
 
   user
     .save()
-    .then((resolve) => {
+    .then(async (data)=>{
+
+      //Popula o curso, mas adiciona mais uma requisição
+      
+      data = await data.populate("course_id");
+      return (format = {
+        _id: data.id,
+        name: data.name,
+        register: data.register,
+        email: data.email,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
+        link: data.link ? data.link : null,
+        linkedin: data.linkedin ? data.linkedin : null,
+
+        phone_number: data.phone_number ? data.phone_number : null,
+        user_type: data.user_type,
+
+        image: data.image
+          ? `${process.env.API_PATH}${data.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+      });
+    })
+    .then((resolve) => {     
       const arr = {
         status: "SUCCESS",
         data: resolve,
@@ -72,6 +100,17 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.errorResponse) {
+        if (reject.errorResponse) {
+          if (Object.keys(reject.errorResponse.keyPattern)[0] == "email") {
+            const arr = {
+              status: "ERROR",
+              message: "Email já está em uso!",
+            };
+            return response.status(409).send(arr);
+          }
+        }
+      }
       const arr = {
         status: "ERROR",
         data: reject,

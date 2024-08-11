@@ -9,11 +9,11 @@ const Email = require("../../Model/Email");
 const Course = require("../../Schemas/Course");
 const { ObjectId, BSON } = require("mongodb");
 
-
 module.exports = async (request, response) => {
   const user = new User();
-  try {
+  let course;
 
+  try {
     const name = request.body.name;
     const course_id = request.body.course_id;
     const emailUser = request.body.email;
@@ -39,7 +39,7 @@ module.exports = async (request, response) => {
     user.register = register;
     user.phone_number = phone_number;
     user.link = link;
-    user.status = true;
+    user.status = "1";
 
     if ((await User.exists({ register: register })) != null) {
       const arr = {
@@ -56,7 +56,6 @@ module.exports = async (request, response) => {
       return response.status(409).send(arr);
     }
 
-    let course;
     if (user_type != "Administrador") {
       if (
         (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
@@ -106,11 +105,11 @@ module.exports = async (request, response) => {
   user
     .save()
     .then((result) => {
-      result.image = result.image
-        ? result.image
-        : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`;
+      const aux = result.toJSON();
+      aux.image = `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`;
+      aux.course_name = aux.user_type == "Administrador" ? null : course.name;
       const arr = {
-        data: result,
+        data: aux,
         status: "SUCCESS",
         message: "Usuário inserido com sucesso!",
       };

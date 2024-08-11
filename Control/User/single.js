@@ -1,35 +1,15 @@
 const User = require("../../Schemas/User");
-const { BSON, ObjectId } = require("mongodb");
+
 module.exports = async (request, response) => {
   const _id = request.params._id;
-
-  try {
-    if ((await User.exists({ _id: new ObjectId(_id) }).exec()) == null) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário não encontrado",
-      };
-      return response.status(404).send(arr);
-    }
-  } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário inválido!",
-      };
-      return response.status(400).send(arr);
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Erro do servidor, tente novamente mais tarde!",
-        data: err,
-      };
-      return response.status(500).send(arr);
-    }
-  }
-
+  
   User.single(_id)
     .then((data) => {
+      
+      if (data == null) {
+        return null;
+      }
+
       return (format = {
         _id: data.id,
         name: data.name,
@@ -61,6 +41,14 @@ module.exports = async (request, response) => {
       });
     })
     .then((resolve) => {
+      if (resolve == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Usuário não encontrado!",
+        };
+        return response.status(404).send(arr);
+      }
+
       const arr = {
         status: "SUCCESS",
         message: "Usuário recuperado com sucesso",
@@ -69,9 +57,16 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.name == "CastError") {
+        const arr = {
+          status: "ERROR",
+          message: "Usuário inválido!",
+        };
+        return response.status(400).send(arr);
+      }
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao recuperar o usário",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       return response.status(500).send(arr);

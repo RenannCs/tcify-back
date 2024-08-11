@@ -9,16 +9,14 @@ module.exports = async (request, response) => {
   let user;
 
   try {
-    if ((await User.exists({ _id: new ObjectId(_id) })) == null) {
+    user = await User.findById(_id);
+    if (user == null) {
       const arr = {
         status: "ERROR",
         message: "Usuário não existe!",
       };
       return response.status(404).send(arr);
     }
-
-    user = await User.findById(_id);
-
     if (user.password != md5(password)) {
       const arr = {
         status: "ERROR",
@@ -37,17 +35,17 @@ module.exports = async (request, response) => {
 
     user.password = newPassword;
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
+    if (error.name == "CastError") {
       const arr = {
         status: "ERROR",
-        message: "Id inválido!",
+        message: "Usuário inválido!",
       };
       return response.status(400).send(arr);
     } else {
       const arr = {
         status: "ERROR",
         message: "Erro do servidor, tente novamente mais tarde!",
-        data: err,
+        data: error,
       };
       return response.status(500).send(arr);
     }
@@ -55,6 +53,40 @@ module.exports = async (request, response) => {
 
   user
     .save()
+    .then(async (data) => {
+      //Popula o curso, mas adiciona mais uma requisição
+
+      data = await data.populate("course_id");
+      return (format = {
+        _id: data.id,
+        name: data.name,
+        register: data.register,
+        email: data.email,
+
+        course_id:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id._id
+            : null,
+        course_name:
+          data.user_type == "Administrador"
+            ? "N/A"
+            : data.course_id
+            ? data.course_id.name
+            : null,
+
+        link: data.link ? data.link : null,
+        linkedin: data.linkedin ? data.linkedin : null,
+
+        phone_number: data.phone_number ? data.phone_number : null,
+        user_type: data.user_type,
+
+        image: data.image
+          ? `${process.env.API_PATH}${data.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+      });
+    })
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",

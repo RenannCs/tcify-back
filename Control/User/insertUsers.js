@@ -99,7 +99,7 @@ module.exports = async (request, response) => {
               user.user_type = _user["Tipo de Usuário"];
               user.phone_number = _user["Telefone"];
               user.link = _user["Link Externo"];
-              user.status = true;
+              user.status = "1";
 
               if (_user["Registro"] == "") {
                 throw new Error("Registro não pode ser vazio");
