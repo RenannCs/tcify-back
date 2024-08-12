@@ -29,7 +29,10 @@ const groupSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
-    status: String,
+    status: {
+      type: String,
+      default: "0",
+    },
   },
 
   {

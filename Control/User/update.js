@@ -56,10 +56,9 @@ module.exports = async (request, response) => {
 
   user
     .save()
-    .then(async (data)=>{
-
+    .then(async (data) => {
       //Popula o curso, mas adiciona mais uma requisição
-      
+
       data = await data.populate("course_id");
       return (format = {
         _id: data.id,
@@ -89,9 +88,11 @@ module.exports = async (request, response) => {
         image: data.image
           ? `${process.env.API_PATH}${data.image}`
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+        status: data.status,
       });
     })
-    .then((resolve) => {     
+    .then((resolve) => {
       const arr = {
         status: "SUCCESS",
         data: resolve,

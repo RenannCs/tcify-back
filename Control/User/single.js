@@ -2,10 +2,9 @@ const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
   const _id = request.params._id;
-  
+
   User.single(_id)
     .then((data) => {
-      
       if (data == null) {
         return null;
       }
@@ -38,6 +37,8 @@ module.exports = async (request, response) => {
         image: data.image
           ? `${process.env.API_PATH}${data.image}`
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+        status: data.status,
       });
     })
     .then((resolve) => {

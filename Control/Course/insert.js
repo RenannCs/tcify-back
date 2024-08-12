@@ -9,6 +9,7 @@ module.exports = async (request, response) => {
     course = new Course();
     course.name = name;
     course.description = description;
+    course.status = "1";
   } catch (error) {
     const arr = {
       status: "ERROR",

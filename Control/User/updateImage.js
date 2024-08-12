@@ -192,6 +192,8 @@ module.exports = async (request, response) => {
         image: data.image
           ? `${process.env.API_PATH}${data.image}`
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+        status: data.status,
       });
     })
     .then((resolve) => {

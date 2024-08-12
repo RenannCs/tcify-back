@@ -8,8 +8,8 @@ const courseSchema = new mongoose.Schema({
   },
   description: String,
   status: {
-    type: Boolean,
-    default: false,
+    type: String,
+    default: "0",
   },
 });
 
