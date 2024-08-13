@@ -57,7 +57,7 @@ module.exports = async (request, response) => {
         supervisor: group.supervisor ? group.supervisor.name : null,
         supervisor_id: group.supervisor ? group.supervisor._id : null,
 
-        tcc: group.tcc_id ? group.tcc_id : null,
+        project: group.tcc_id ? group.tcc_id : null,
 
         leader: group.leader_id ? group.leader_id.name : null,
         leader_id: group.leader_id ? group.leader_id._id : null,
