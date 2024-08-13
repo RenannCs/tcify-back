@@ -14,9 +14,9 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao buscar os cursos!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
-      return response.status(400).send(arr);
+      return response.status(500).send(arr);
     });
 };
