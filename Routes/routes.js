@@ -31,16 +31,19 @@ module.exports = function (app) {
   /* ************** Autenticação de Token ********************* */
 
   app.post("/repository/users/auth", token, (request, response) => {
+
+    console.log(request);
+
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
       data: {
         user: {
-          _id: request.user._id,
-          name: request.user.name,
-          register: request.user.register,
-          user_type: request.user.user_type,
-          image: request.user.image,
+          _id: request.userLogged._id,
+          name: request.userLogged.name,
+          register: request.userLogged.register,
+          user_type: request.userLogged.user_type,
+          image: request.userLogged.image,
         },
       },
     };
