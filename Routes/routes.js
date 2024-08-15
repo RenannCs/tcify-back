@@ -32,7 +32,6 @@ module.exports = function (app) {
 
   app.post("/repository/users/auth", token, (request, response) => {
 
-    console.log(request);
 
     const arr = {
       status: "SUCCESS",

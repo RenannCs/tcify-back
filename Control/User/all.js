@@ -3,28 +3,18 @@ const User = require("../../Schemas/User");
 module.exports = async (request, response) => {
   User.all()
     .then((data) => {
-      return (dataFormat = data.map((user) => ({
+      return data.map((user) => ({
         _id: user._id,
         register: user.register,
         name: user.name,
 
-        course_id:
-          user.user_type == "Administrador"
-            ? null
-            : user.course_id
-            ? user.course_id._id
-            : null,
-        course_name:
-          user.user_type == "Administrador"
-            ? null
-            : user.course_id
-            ? user.course_id.name
-            : null,
+        course_id: user.course_id ? user.course_id._id : "N/A",
+        course_name: user.course_id ? user.course_id.name : "N/A",
 
-        email: user.email ? user.email : null,
-        phone_number: user.phone_number ? user.phone_number : null,
+        email: user.email,
+        phone_number: user.phone_number,
 
-        link: user.link ? user.link : null,
+        link: user.link,
         image: user.image
           ? `${process.env.API_PATH}${user.image}`
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
@@ -32,7 +22,7 @@ module.exports = async (request, response) => {
         user_type: user.user_type,
 
         status: user.status,
-      })));
+      }));
     })
     .then((resolve) => {
       const arr = {
@@ -45,7 +35,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao buscar os usuários!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       return response.status(500).send(arr);

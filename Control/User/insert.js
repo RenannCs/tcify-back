@@ -41,33 +41,6 @@ module.exports = async (request, response) => {
     user.link = link;
     user.status = "1";
 
-    if ((await User.exists({ register: register })) != null) {
-      const arr = {
-        status: "ERROR",
-        message: "Registro já em uso!",
-      };
-      return response.status(409).send(arr);
-    }
-    if ((await User.exists({ email: emailUser })) != null) {
-      const arr = {
-        status: "ERROR",
-        message: "Email já em uso!",
-      };
-      return response.status(409).send(arr);
-    }
-
-    if (user_type != "Administrador") {
-      if (
-        (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
-      ) {
-        const arr = {
-          status: "ERROR",
-          message: "Curso não existe!",
-        };
-        return response.status(404).send(arr);
-      }
-      course = await Course.findById(course_id).exec();
-    }
     /*
     const email = new Email();
     email.dest = emailUser;
@@ -87,13 +60,6 @@ module.exports = async (request, response) => {
 
     email.send();*/
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Curso selecionado inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro do servidor, tente novamente mais tarde!",
@@ -104,21 +70,70 @@ module.exports = async (request, response) => {
 
   user
     .save()
-    .then((result) => {
-      const aux = result.toJSON();
-      aux.image = `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`;
-      aux.course_name = aux.user_type == "Administrador" ? null : course.name;
+    .then(async (result) => {
+      let aux = await User.single(result._id);
+      return {
+        _id: aux._id,
+
+        name: aux.name,
+
+        course_id: aux.course_id ? aux.course_id._id : null,
+        course_name: aux.course_id ? aux.course_id.name : null,
+
+        register: aux.register,
+        email: aux.email,
+        password: aux.password,
+
+        phone_number: aux.phone_number,
+        link: aux.link,
+
+        user_type: aux.user_type,
+
+        image: `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+        status: aux.status,
+        date: aux.date,
+      };
+    })
+    .then((data) => {
       const arr = {
-        data: aux,
+        data: data,
         status: "SUCCESS",
         message: "Usuário inserido com sucesso!",
       };
       response.status(200).send(arr);
     })
     .catch((reject) => {
+      //Verifica se o erro veio das verificações do Schema de User
+      if (reject.errors) {
+        //Verifica de qual das verificações o erro veio
+        if (reject.errors.user_type) {
+          const arr = {
+            status: "ERROR",
+            message: "Tipo de usuário inválido!",
+          };
+          return response.status(400).send(arr);
+        } else if (reject.errors.course_id) {
+          const arr = {
+            status: "ERROR",
+            message: "Curso inválido!",
+          };
+          return response.status(400).send(arr);
+        }
+      }
+
+      //Verifica se o codigo de erro é de chave duplicada do mongoDB
+      if (reject.code == 11000) {
+        const arr = {
+          status: "ERROR",
+          message: "Registro ou email já em uso!",
+        };
+        return response.status(409).send(arr);
+      }
+      //Mensagem para erro desconhecido
       const arr = {
         status: "ERROR",
-        message: "Erro ao inserir usuário!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       response.status(500).send(arr);

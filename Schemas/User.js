@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema(
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
+      validate: async (_id) => {
+        if (_id) {
+          if ((await Course.findById(_id)) == null) {
+            throw new Error("Curso não existe!");
+          }
+        }
+      },
+      default: null,
     },
     register: {
       type: String,
@@ -19,25 +27,33 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
+      default: null,
     },
     password: {
       type: String,
       required: true,
     },
-    phone_number: String,
-    link: String,
+    phone_number: {
+      type: String,
+      default: null,
+    },
+    link: {
+      type: String,
+      default: null,
+    },
     linkedin: String,
     user_type: {
       type: String,
-      required: true,
-
-      validate: (type) => {
-        if (!["Estudante", "Professor", "Administrador"].includes(type)) {
-          throw new Error("Tipo de usuário inválido!");
-        }
+      default: "Estudante",
+      enum: {
+        values: ["Administrador", "Professor", "Estudante"],
+        message: "Tipo de usuário não suportado!",
       },
     },
-    image: String,
+    image: {
+      type: String,
+      default: null,
+    },
     status: {
       type: String,
       default: "0",
@@ -123,15 +139,15 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", function (next) {
   const user = this;
-  user.name = user.name ? user.name.trim() : undefined;
-  user.register = user.register ? user.register.trim() : undefined;
-  user.email = user.email ? user.email.trim() : undefined;
-  user.password = user.password ? user.password.trim() : undefined;
-  user.phone_number = user.phone_number ? user.phone_number.trim() : undefined;
-  user.link = user.link ? user.link.trim() : undefined;
-  user.linkedin = user.linkedin ? user.linkedin.trim() : undefined;
-  user.user_type = user.user_type ? user.user_type.trim() : undefined;
-  user.image = user.image ? user.image.trim() : undefined;
+  user.name = user.name ? user.name.trim() : null;
+  user.register = user.register ? user.register.trim() : null;
+  user.email = user.email ? user.email.trim() : null;
+  user.password = user.password ? user.password.trim() : null;
+  user.phone_number = user.phone_number ? user.phone_number.trim() : null;
+  user.link = user.link ? user.link.trim() : null;
+  user.linkedin = user.linkedin ? user.linkedin.trim() : null;
+  user.user_type = user.user_type ? user.user_type.trim() : null;
+  user.image = user.image ? user.image.trim() : null;
 
   if (user.isModified("password") || user.isNew) {
     user.password = md5(user.password);

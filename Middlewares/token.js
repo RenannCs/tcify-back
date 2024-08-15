@@ -13,9 +13,7 @@ module.exports = async (request, response, next) => {
 
       const token_id = tokenResult.decoded.payload._id;
       const token_user_type = tokenResult.decoded.payload.user_type;
-
-      console.log(token_id);
-
+      
       const user = await User.findById(token_id).exec();
       if (user != null) {
         if (

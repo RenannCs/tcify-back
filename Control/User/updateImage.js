@@ -164,29 +164,18 @@ module.exports = async (request, response) => {
       //Popula o curso, mas adiciona mais uma requisição
 
       data = await data.populate("course_id");
-      return (format = {
+      return {
         _id: data.id,
         name: data.name,
         register: data.register,
         email: data.email,
 
-        course_id:
-          data.user_type == "Administrador"
-            ? "N/A"
-            : data.course_id
-            ? data.course_id._id
-            : null,
-        course_name:
-          data.user_type == "Administrador"
-            ? "N/A"
-            : data.course_id
-            ? data.course_id.name
-            : null,
+        course_id: data.course_id ? data.course_id._id : "N/A",
+        course_name: data.course_id ? data.course_id.name : "N/A",
 
-        link: data.link ? data.link : null,
-        linkedin: data.linkedin ? data.linkedin : null,
+        link: data.link,
 
-        phone_number: data.phone_number ? data.phone_number : null,
+        phone_number: data.phone_number,
         user_type: data.user_type,
 
         image: data.image
@@ -194,7 +183,7 @@ module.exports = async (request, response) => {
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
 
         status: data.status,
-      });
+      };
     })
     .then((resolve) => {
       const arr = {

@@ -72,213 +72,8 @@ module.exports = async (request, response) => {
     group.tcc_id = tcc.id;
     await group.save();
     //Tratamento da monografia
-    const arrMonography = request.files["monography"];
-    if (arrMonography != undefined) {
-      monography = arrMonography[0];
-
-      const tipoMonografia = ["pdf", "docx"];
-      const mimeMonografia = monography.mimetype;
-      const tipoMonografiaAtual = mimeMonografia.split("/")[1];
-
-      //Verifica o tipo da monografia
-      if (!tipoMonografia.includes(tipoMonografiaAtual)) {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Formato da monografia inválido!",
-        };
-        return response.status(415).send(arr);
-      }
-      /***********************************************/
-
-      //Verifica o tamanho da monografia
-      if (monography.size > 1024 * 1024 * 80) {
-        //80mb
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Monografia muito grande!",
-        };
-        return response.status(413).send(arr);
-      }
-      /**********************************************/
-
-      monography_path =
-        "Uploads/Monographys/" + tcc.id + "." + tipoMonografiaAtual;
-
-      //Salva a manografia
-
-      tcc.monography = monography_path;
-      /**********************************************************/
-    }
-    /**************************************************************************/
-
-    //Tratamento documento
-    const arrDocument = request.files["document"];
-    if (arrDocument != undefined) {
-      document = arrDocument[0];
-
-      const tipoDocument = ["pdf", "docx"];
-      const mimeDocument = document.mimetype;
-      const tipoDocumentAtual = mimeDocument.split("/")[1];
-
-      if (!tipoDocument.includes(tipoDocumentAtual)) {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Tipo do documento inválido!",
-        };
-        return response.status(415).send(arr);
-      }
-
-      if (document.size > 1024 * 1024 * 50) {
-        await fs_extra.emptyDir("Temp");
-        const arr = {
-          status: "ERROR",
-          message: "Documento muito grande!",
-        };
-        return response.status(413).send(arr);
-      }
-
-      document_path = "Uploads/Documents/" + tcc.id + "." + tipoDocumentAtual;
-
-      tcc.document = document_path;
-    }
-    /****************************************************************************/
-
-    //Tratamento arquivo zip
-    const arrZip = request.files["zip"];
-    if (arrZip != undefined) {
-      zip = arrZip[0];
-
-      const mimeZip = zip.mimetype;
-      const tipoZipAtual = mimeZip.split("/")[1];
-      if (tipoZipAtual != "zip") {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Arquivo Zip inválido!",
-        };
-        return response.status(415).send(arr);
-      }
-
-      if (zip.size > 1024 * 1024 * 100) {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Arquivo Zip muito grande!",
-        };
-        return response.status(413).send(arr);
-      }
-
-      zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
-
-      tcc.zip = zip_path;
-    }
-    /*********************************************************/
-    //Tratamento da imagem
-    const arrImage = request.files["image"];
-    if (arrImage != undefined) {
-      image = arrImage[0];
-
-      const tipoImagem = ["png", "jpg", "jpeg", "webp"];
-      const mimeImage = image.mimetype;
-      const tipoImagemAtual = mimeImage.split("/")[1];
-
-      if (!tipoImagem.includes(tipoImagemAtual)) {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Tipo de imagem inválido!",
-        };
-        return response.status(415).send(arr);
-      }
-
-      if (image.size > 1024 * 1024 * 20) {
-        await fs_extra.emptyDir("Temp");
-
-        const arr = {
-          status: "ERROR",
-          message: "Tamanho da imagem muito grande!",
-        };
-        return response.status(413).send(arr);
-      }
-
-      image_path = "Uploads/TccsImages/" + tcc.id + "." + tipoImagemAtual;
-
-      tcc.image = image_path;
-    }
-
-    /*****************************************************************/
-
-    if (monography_path != "") {
-      fs.rename(monography.path, monography_path, (error) => {
-        if (error) {
-          fs_extra.emptyDirSync("Temp");
-          const arr = {
-            status: "ERROR",
-            message: "Ocorreu um erro ao ler o arquivo!",
-            data: error,
-          };
-          return response.status(500).send(arr);
-        }
-      });
-    }
-
-    if (document_path != "") {
-      fs.rename(document.path, document_path, (error) => {
-        if (error) {
-          fs.unlink(monography_path, (error) => {});
-          fs_extra.emptyDirSync("Temp");
-          const arr = {
-            status: "ERROR",
-            message: "Ocorreu um erro ao ler o arquivo!",
-            data: error,
-          };
-          return response.status(500).send(arr);
-        }
-      });
-    }
-
-    if (zip_path != "") {
-      fs.rename(zip.path, zip_path, (error) => {
-        if (error) {
-          fs.unlink(monography_path, (error) => {});
-          fs.unlink(document_path, (error) => {});
-
-          fs_extra.emptyDirSync("Temp");
-          const arr = {
-            status: "ERROR",
-            message: "Ocorreu um erro ao ler o arquivo!",
-            data: error,
-          };
-          return response.status(500).send(arr);
-        }
-      });
-    }
-
-    if (image_path != "") {
-      fs.rename(image.path, image_path, (error) => {
-        if (error) {
-          fs.unlink(monography_path, (error) => {});
-          fs.unlink(document_path, (error) => {});
-          fs.unlink(zip_path, (error) => {});
-          fs_extra.emptyDirSync("Temp");
-          const arr = {
-            status: "ERROR",
-            message: "Ocorreu um erro ao ler o arquivo!",
-            data: error,
-          };
-          return response.status(500).send(arr);
-        }
-      });
-    }
+    
+    
   } catch (error) {
     await fs_extra.emptyDir("Temp");
     if (error instanceof BSON.BSONError) {
@@ -334,3 +129,211 @@ module.exports = async (request, response) => {
       return response.status(500).send(arr);
     });
 };
+
+// const arrMonography = request.files["monography"];
+//     if (arrMonography != undefined) {
+//       monography = arrMonography[0];
+
+//       const tipoMonografia = ["pdf", "docx"];
+//       const mimeMonografia = monography.mimetype;
+//       const tipoMonografiaAtual = mimeMonografia.split("/")[1];
+
+//       //Verifica o tipo da monografia
+//       if (!tipoMonografia.includes(tipoMonografiaAtual)) {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Formato da monografia inválido!",
+//         };
+//         return response.status(415).send(arr);
+//       }
+//       /***********************************************/
+
+//       //Verifica o tamanho da monografia
+//       if (monography.size > 1024 * 1024 * 80) {
+//         //80mb
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Monografia muito grande!",
+//         };
+//         return response.status(413).send(arr);
+//       }
+//       /**********************************************/
+
+//       monography_path =
+//         "Uploads/Monographys/" + tcc.id + "." + tipoMonografiaAtual;
+
+//       //Salva a manografia
+
+//       tcc.monography = monography_path;
+//       /**********************************************************/
+//     }
+//     /**************************************************************************/
+
+//     //Tratamento documento
+//     const arrDocument = request.files["document"];
+//     if (arrDocument != undefined) {
+//       document = arrDocument[0];
+
+//       const tipoDocument = ["pdf", "docx"];
+//       const mimeDocument = document.mimetype;
+//       const tipoDocumentAtual = mimeDocument.split("/")[1];
+
+//       if (!tipoDocument.includes(tipoDocumentAtual)) {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Tipo do documento inválido!",
+//         };
+//         return response.status(415).send(arr);
+//       }
+
+//       if (document.size > 1024 * 1024 * 50) {
+//         await fs_extra.emptyDir("Temp");
+//         const arr = {
+//           status: "ERROR",
+//           message: "Documento muito grande!",
+//         };
+//         return response.status(413).send(arr);
+//       }
+
+//       document_path = "Uploads/Documents/" + tcc.id + "." + tipoDocumentAtual;
+
+//       tcc.document = document_path;
+//     }
+//     /****************************************************************************/
+
+//     //Tratamento arquivo zip
+//     const arrZip = request.files["zip"];
+//     if (arrZip != undefined) {
+//       zip = arrZip[0];
+
+//       const mimeZip = zip.mimetype;
+//       const tipoZipAtual = mimeZip.split("/")[1];
+//       if (tipoZipAtual != "zip") {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Arquivo Zip inválido!",
+//         };
+//         return response.status(415).send(arr);
+//       }
+
+//       if (zip.size > 1024 * 1024 * 100) {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Arquivo Zip muito grande!",
+//         };
+//         return response.status(413).send(arr);
+//       }
+
+//       zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
+
+//       tcc.zip = zip_path;
+//     }
+//     /*********************************************************/
+//     //Tratamento da imagem
+//     const arrImage = request.files["image"];
+//     if (arrImage != undefined) {
+//       image = arrImage[0];
+
+//       const tipoImagem = ["png", "jpg", "jpeg", "webp"];
+//       const mimeImage = image.mimetype;
+//       const tipoImagemAtual = mimeImage.split("/")[1];
+
+//       if (!tipoImagem.includes(tipoImagemAtual)) {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Tipo de imagem inválido!",
+//         };
+//         return response.status(415).send(arr);
+//       }
+
+//       if (image.size > 1024 * 1024 * 20) {
+//         await fs_extra.emptyDir("Temp");
+
+//         const arr = {
+//           status: "ERROR",
+//           message: "Tamanho da imagem muito grande!",
+//         };
+//         return response.status(413).send(arr);
+//       }
+
+//       image_path = "Uploads/TccsImages/" + tcc.id + "." + tipoImagemAtual;
+
+//       tcc.image = image_path;
+//     }
+
+//     /*****************************************************************/
+
+//     if (monography_path != "") {
+//       fs.rename(monography.path, monography_path, (error) => {
+//         if (error) {
+//           fs_extra.emptyDirSync("Temp");
+//           const arr = {
+//             status: "ERROR",
+//             message: "Ocorreu um erro ao ler o arquivo!",
+//             data: error,
+//           };
+//           return response.status(500).send(arr);
+//         }
+//       });
+//     }
+
+//     if (document_path != "") {
+//       fs.rename(document.path, document_path, (error) => {
+//         if (error) {
+//           fs.unlink(monography_path, (error) => {});
+//           fs_extra.emptyDirSync("Temp");
+//           const arr = {
+//             status: "ERROR",
+//             message: "Ocorreu um erro ao ler o arquivo!",
+//             data: error,
+//           };
+//           return response.status(500).send(arr);
+//         }
+//       });
+//     }
+
+//     if (zip_path != "") {
+//       fs.rename(zip.path, zip_path, (error) => {
+//         if (error) {
+//           fs.unlink(monography_path, (error) => {});
+//           fs.unlink(document_path, (error) => {});
+
+//           fs_extra.emptyDirSync("Temp");
+//           const arr = {
+//             status: "ERROR",
+//             message: "Ocorreu um erro ao ler o arquivo!",
+//             data: error,
+//           };
+//           return response.status(500).send(arr);
+//         }
+//       });
+//     }
+
+//     if (image_path != "") {
+//       fs.rename(image.path, image_path, (error) => {
+//         if (error) {
+//           fs.unlink(monography_path, (error) => {});
+//           fs.unlink(document_path, (error) => {});
+//           fs.unlink(zip_path, (error) => {});
+//           fs_extra.emptyDirSync("Temp");
+//           const arr = {
+//             status: "ERROR",
+//             message: "Ocorreu um erro ao ler o arquivo!",
+//             data: error,
+//           };
+//           return response.status(500).send(arr);
+//         }
+//       });
+//     }

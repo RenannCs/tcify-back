@@ -3,7 +3,7 @@ const User = require("../../Schemas/User");
 module.exports = async (request, response) => {
   User.allFilter({ user_type: "Administrador" })
     .then((data) => {
-      return (dataFormat = data.map((user) => ({
+      return data.map((user) => ({
         _id: user._id,
         register: user.register,
         name: user.name,
@@ -11,9 +11,10 @@ module.exports = async (request, response) => {
         course_name: user.course_id ? user.course_id.name : "N/A",
         course_id: user.course_id ? user.course_id.id : "N/A",
 
-        email: user.email ? user.email : null,
-        phone_number: user.phone_number ? user.phone_number : null,
-        link: user.link ? user.link : null,
+        email: user.email,
+        phone_number: user.phone_number,
+        link: user.link,
+
         image: user.image
           ? `${process.env.API_PATH}${user.image}`
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
@@ -21,7 +22,7 @@ module.exports = async (request, response) => {
         user_type: user.user_type,
 
         status: user.status,
-      })));
+      }));
     })
     .then((resolve) => {
       const arr = {
@@ -34,7 +35,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao buscar os usuários!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       return response.status(500).send(arr);

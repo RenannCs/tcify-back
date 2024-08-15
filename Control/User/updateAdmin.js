@@ -1,6 +1,4 @@
-const { ObjectId } = require("mongodb");
 const User = require("../../Schemas/User");
-const Course = require("../../Schemas/Course");
 
 module.exports = async (request, response) => {
   const _id = request.params._id;
@@ -47,16 +45,7 @@ module.exports = async (request, response) => {
     if (status != undefined) {
       user.status = status;
     }
-    if ((course_id != null) & (course_id != undefined)) {
-      if (
-        (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
-      ) {
-        const arr = {
-          status: "ERROR",
-          message: "Curso não existe!",
-        };
-        return response.status(404).send(arr);
-      }
+    if (course_id) {
       user.course_id = course_id;
     }
 
@@ -86,29 +75,18 @@ module.exports = async (request, response) => {
       //Popula o curso, mas adiciona mais uma requisição
 
       data = await data.populate("course_id");
-      return (format = {
+      return {
         _id: data.id,
         name: data.name,
         register: data.register,
         email: data.email,
 
-        course_id:
-          data.user_type == "Administrador"
-            ? "N/A"
-            : data.course_id
-            ? data.course_id._id
-            : null,
-        course_name:
-          data.user_type == "Administrador"
-            ? "N/A"
-            : data.course_id
-            ? data.course_id.name
-            : null,
+        course_id: data.course_id ? data.course_id._id : "N/A",
+        course_name: data.course_id ? data.course_id.name : "N/A",
 
-        link: data.link ? data.link : null,
-        linkedin: data.linkedin ? data.linkedin : null,
+        link: data.link,
 
-        phone_number: data.phone_number ? data.phone_number : null,
+        phone_number: data.phone_number,
         user_type: data.user_type,
 
         image: data.image
@@ -116,39 +94,49 @@ module.exports = async (request, response) => {
           : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
 
         status: data.status,
-      });
+      };
     })
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
-        data: resolve,
         message: "Usuário atualizado com sucesso!",
+        data: resolve,
       };
       return response.status(200).send(arr);
     })
     .catch((reject) => {
-      if (reject.errorResponse) {
-        if (reject.errorResponse) {
-          if (Object.keys(reject.errorResponse.keyPattern)[0] == "email") {
-            const arr = {
-              status: "ERROR",
-              message: "Email já está em uso!",
-            };
-            return response.status(409).send(arr);
-          } else {
-            const arr = {
-              status: "ERROR",
-              message: "Registro já está em uso!",
-            };
-            return response.status(409).send(arr);
-          }
+      //Verifica se o erro veio das verificações do Schema de User
+      if (reject.errors) {
+        //Verifica de qual das verificações o erro veio
+        if (reject.errors.user_type) {
+          const arr = {
+            status: "ERROR",
+            message: "Tipo de usuário inválido!",
+          };
+          return response.status(400).send(arr);
+        } else if (reject.errors.course_id) {
+          const arr = {
+            status: "ERROR",
+            message: "Curso inválido!",
+          };
+          return response.status(400).send(arr);
         }
       }
+
+      //Verifica se o codigo de erro é de chave duplicada do mongoDB
+      if (reject.code == 11000) {
+        const arr = {
+          status: "ERROR",
+          message: "Registro ou email já em uso!",
+        };
+        return response.status(409).send(arr);
+      }
+      //Mensagem para erro desconhecido
       const arr = {
         status: "ERROR",
-        data: reject,
         message: "Erro de servidor, tente novamente mais tarde!",
+        data: reject,
       };
-      return response.status(500).send(arr);
+      response.status(500).send(arr);
     });
 };
