@@ -36,7 +36,7 @@ module.exports = function (app) {
       message: "Token validado com sucesso!",
       data: {
         user: {
-          _id: request.user.id,
+          _id: request.user._id,
           name: request.user.name,
           register: request.user.register,
           user_type: request.user.user_type,
