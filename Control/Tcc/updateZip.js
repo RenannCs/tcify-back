@@ -16,82 +16,30 @@ module.exports = async (request, response) => {
   let tcc;
 
   try {
-  _id = request.params._id;
-  zip = request.file;
+    _id = request.params._id;
+    zip = request.file;
 
-  tcc = await Tcc.findById(_id).exec();
+    tcc = await Tcc.findById(_id).exec();
 
-  if (tcc == null) {
-    const arr = {
-      status: "ERROR",
-      message: "TCC não existe!",
-    };
-    return response.status(404).send(arr);
-  }
+    if (tcc == null) {
+      const arr = {
+        status: "ERROR",
+        message: "TCC não existe!",
+      };
+      return response.status(404).send(arr);
+    }
 
-  if (zip == undefined) {
-    const arr = {
-      status: "ERROR",
-      message: "Nenhum arquivo foi enviado!",
-    };
-    return response.status(404).send(arr);
-  }
+    if (zip == undefined) {
+      const arr = {
+        status: "ERROR",
+        message: "Nenhum arquivo foi enviado!",
+      };
+      return response.status(404).send(arr);
+    }
 
-  if (zip.size > 1024 * 1024 * 100) {
-    fs.unlink(zip.path, (error) => {
-      if (error) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao ler o arquivo!",
-          data: error,
-        };
-        return response.status(500).send(arr);
-      }
-    });
-    const arr = {
-      status: "ERROR",
-      message: "Arquivo muito grande!",
-    };
-    return response.status(413).send(arr);
-  }
-
-  
-  const mimeDocumento = zip.mimetype;
-  const tipoDocumentoAtual = mimeDocumento.split("/")[1];
-
-  if (tipoDocumentoAtual != "zip") {
-    fs.unlink(zip.path, (error) => {
-      if (error) {
-        const arr = {
-          status: "ERROR",
-          message: "Ocorreu um erro ao ler o arquivo!",
-          data: error,
-        };
-        return response.status(500).send(arr);
-      }
-    });
-    const arr = {
-      status: "ERROR",
-      message: "Tipo de arquivo inválido",
-    };
-    return response.status(415).send(arr);
-  }
-
-  if (tcc.zip != null) {
-    if (fs.existsSync(tcc.zip)) {
-      fs.unlink(tcc.zip, (error) => {
+    if (zip.size > 1024 * 1024 * 100) {
+      fs.unlink(zip.path, (error) => {
         if (error) {
-          fs.unlink(zip.path, (error) => {
-            if (error) {
-              const arr = {
-                status: "ERROR",
-                message: "Ocorreu um erro ao ler o arquivo!",
-                data: error,
-              };
-              return response.status(500).send(arr);
-            }
-          });
-
           const arr = {
             status: "ERROR",
             message: "Ocorreu um erro ao ler o arquivo!",
@@ -100,22 +48,79 @@ module.exports = async (request, response) => {
           return response.status(500).send(arr);
         }
       });
-    }
-  }
-
-  zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
-  tcc.zip = zip_path;
-
-  fs.rename(zip.path, zip_path, (error) => {
-    if (error) {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao ler o arquivo!",
-        data: error,
+        message: "Arquivo muito grande!",
       };
-      return response.status(500).send(arr);
+      return response.status(413).send(arr);
     }
-  });
+
+    const mimeDocumento = zip.mimetype;
+    const tipoDocumentoAtual = mimeDocumento.split("/")[1];
+
+    console.log(tipoDocumentoAtual);
+
+    const tiposAceitos = ["zip", "jar", "apk", "x-zip-compressed"]; 
+
+    if (!tiposAceitos.includes(tipoDocumentoAtual)) {
+      fs.unlink(zip.path, (error) => {
+        if (error) {
+          const arr = {
+            status: "ERROR",
+            message: "Ocorreu um erro ao ler o arquivo!",
+            data: error,
+          };
+          return response.status(500).send(arr);
+        }
+      });
+      const arr = {
+        status: "ERROR",
+        message: "Tipo de arquivo inválido",
+      };
+      return response.status(415).send(arr);
+    }
+
+    // Continue com o processamento do arquivo
+
+    if (tcc.zip != null) {
+      if (fs.existsSync(tcc.zip)) {
+        fs.unlink(tcc.zip, (error) => {
+          if (error) {
+            fs.unlink(zip.path, (error) => {
+              if (error) {
+                const arr = {
+                  status: "ERROR",
+                  message: "Ocorreu um erro ao ler o arquivo!",
+                  data: error,
+                };
+                return response.status(500).send(arr);
+              }
+            });
+
+            const arr = {
+              status: "ERROR",
+              message: "Ocorreu um erro ao ler o arquivo!",
+              data: error,
+            };
+            return response.status(500).send(arr);
+          }
+        });
+      }
+    }
+
+    zip_path = "Uploads/Zips/" + tcc.id + "." + "zip";
+    tcc.zip = zip_path;
+
+    fs.rename(zip.path, zip_path, (error) => {
+      if (error) {
+        const arr = {
+          status: "ERROR",
+          message: "Ocorreu um erro ao ler o arquivo!",
+          data: error,
+        };
+        return response.status(500).send(arr);
+      }
+    });
   } catch (error) {
     const arr = {
       status: "ERROR",
