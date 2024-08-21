@@ -9,15 +9,16 @@ module.exports = async (request, response) => {
     const name = request.body.name;
     const description = request.body.description;
     const status = request.body.status;
-    if ((await Course.exists({ _id: new ObjectId(_id) })) == null) {
+
+    course = await Course.findById(_id);
+    if (course == null) {
       const arr = {
         status: "ERROR",
-        message: "Curso não existe!",
+        message: "Curso não foi encontrado!",
+        data: arr,
       };
       return response.status(404).send(arr);
     }
-
-    course = await Course.findById(_id);
     course.name = name;
     course.description = description;
     course.status = status;

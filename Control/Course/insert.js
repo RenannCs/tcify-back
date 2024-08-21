@@ -13,7 +13,7 @@ module.exports = async (request, response) => {
   } catch (error) {
     const arr = {
       status: "ERROR",
-      message: "Erro do servidor, tente novamente mais tarde!",
+      message: "Erro de servidor, tente novamente mais tarde!",
       data: error,
     };
     return response.status(500).send(arr);

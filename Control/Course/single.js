@@ -1,4 +1,3 @@
-const { ObjectId, BSON } = require("mongodb");
 const Course = require("../../Schemas/Course");
 
 module.exports = async (request, response) => {

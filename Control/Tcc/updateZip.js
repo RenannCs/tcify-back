@@ -37,7 +37,7 @@ module.exports = async (request, response) => {
       return response.status(404).send(arr);
     }
 
-    if (zip.size > 1024 * 1024 * 100) {
+    if (zip.size > 1024 * 1024 * 200) {
       fs.unlink(zip.path, (error) => {
         if (error) {
           const arr = {

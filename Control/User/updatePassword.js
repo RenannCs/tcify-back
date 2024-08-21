@@ -1,4 +1,3 @@
-const { ObjectId, BSON } = require("mongodb");
 const User = require("../../Schemas/User");
 const md5 = require("md5");
 module.exports = async (request, response) => {
