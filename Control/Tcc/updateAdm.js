@@ -37,7 +37,7 @@ module.exports = async (request, response) => {
     status = request.body.status;
     group_id = request.body.group_id;
     course_id = request.body.course_id;
-    supervisor = request.body.supervisor;
+    supervisor = request.body.supervisor_id;
 
     tcc = await Tcc.findById(_id).exec();
 
