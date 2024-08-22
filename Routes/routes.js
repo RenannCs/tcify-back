@@ -31,8 +31,6 @@ module.exports = function (app) {
   /* ************** Autenticação de Token ********************* */
 
   app.post("/repository/users/auth", token, (request, response) => {
-
-
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
@@ -61,7 +59,7 @@ module.exports = function (app) {
   );
 
   app.get(
-    "/repository/projects/teacher/:_id",
+    "/repository/projects/professor/:_id",
     tokenAdminTeacher,
     require("../Control/Tcc/allTeacher")
   );
