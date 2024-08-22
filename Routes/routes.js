@@ -281,6 +281,11 @@ module.exports = function (app) {
 
   app.get("/repository/groups/:_id", require("../Control/Group/Single"));
 
+  app.get(
+    "/repository/groups/teacher/:_id",
+    require("../Control/Group/allByTeacher")
+  );
+
   /* ************** POST ************** */
   app.post("/repository/groups", token, require("../Control/Group/insert"));
 

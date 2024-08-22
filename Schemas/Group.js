@@ -65,6 +65,34 @@ const groupSchema = new mongoose.Schema(
           })
           .exec();
       },
+      allFilter(filter) {
+        return this.find(filter)
+          .populate({
+            path: "students",
+            model: "User",
+            select: ["name", "register", "email", "link", "linkedin", "image"],
+          })
+          .populate({
+            path: "leader_id",
+            model: "User",
+            select: "name",
+          })
+          .populate({
+            path: "course_id",
+            model: "Course",
+            select: "name",
+          })
+          .populate({
+            path: "tcc_id",
+            model: "TCC",
+          })
+          .populate({
+            path: "supervisor",
+            model: "User",
+            select: "name",
+          })
+          .exec();
+      },
       all() {
         return this.find()
           .populate({

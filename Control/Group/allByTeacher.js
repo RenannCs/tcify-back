@@ -1,8 +1,13 @@
 const Group = require("../../Schemas/Group");
 
 module.exports = async (request, response) => {
-  Group.all()
+  const _id = request.params._id;
+
+  Group.allFilter({ supervisor: _id })
     .then((data) => {
+      if (data.length == 0) {
+        return null;
+      }
       return (format = data.map((group) => ({
         _id: group._id,
 
@@ -25,6 +30,14 @@ module.exports = async (request, response) => {
       })));
     })
     .then((resolve) => {
+      if (resolve == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Nenhum grupo encontrado!",
+          data: null,
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
         message: "Grupos recuperados com sucesso!",
@@ -33,6 +46,13 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.name == "CastError") {
+        const arr = {
+          status: "ERROR",
+          message: "Professor inválido!",
+        };
+        return response.status(400).send(arr);
+      }
       const arr = {
         status: "ERROR",
         message: "Ocorreu um erro ao recuperar os grupos!",
