@@ -8,7 +8,7 @@ module.exports = async (request, response) => {
 
         title: tcc.title ? tcc.title : null,
         summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade ? tcc.grade : null,
+        grade: tcc.grade ,
 
         status: tcc.status ? tcc.status : null,
 

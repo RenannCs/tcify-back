@@ -22,17 +22,17 @@ module.exports = async (request, response) => {
   let group_id;
   let course_id;
 
-  let monography;
-  let monography_path = "";
+  // let monography;
+  // let monography_path = "";
 
-  let document;
-  let document_path = "";
+  // let document;
+  // let document_path = "";
 
-  let zip;
-  let zip_path = "";
+  // let zip;
+  // let zip_path = "";
 
-  let image;
-  let image_path = "";
+  // let image;
+  // let image_path = "";
 
   try {
     summary = request.body.summary;
@@ -56,12 +56,12 @@ module.exports = async (request, response) => {
       };
       return response.status(409).send(arr);
     }
+
     supervisor = group.supervisor;
     course_id = group.course_id;
     title = group.title;
 
     tcc = new Tcc();
-    tcc.id = new ObjectId();
 
     tcc.title = title;
     tcc.summary = summary;
@@ -69,21 +69,19 @@ module.exports = async (request, response) => {
     tcc.supervisor = supervisor;
     tcc.course_id = course_id;
 
-    group.tcc_id = tcc.id;
+    const resp = await tcc.save();
+    
+    group.tcc_id = resp._id;
     await group.save();
-    //Tratamento da monografia
     
-    
+    const arr = {
+      status: "SUCCESS",
+      message: "TCC inserido com sucesso!",
+      data: tcc,
+    };
+    return response.status(200).send(arr);
   } catch (error) {
     await fs_extra.emptyDir("Temp");
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Grupo inválido!",
-        data: error,
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro de servidor, tente novamente mais tarde!",
@@ -92,6 +90,9 @@ module.exports = async (request, response) => {
     return response.status(500).send(arr);
   }
 
+  
+};
+/*
   tcc
     .save()
     .then((data) => {
@@ -129,7 +130,8 @@ module.exports = async (request, response) => {
       return response.status(500).send(arr);
     });
 };
-
+*/
+//Tratamento da monografia
 // const arrMonography = request.files["monography"];
 //     if (arrMonography != undefined) {
 //       monography = arrMonography[0];

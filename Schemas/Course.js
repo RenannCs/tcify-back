@@ -6,7 +6,10 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String,
+  description: {
+    type: String,
+    default: null,
+  },
   status: {
     type: String,
     default: "0",
