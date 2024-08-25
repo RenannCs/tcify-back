@@ -42,6 +42,7 @@ module.exports = function (app) {
           user_type: request.userLogged.user_type,
           image: request.userLogged.image,
           group_id: request.userLogged.group_id,
+          tcc_id: request.userLogged.tcc_id,
         },
       },
     };
