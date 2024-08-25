@@ -41,6 +41,7 @@ module.exports = function (app) {
           register: request.userLogged.register,
           user_type: request.userLogged.user_type,
           image: request.userLogged.image,
+          group_id: request.userLogged.group_id,
         },
       },
     };
