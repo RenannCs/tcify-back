@@ -16,7 +16,7 @@ module.exports = async (request, response) => {
         students: group.students,
 
         course_id: group.course_id ? group.course_id._id : null,
-        course_name: group.course_id ? group.course_id.name : null,
+        course: group.course_id ? group.course_id.name : null,
 
         supervisor: group.supervisor_id ? group.supervisor_id.name : null,
         supervisor_id: group.supervisor_id ? group.supervisor_id._id : null,

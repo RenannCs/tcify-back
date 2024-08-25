@@ -42,7 +42,7 @@ module.exports = async (request, response) => {
         students: data.students,
 
         course_id: data.course_id ? data.course_id._id : null,
-        course_name: data.course_id ? data.course_id.name : null,
+        course: data.course_id ? data.course_id.name : null,
 
         supervisor: data.supervisor_id ? data.supervisor_id.name : null,
         supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,

@@ -161,7 +161,7 @@ module.exports = async (request, response) => {
         students: tcc.group_id ? tcc.group_id.students : null,
 
         course_id: tcc.course_id ? tcc.course_id._id : null,
-        course_name: tcc.course_id ? tcc.course_id.name : null,
+        course: tcc.course_id ? tcc.course_id.name : null,
 
         date: new Date(tcc.date).getFullYear().toString(),
       });

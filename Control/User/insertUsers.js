@@ -153,7 +153,7 @@ module.exports = async (request, response) => {
                 _id: resp.id,
                 name: user.name ? user.name : null,
                 register: user.register ? user.register : null,
-                course_name: course ? course.name : "N/A",
+                course: course ? course.name : "N/A",
                 course_id: course ? course.id : "N/A",
                 user_type: user.user_type ? user.user_type : null,
                 email: user.email ? user.email : null,
@@ -165,7 +165,7 @@ module.exports = async (request, response) => {
               erros.push({
                 name: _user["Nome"],
                 register: _user["Registro"],
-                course_name: _user["Curso"],
+                course: _user["Curso"],
                 user_type: _user["Tipo de Usuário"],
                 email: _user["E-mail"],
                 phone_number: _user["Telefone"],

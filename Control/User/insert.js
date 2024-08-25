@@ -78,7 +78,7 @@ module.exports = async (request, response) => {
         name: aux.name,
 
         course_id: aux.course_id ? aux.course_id._id : null,
-        course_name: aux.course_id ? aux.course_id.name : null,
+        course: aux.course_id ? aux.course_id.name : null,
 
         register: aux.register,
         email: aux.email,

@@ -8,7 +8,7 @@ module.exports = async (request, response) => {
         register: user.register,
         name: user.name,
 
-        course_name: user.course_id ? user.course_id.name : "N/A",
+        course: user.course_id ? user.course_id.name : "N/A",
         course_id: user.course_id ? user.course_id.id : "N/A",
 
         email: user.email,

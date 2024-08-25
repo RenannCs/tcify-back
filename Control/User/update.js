@@ -67,7 +67,7 @@ module.exports = async (request, response) => {
         email: data.email,
 
         course_id: data.course_id ? data.course_id._id : "N/A",
-        course_name: data.course_id ? data.course_id.name : "N/A",
+        course: data.course_id ? data.course_id.name : "N/A",
 
         link: data.link,
         linkedin: data.linkedin,
