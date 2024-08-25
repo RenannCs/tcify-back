@@ -74,10 +74,47 @@ module.exports = async (request, response) => {
     group.tcc_id = resp._id;
     await group.save();
     
+
+    const aux = await Tcc.single(resp._id);
+    
+    const format  = {
+      _id: aux.id,
+
+      title: aux.title ? aux.title : null,
+      summary: aux.summary ? aux.summary : null,
+      grade: aux.grade ,
+
+      status: aux.status ? aux.status : null,
+
+      document: aux.document
+        ? `${process.env.API_PATH}${aux.document}`
+        : null,
+
+      monography: aux.monography
+        ? `${process.env.API_PATH}${aux.monography}`
+        : null,
+
+      zip: aux.zip ? `${process.env.API_PATH}${aux.zip}` : null,
+
+      image: aux.image
+        ? `${process.env.API_PATH}${aux.image}`
+        : `${process.env.API_PATH}${process.env.aux_PICTURE_DEFAULT}`,
+
+      supervisor: aux.supervisor ? aux.supervisor.name : null,
+      supervisor_id: aux.supervisor ? aux.supervisor._id : null,
+
+      group_id: aux.group_id ? aux.group_id._id : null,
+      students: aux.group_id ? aux.group_id.students : null,
+
+      course_id: aux.course_id ? aux.course_id._id : null,
+      course: aux.course_id ? aux.course_id.name : null,
+
+      date: new Date(aux.date).getFullYear().toString(),
+    }
     const arr = {
       status: "SUCCESS",
       message: "TCC inserido com sucesso!",
-      data: tcc,
+      data: format,
     };
     return response.status(200).send(arr);
   } catch (error) {
