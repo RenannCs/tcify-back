@@ -125,7 +125,7 @@ module.exports = async (request, response) => {
         supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
         supervisor: data.supervisor_id ? data.supervisor_id.name : null,
 
-        tcc: data.tcc_id ? data.tcc_id : null,
+        project: data.tcc_id ? data.tcc_id : null,
 
         leader: data.leader_id ? data.leader_id.name : null,
         leader_id: data.leader_id ? data.leader_id._id : null,
