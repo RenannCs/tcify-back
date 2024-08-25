@@ -44,10 +44,10 @@ module.exports = async (request, response) => {
         course_id: data.course_id ? data.course_id._id : null,
         course_name: data.course_id ? data.course_id.name : null,
 
-        supervisor: data.supervisor ? data.supervisor.name : null,
-        supervisor_id: data.supervisor ? data.supervisor._id : null,
+        supervisor: data.supervisor_id ? data.supervisor_id.name : null,
+        supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
 
-        project: data.tcc_id ? data.tcc_id : null,
+        tcc: data.tcc_id ? data.tcc_id : null,
 
         leader: data.leader_id ? data.leader_id.name : null,
         leader_id: data.leader_id ? data.leader_id._id : null,

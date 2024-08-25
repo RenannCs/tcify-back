@@ -17,22 +17,23 @@ module.exports = async (request, response) => {
     _id = request.body._id;
     register = request.body.register;
 
-    if ((await Group.exists({ _id: new ObjectId(_id) })) == null) {
+    group = await Group.findById(_id).exec();
+    if (group == null) {
       const arr = {
         status: "ERROR",
         message: "Grupo não existe!",
       };
       return response.status(404).send(arr);
     }
-    if ((await User.exists({ register: register })) == null) {
+
+    user = await User.findOne({ register: register }).exec();
+    if (user == null) {
       const arr = {
         status: "ERROR",
         message: "Aluno não existe!",
       };
       return response.status(404).send(arr);
     }
-
-    user = await User.findOne({ register: register }).exec();
 
     if ((await Group.existsByStudent(user.id)) != null) {
       const arr = {
@@ -42,7 +43,6 @@ module.exports = async (request, response) => {
       return response.status(409).send(arr);
     }
 
-    group = await Group.findById(_id).exec();
     let newStudents = group.students;
     newStudents.push(user.id);
 
@@ -77,10 +77,10 @@ module.exports = async (request, response) => {
         course_id: data.course_id ? data.course_id._id : null,
         course_name: data.course_id ? data.course_id.name : null,
 
-        supervisor: data.supervisor ? data.supervisor.name : null,
-        supervisor_id: data.supervisor ? data.supervisor._id : null,
+        supervisor: data.supervisor_id ? data.supervisor_id.name : null,
+        supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
 
-        project: data.tcc_id ? data.tcc_id : null,
+        tcc: data.tcc_id ? data.tcc_id : null,
 
         leader: data.leader_id ? data.leader_id.name : null,
         leader_id: data.leader_id ? data.leader_id._id : null,

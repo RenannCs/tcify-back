@@ -1,33 +1,64 @@
-const mongodb = require("mongodb");
 const mongoose = require("mongoose");
 const User = require("./User");
 const Tcc = require("./Tcc");
+const Course = require("./Course");
 const groupSchema = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+    },
     students: {
       required: true,
       type: [mongoose.Types.ObjectId],
       ref: "User",
+      default: [],
     },
 
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
-      required: true,
+      validate: async (_id) => {
+        if ((await Course.findById(_id)) == null) {
+          throw new Error("Curso não existe!");
+        }
+      },
     },
-    supervisor: {
+    supervisor_id: {
       type: mongoose.Types.ObjectId,
       ref: "User",
-      required: true,
+      validate: async (_id) => {
+        if (
+          (await User.exists({
+            $and: [{ _id: _id }, { user_type: "Professor" }],
+          })) == null
+        ) {
+          throw new Error("Professor não existe!");
+        }
+      },
     },
     tcc_id: {
       type: mongoose.Types.ObjectId,
       ref: "TCC",
+      default: null,
+      validate: async (_id) => {
+        if (_id) {
+          if ((await Tcc.findById(_id)) == null) {
+            throw new Error("TCC não existe!");
+          }
+        }
+      },
     },
     leader_id: {
       type: mongoose.Types.ObjectId,
       ref: "User",
+      validate: async (_id) => {
+        if (_id) {
+          if ((await User.findById(_id)) == null) {
+            throw new Error("Líder não existe!");
+          }
+        }
+      },
     },
     status: {
       type: String,
@@ -59,7 +90,7 @@ const groupSchema = new mongoose.Schema(
             model: "TCC",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -87,7 +118,7 @@ const groupSchema = new mongoose.Schema(
             model: "TCC",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -115,7 +146,7 @@ const groupSchema = new mongoose.Schema(
             model: "TCC",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -146,7 +177,7 @@ const groupSchema = new mongoose.Schema(
             model: "TCC",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })

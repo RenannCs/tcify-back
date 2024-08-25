@@ -1,8 +1,5 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
-const Course = require("../../Schemas/Course");
-
-const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
   let group;
@@ -20,45 +17,15 @@ module.exports = async (request, response) => {
     title = request.body.title;
     course_id = request.body.course_id;
 
-    if ((await User.exists({ _id: leader_id }).exec()) == null) {
+    if ((await Group.existsByStudent(leader_id)) != null) {
       const arr = {
         status: "ERROR",
-        message: "Um ou mais alunos não foram encontrados!",
-      };
-      return response.status(404).send(arr);
-    }
-
-    const leaderData = await User.findOne({ _id: leader_id }).exec();
-
-    if ((await Group.existsByStudent(leaderData.id)) != null) {
-      const arr = {
-        status: "ERROR",
-        message: "Aluno " + leaderData.name + " já adicionado a um grupo!",
+        message: "Líder já possui a um grupo!",
       };
       return response.status(409).send(arr);
     }
 
-    if (
-      (await Course.exists({ _id: new ObjectId(course_id) }).exec()) == null
-    ) {
-      const arr = {
-        status: "ERROR",
-        message: "Curso não existe!",
-      };
-      return response.status(404).send(arr);
-    }
-    if (
-      (await User.exists({
-        $and: [{ _id: supervisor_id }, { user_type: "Professor" }],
-      }).exec()) == null
-    ) {
-      const arr = {
-        status: "ERROR",
-        message: "Orientador não existe!",
-      };
-      return response.status(404).send(arr);
-    }
-    for (const _student of students) {
+    for (let _student of students) {
       if ((await User.exists({ _id: _student }).exec()) == null) {
         const arr = {
           status: "ERROR",
@@ -80,21 +47,14 @@ module.exports = async (request, response) => {
     group = new Group();
     group.title = title;
     group.students = students;
-    group.leader_id = leaderData.id;
+    group.leader_id = leader_id;
     group.course_id = course_id;
-    group.supervisor = supervisor_id;
-    group.status = "0";
+    group.supervisor_id = supervisor_id;
+    group.status = "1";
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Curso inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
-      message: "Erro do servidor, tente novamente mais tarde!",
+      message: "Erro de servidor, tente novamente mais tarde!",
       data: error,
     };
     return response.status(500).send(arr);
@@ -104,26 +64,26 @@ module.exports = async (request, response) => {
     .save()
     .then(async (group) => {
       const data = await Group.single(group.id);
-      return (format = {
+      return {
         _id: data._id,
 
-        title: data.title ? data.title : null,
+        title: data.title,
 
         students: data.students,
 
         course_id: data.course_id ? data.course_id._id : null,
         course_name: data.course_id ? data.course_id.name : null,
 
-        supervisor: data.supervisor ? data.supervisor.name : null,
-        supervisor_id: data.supervisor ? data.supervisor._id : null,
+        supervisor: data.supervisor_id ? data.supervisor_id.name : null,
+        supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
 
-        project: data.tcc_id ? data.tcc_id : null,
+        tcc: data.tcc_id ? data.tcc_id : null,
 
         leader: data.leader_id ? data.leader_id.name : null,
         leader_id: data.leader_id ? data.leader_id._id : null,
 
-        status: data.status ? data.status : null,
-      });
+        status: data.status,
+      };
     })
     .then((resolve) => {
       const arr = {
@@ -134,9 +94,32 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
+      if (reject.errors) {
+        if (reject.errors.supervisor_id) {
+          const arr = {
+            status: "ERROR",
+            message: "Professor não encontrado!",
+          };
+          return response.status(404).send(arr);
+        }
+        if (reject.errors.leader_id) {
+          const arr = {
+            status: "ERROR",
+            message: "Líder não encontrado!",
+          };
+          return response.status(404).send(arr);
+        }
+        if (reject.errors.course_id) {
+          const arr = {
+            status: "ERROR",
+            message: "Curso não encontrado!",
+          };
+          return response.status(404).send(arr);
+        }
+      }
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao inserir o grupo!",
+        message: "Erro de servidor, tente novamente mais tarde!",
         data: reject,
       };
       return response.status(500).send(arr);
