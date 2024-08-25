@@ -1,7 +1,7 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  Tcc.all()
+  Tcc.allFilter({ status: "1" })
     .then((data) => {
       return (format = data.map((tcc) => ({
         _id: tcc.id,
