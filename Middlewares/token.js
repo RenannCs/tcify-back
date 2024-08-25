@@ -1,4 +1,5 @@
 const User = require("../Schemas/User");
+const Group = require("../Schemas/Group");
 const JwtToken = require("../Model/JwtToken");
 
 module.exports = async (request, response, next) => {
@@ -8,12 +9,10 @@ module.exports = async (request, response, next) => {
     const token = request.headers.authorization;
     const tokenResult = jwttoken.validateToken(token);
 
-
     if (tokenResult.status) {
-
       const token_id = tokenResult.decoded.payload._id;
       const token_user_type = tokenResult.decoded.payload.user_type;
-      
+
       const user = await User.findById(token_id).exec();
       if (user != null) {
         if (
@@ -21,6 +20,16 @@ module.exports = async (request, response, next) => {
           (user.user_type == token_user_type)
         ) {
           request.userLogged = user;
+
+          const group = await Group.findByStudent(token_id);
+          if (group) {
+            request.userLogged.group_id = group._id;
+            request.userLogged.tcc_id = group.tcc_id ? group.tcc_id._id : null;
+          } else {
+            request.userLogged.group_id = null;
+            request.userLogged.tcc_id = null;
+          }
+
           next();
         } else {
           const arr = {
