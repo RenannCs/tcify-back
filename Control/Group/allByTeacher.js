@@ -3,7 +3,7 @@ const Group = require("../../Schemas/Group");
 module.exports = async (request, response) => {
   const _id = request.params._id;
 
-  Group.allFilter({ supervisor: _id })
+  Group.allFilter({ supervisor_id: _id })
     .then((data) => {
       if (data.length == 0) {
         return null;
