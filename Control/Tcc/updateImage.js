@@ -156,8 +156,8 @@ module.exports = async (request, response) => {
           ? `${process.env.API_PATH}${tcc.image}`
           : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
 
-        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
-        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+        supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
+        supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
 
         group_id: tcc.group_id ? tcc.group_id._id : null,
         students: tcc.group_id ? tcc.group_id.students : null,

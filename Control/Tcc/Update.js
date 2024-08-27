@@ -13,8 +13,9 @@ module.exports = async (request, response) => {
   let summary;
   try {
     const _id = request.params._id;
+    tcc = await Tcc.findById(_id).exec();
 
-    if ((await Tcc.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+    if (tcc == null) {
       const arr = {
         status: "ERROR",
         message: "TCC não existe",
@@ -25,22 +26,13 @@ module.exports = async (request, response) => {
     title = request.body.title;
     summary = request.body.summary;
 
-    tcc = await Tcc.findById(_id).exec();
-
-    if (title != undefined) {
+    if (title) {
       tcc.title = title;
     }
-    if (summary != undefined) {
+    if (summary) {
       tcc.summary = summary;
     }
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "TCC inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro de servidor, tente novamente mais tarde!",
@@ -51,44 +43,43 @@ module.exports = async (request, response) => {
 
   tcc
     .save()
-    .then((data) => {
-      return Tcc.single(data.id);
-    })
-    .then((tcc) => {
-      return (dataFormat = {
-        _id: tcc.id,
+    .then(async (data) => {
+      const aux = await Tcc.single(data);
 
-        title: tcc.title ? tcc.title : null,
-        summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade ? tcc.grade : null,
+      return {
+        _id: aux.id,
 
-        status: tcc.status ? tcc.status : null,
+        title: aux.title,
+        summary: aux.summary,
+        grade: aux.grade,
 
-        document: tcc.document
-          ? `${process.env.API_PATH}${tcc.document}`
+        status: aux.status,
+
+        document: aux.document
+          ? `${process.env.API_PATH}${aux.document}`
           : null,
 
-        monography: tcc.monography
-          ? `${process.env.API_PATH}${tcc.monography}`
+        monography: aux.monography
+          ? `${process.env.API_PATH}${aux.monography}`
           : null,
 
-        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+        zip: aux.zip ? `${process.env.API_PATH}${aux.zip}` : null,
 
-        image: tcc.image
-          ? `${process.env.API_PATH}${tcc.image}`
-          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+        image: aux.image
+          ? `${process.env.API_PATH}${aux.image}`
+          : `${process.env.API_PATH}${process.env.aux_PICTURE_DEFAULT}`,
 
-        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
-        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+        supervisor: aux.supervisor_id ? aux.supervisor_id.name : null,
+        supervisor_id: aux.supervisor_id ? aux.supervisor_id._id : null,
 
-        group_id: tcc.group_id ? tcc.group_id._id : null,
-        students: tcc.group_id ? tcc.group_id.students : null,
+        group_id: aux.group_id ? aux.group_id._id : null,
+        students: aux.group_id ? aux.group_id.students : null,
 
-        course_id: tcc.course_id ? tcc.course_id._id : null,
-        course: tcc.course_id ? tcc.course_id.name : null,
+        course_id: aux.course_id ? aux.course_id._id : null,
+        course: aux.course_id ? aux.course_id.name : null,
 
-        date: new Date(tcc.date).getFullYear().toString(),
-      });
+        date: new Date(aux.date).getFullYear().toString(),
+      };
     })
     .then((resolve) => {
       const arr = {

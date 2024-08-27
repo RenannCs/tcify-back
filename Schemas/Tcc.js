@@ -4,10 +4,11 @@ const tccSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      default: null,
     },
     summary: {
       type: String,
+      default: null,
     },
     grade: {
       type: Number,
@@ -24,21 +25,36 @@ const tccSchema = new mongoose.Schema(
       type: String,
       default: "0",
     },
-    document: String,
-    monography: String,
-    zip: String,
-    image: String,
+    document: {
+      type: String,
+      default: null,
+    },
+    monography: {
+      type: String,
+      default: null,
+    },
+    zip: {
+      type: String,
+      default: null,
+    },
+    image: {
+      type: String,
+      default: null,
+    },
     group_id: {
       type: mongoose.Types.ObjectId,
       ref: "Group",
+      default: null,
     },
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
+      default: null,
     },
-    supervisor: {
+    supervisor_id: {
       type: mongoose.Types.ObjectId,
       ref: "User",
+      default: null,
     },
   },
   {
@@ -52,7 +68,19 @@ const tccSchema = new mongoose.Schema(
             populate: {
               path: "students",
               model: "User",
-              select: ["name", "email", "link", "linkedin", "image"],
+              select: [
+                "name",
+                "email",
+                "link",
+                "image",
+                "course_id",
+                "register",
+              ],
+              populate: {
+                path: "course_id",
+                model: "Course",
+                select: "name",
+              },
             },
           })
           .populate({
@@ -71,7 +99,7 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -112,7 +140,7 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -153,7 +181,7 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -171,7 +199,7 @@ const tccSchema = new mongoose.Schema(
             populate: {
               path: "students",
               model: "User",
-              select: ["name", "email", "link", "linkedin", "image"],
+              select: ["name", "email", "link", "linkedin", "image" , , "register"],
             },
           })
           .populate({
@@ -190,7 +218,7 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .populate({
-            path: "supervisor",
+            path: "supervisor_id",
             model: "User",
             select: "name",
           })
@@ -205,7 +233,7 @@ tccSchema.pre("save", function (next) {
   tcc.title = tcc.title ? tcc.title.trim() : undefined;
   tcc.summary = tcc.summary ? tcc.summary.trim() : undefined;
 
-  next(); 
+  next();
 });
 
 const tccModel = mongoose.model("TCC", tccSchema, "TCCs");

@@ -57,7 +57,7 @@ module.exports = async (request, response) => {
       return response.status(409).send(arr);
     }
 
-    supervisor = group.supervisor;
+    supervisor = group.supervisor_id;
     course_id = group.course_id;
     title = group.title;
 
@@ -66,29 +66,26 @@ module.exports = async (request, response) => {
     tcc.title = title;
     tcc.summary = summary;
     tcc.group_id = group_id;
-    tcc.supervisor = supervisor;
+    tcc.supervisor_id = supervisor;
     tcc.course_id = course_id;
 
     const resp = await tcc.save();
-    
+
     group.tcc_id = resp._id;
     await group.save();
-    
 
     const aux = await Tcc.single(resp._id);
-    
-    const format  = {
+
+    const format = {
       _id: aux.id,
 
-      title: aux.title ? aux.title : null,
-      summary: aux.summary ? aux.summary : null,
-      grade: aux.grade ,
+      title: aux.title,
+      summary: aux.summary,
+      grade: aux.grade,
 
-      status: aux.status ? aux.status : null,
+      status: aux.status,
 
-      document: aux.document
-        ? `${process.env.API_PATH}${aux.document}`
-        : null,
+      document: aux.document ? `${process.env.API_PATH}${aux.document}` : null,
 
       monography: aux.monography
         ? `${process.env.API_PATH}${aux.monography}`
@@ -100,8 +97,8 @@ module.exports = async (request, response) => {
         ? `${process.env.API_PATH}${aux.image}`
         : `${process.env.API_PATH}${process.env.aux_PICTURE_DEFAULT}`,
 
-      supervisor: aux.supervisor ? aux.supervisor.name : null,
-      supervisor_id: aux.supervisor ? aux.supervisor._id : null,
+      supervisor: aux.supervisor_id  ? aux.supervisor_id.name : null,
+      supervisor_id: aux.supervisor_id ? aux.supervisor_id._id : null,
 
       group_id: aux.group_id ? aux.group_id._id : null,
       students: aux.group_id ? aux.group_id.students : null,
@@ -110,7 +107,7 @@ module.exports = async (request, response) => {
       course: aux.course_id ? aux.course_id.name : null,
 
       date: new Date(aux.date).getFullYear().toString(),
-    }
+    };
     const arr = {
       status: "SUCCESS",
       message: "TCC inserido com sucesso!",
@@ -126,8 +123,6 @@ module.exports = async (request, response) => {
     };
     return response.status(500).send(arr);
   }
-
-  
 };
 /*
   tcc

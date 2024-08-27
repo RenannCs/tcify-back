@@ -89,7 +89,7 @@ module.exports = async (request, response) => {
         };
         return response.status(404).send(arr);
       }
-      tcc.supervisor = supervisor;
+      tcc.supervisor_id = supervisor;
     }
   } catch (error) {
     const arr = {
@@ -122,15 +122,14 @@ module.exports = async (request, response) => {
         monography: tcc.monography
           ? `${process.env.API_PATH}${tcc.monography}`
           : null,
-
         zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
 
         image: tcc.image
           ? `${process.env.API_PATH}${tcc.image}`
           : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
 
-        supervisor: tcc.supervisor ? tcc.supervisor.name : null,
-        supervisor_id: tcc.supervisor ? tcc.supervisor._id : null,
+        supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
+        supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
 
         group_id: tcc.group_id ? tcc.group_id._id : null,
         students: tcc.group_id ? tcc.group_id.students : null,
