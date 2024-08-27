@@ -1,47 +1,25 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  Tcc.all()
-    .then((data) => {
-      return (format = data.map((tcc) => ({
-        _id: tcc.id,
+  let filter = {};
+  const userLogged = request.userLogged;
 
-        title: tcc.title ? tcc.title : null,
-        summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade ,
+  if (userLogged.user_type == "Professor") {
+    filter = { supervisor_id: userLogged._id };
+  }
 
-        status: tcc.status ? tcc.status : null,
-
-        document: tcc.document
-          ? `${process.env.API_PATH}${tcc.document}`
-          : null,
-
-        monography: tcc.monography
-          ? `${process.env.API_PATH}${tcc.monography}`
-          : null,
-
-        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
-
-        image: tcc.image
-          ? `${process.env.API_PATH}${tcc.image}`
-          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
-
-        supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
-        supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
-
-        group_id: tcc.group_id ? tcc.group_id._id : null,
-        students: tcc.group_id ? tcc.group_id.students : null,
-
-        course_id: tcc.course_id ? tcc.course_id._id : null,
-        course: tcc.course_id ? tcc.course_id.name : null,
-
-        date: new Date(tcc.date).getFullYear().toString(),
-      })));
-    })
+  Tcc.allFilter(filter)
     .then((resolve) => {
+      if (resolve.length == 0) {
+        const arr = {
+          status: "ERROR",
+          message: "Nenhum projeto foi encontrado!",
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
-        message: "TCC's recuperados com sucesso!",
+        message: "Projetos recuperados com sucesso!",
         data: resolve,
       };
       return response.status(200).send(arr);
@@ -49,7 +27,7 @@ module.exports = async (request, response) => {
     .catch((reject) => {
       const arr = {
         status: "ERROR",
-        message: "Ocorreu um erro ao recuperar os TCC's!",
+        message: "Ocorreu um erro ao recuperar os projetos!",
         data: reject,
       };
       return response.status(500).send(arr);

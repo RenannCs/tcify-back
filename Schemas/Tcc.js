@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { BSON } = require("mongodb");
 const tccSchema = new mongoose.Schema(
   {
     title: {
@@ -59,54 +59,93 @@ const tccSchema = new mongoose.Schema(
   },
   {
     statics: {
-      single(id) {
-        return this.findById(id)
-          .populate({
-            path: "group_id",
-            model: "Group",
-            select: "students",
-            populate: {
-              path: "students",
-              model: "User",
-              select: [
-                "name",
-                "email",
-                "link",
-                "image",
-                "course_id",
-                "register",
-              ],
+      async single(_id) {
+        try {
+          const tcc = await this.findById(_id)
+            .populate({
+              path: "group_id",
+              model: "Group",
+              select: "students",
               populate: {
-                path: "course_id",
-                model: "Course",
+                path: "students",
+                model: "User",
+                select: [
+                  "name",
+                  "register",
+                  "email",
+                  "link",
+                  "linkedin",
+                  "image",
+                ],
+              },
+            })
+            .populate({
+              path: "group_id",
+              model: "Group",
+              select: "leader_id",
+              populate: {
+                path: "leader_id",
+                model: "User",
                 select: "name",
               },
-            },
-          })
-          .populate({
-            path: "group_id",
-            model: "Group",
-            select: "leader_id",
-            populate: {
-              path: "leader_id",
+            })
+            .populate({
+              path: "course_id",
+              model: "Course",
+              select: "name",
+            })
+            .populate({
+              path: "supervisor_id",
               model: "User",
               select: "name",
-            },
-          })
-          .populate({
-            path: "course_id",
-            model: "Course",
-            select: "name",
-          })
-          .populate({
-            path: "supervisor_id",
-            model: "User",
-            select: "name",
-          })
-          .exec();
+            })
+            .exec();
+          if (tcc == null) {
+            return null;
+          }
+          return {
+            _id: tcc.id,
+
+            title: tcc.title ? tcc.title : null,
+            summary: tcc.summary ? tcc.summary : null,
+            grade: tcc.grade,
+
+            status: tcc.status ? tcc.status : null,
+
+            document: tcc.document
+              ? `${process.env.API_PATH}${tcc.document}`
+              : null,
+
+            monography: tcc.monography
+              ? `${process.env.API_PATH}${tcc.monography}`
+              : null,
+
+            zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+            image: tcc.image
+              ? `${process.env.API_PATH}${tcc.image}`
+              : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+            supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
+            supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
+
+            group_id: tcc.group_id ? tcc.group_id._id : null,
+            students: tcc.group_id ? tcc.group_id.students : null,
+
+            course_id: tcc.course_id ? tcc.course_id._id : null,
+            course: tcc.course_id ? tcc.course_id.name : null,
+
+            date: new Date(tcc.date).getFullYear().toString(),
+          };
+        } catch (error) {
+          if (error.name = "CastError") {
+            return null;
+          }
+          throw error;
+        }
       },
-      all() {
-        return this.find({})
+      async all() {
+        const tccs = await this.find({})
           .populate({
             path: "group_id",
             model: "Group",
@@ -145,9 +184,44 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return tccs.map((tcc) => ({
+          _id: tcc.id,
+
+          title: tcc.title ? tcc.title : null,
+          summary: tcc.summary ? tcc.summary : null,
+          grade: tcc.grade,
+
+          status: tcc.status ? tcc.status : null,
+
+          document: tcc.document
+            ? `${process.env.API_PATH}${tcc.document}`
+            : null,
+
+          monography: tcc.monography
+            ? `${process.env.API_PATH}${tcc.monography}`
+            : null,
+
+          zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+          image: tcc.image
+            ? `${process.env.API_PATH}${tcc.image}`
+            : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+          supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
+          supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
+
+          group_id: tcc.group_id ? tcc.group_id._id : null,
+          students: tcc.group_id ? tcc.group_id.students : null,
+
+          course_id: tcc.course_id ? tcc.course_id._id : null,
+          course: tcc.course_id ? tcc.course_id.name : null,
+
+          date: new Date(tcc.date).getFullYear().toString(),
+        }));
       },
-      allFilter(filter) {
-        return this.find(filter)
+      async allFilter(filter) {
+        const tccs = await this.find(filter)
           .populate({
             path: "group_id",
             model: "Group",
@@ -186,6 +260,41 @@ const tccSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return tccs.map((tcc) => ({
+          _id: tcc.id,
+
+          title: tcc.title ? tcc.title : null,
+          summary: tcc.summary ? tcc.summary : null,
+          grade: tcc.grade,
+
+          status: tcc.status ? tcc.status : null,
+
+          document: tcc.document
+            ? `${process.env.API_PATH}${tcc.document}`
+            : null,
+
+          monography: tcc.monography
+            ? `${process.env.API_PATH}${tcc.monography}`
+            : null,
+
+          zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
+
+          image: tcc.image
+            ? `${process.env.API_PATH}${tcc.image}`
+            : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
+
+          supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
+          supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
+
+          group_id: tcc.group_id ? tcc.group_id._id : null,
+          students: tcc.group_id ? tcc.group_id.students : null,
+
+          course_id: tcc.course_id ? tcc.course_id._id : null,
+          course: tcc.course_id ? tcc.course_id.name : null,
+
+          date: new Date(tcc.date).getFullYear().toString(),
+        }));
       },
       existsByGroup(id) {
         return this.exists({ group_id: id }).exec();
@@ -199,7 +308,15 @@ const tccSchema = new mongoose.Schema(
             populate: {
               path: "students",
               model: "User",
-              select: ["name", "email", "link", "linkedin", "image" , , "register"],
+              select: [
+                "name",
+                "email",
+                "link",
+                "linkedin",
+                "image",
+                ,
+                "register",
+              ],
             },
           })
           .populate({

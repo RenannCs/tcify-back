@@ -127,44 +127,8 @@ module.exports = async (request, response) => {
 
   tcc
     .save()
-    .then((data) => {
-      return Tcc.single(data.id);
-    })
-    .then((tcc) => {
-      return (dataFormat = {
-        _id: tcc.id,
-
-        title: tcc.title ? tcc.title : null,
-        summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade ? tcc.grade : null,
-
-        status: tcc.status ? tcc.status : null,
-
-        document: tcc.document
-          ? `${process.env.API_PATH}${tcc.document}`
-          : null,
-
-        monography: tcc.monography
-          ? `${process.env.API_PATH}${tcc.monography}`
-          : null,
-
-        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
-
-        image: tcc.image
-          ? `${process.env.API_PATH}${tcc.image}`
-          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
-
-        supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
-        supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
-
-        group_id: tcc.group_id ? tcc.group_id._id : null,
-        students: tcc.group_id ? tcc.group_id.students : null,
-
-        course_id: tcc.course_id ? tcc.course_id._id : null,
-        course: tcc.course_id ? tcc.course_id.name : null,
-
-        date: new Date(tcc.date).getFullYear().toString(),
-      });
+    .then(async (data) => {
+      return await Tcc.single(data.id);
     })
     .then((resolve) => {
       const arr = {

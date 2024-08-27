@@ -9,30 +9,16 @@ module.exports = async (request, response) => {
   try {
     _id = request.params._id;
 
-    if ((await Group.existsByStudent(_id)) == null) {
-      const arr = {
-        status: "ERROR",
-        message: "Nenhum TCC encontrado!",
-      };
-      return response.status(404).send(arr);
-    }
     group = await Group.findByStudent(_id);
 
-    if ((await Tcc.exists({ _id: group.tcc_id })) == null) {
+    if (group == null) {
       const arr = {
         status: "ERROR",
-        message: "Nenhum TCC encontrado!",
+        message: "Nenhum projeto encontrado!",
       };
       return response.status(404).send(arr);
     }
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Aluno inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro de servidor, tente novamente mais tarde!",
@@ -42,43 +28,14 @@ module.exports = async (request, response) => {
   }
 
   Tcc.single(group.tcc_id)
-    .then((tcc) => {
-      return (dataFormat = {
-        _id: tcc.id,
-
-        title: tcc.title ? tcc.title : null,
-        summary: tcc.summary ? tcc.summary : null,
-        grade: tcc.grade ? tcc.grade : null,
-
-        status: tcc.status ? tcc.status : null,
-
-        document: tcc.document
-          ? `${process.env.API_PATH}${tcc.document}`
-          : null,
-
-        monography: tcc.monography
-          ? `${process.env.API_PATH}${tcc.monography}`
-          : null,
-
-        zip: tcc.zip ? `${process.env.API_PATH}${tcc.zip}` : null,
-
-        image: tcc.image
-          ? `${process.env.API_PATH}${tcc.image}`
-          : `${process.env.API_PATH}${process.env.TCC_PICTURE_DEFAULT}`,
-
-        supervisor: tcc.supervisor_id ? tcc.supervisor_id.name : null,
-        supervisor_id: tcc.supervisor_id ? tcc.supervisor_id._id : null,
-
-        group_id: tcc.group_id ? tcc.group_id._id : null,
-        students: tcc.group_id ? tcc.group_id.students : null,
-
-        course_id: tcc.course_id ? tcc.course_id._id : null,
-        course: tcc.course_id ? tcc.course_id.name : null,
-
-        date: new Date(tcc.date).getFullYear().toString(),
-      });
-    })
     .then((resolve) => {
+      if (resolve == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Nenhum projeto encontrado!",
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
         message: "TCC recuperados com sucesso!",

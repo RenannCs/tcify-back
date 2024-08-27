@@ -46,40 +46,7 @@ module.exports = async (request, response) => {
     .then(async (data) => {
       const aux = await Tcc.single(data);
 
-      return {
-        _id: aux.id,
-
-        title: aux.title,
-        summary: aux.summary,
-        grade: aux.grade,
-
-        status: aux.status,
-
-        document: aux.document
-          ? `${process.env.API_PATH}${aux.document}`
-          : null,
-
-        monography: aux.monography
-          ? `${process.env.API_PATH}${aux.monography}`
-          : null,
-
-        zip: aux.zip ? `${process.env.API_PATH}${aux.zip}` : null,
-
-        image: aux.image
-          ? `${process.env.API_PATH}${aux.image}`
-          : `${process.env.API_PATH}${process.env.aux_PICTURE_DEFAULT}`,
-
-        supervisor: aux.supervisor_id ? aux.supervisor_id.name : null,
-        supervisor_id: aux.supervisor_id ? aux.supervisor_id._id : null,
-
-        group_id: aux.group_id ? aux.group_id._id : null,
-        students: aux.group_id ? aux.group_id.students : null,
-
-        course_id: aux.course_id ? aux.course_id._id : null,
-        course: aux.course_id ? aux.course_id.name : null,
-
-        date: new Date(aux.date).getFullYear().toString(),
-      };
+      return aux;
     })
     .then((resolve) => {
       const arr = {
