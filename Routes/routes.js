@@ -43,6 +43,7 @@ module.exports = function (app) {
           image: request.userLogged.image,
           group_id: request.userLogged.group_id,
           project_id: request.userLogged.tcc_id,
+          course_id: request.userLogged.course_id,
         },
       },
     };
@@ -150,7 +151,11 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/users", tokenAdminTeacher, require("../Control/User/all"));
+  app.get(
+    "/repository/users",
+    tokenAdminTeacher,
+    require("../Control/User/all")
+  );
 
   app.get(
     "/repository/users/administrator",
