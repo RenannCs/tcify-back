@@ -150,11 +150,11 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/users", tokenAdmin, require("../Control/User/all"));
+  app.get("/repository/users", tokenAdminTeacher, require("../Control/User/all"));
 
   app.get(
     "/repository/users/administrator",
-    tokenAdmin,
+    tokenAdminTeacher,
     require("../Control/User/allAdm")
   );
 

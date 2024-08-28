@@ -1,8 +1,18 @@
 const Group = require("../../Schemas/Group");
 
 module.exports = async (request, response) => {
-  Group.all()
+  let filter = {};
+
+  const userLogged = request.userLogged;
+  if (userLogged.user_type == "Professor") {
+    filter = { supervisor_id: userLogged._id };
+  }
+
+  Group.allFilter(filter)
     .then((data) => {
+      if (data == null) {
+        return null;
+      }
       return data.map((group) => ({
         _id: group._id,
 
@@ -25,6 +35,13 @@ module.exports = async (request, response) => {
       }));
     })
     .then((resolve) => {
+      if (resolve == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Nenhum grupo encontrado!",
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
         message: "Grupos recuperados com sucesso!",
