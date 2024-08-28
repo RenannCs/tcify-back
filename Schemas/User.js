@@ -68,8 +68,11 @@ const userSchema = new mongoose.Schema(
   },
   {
     statics: {
-      async validateTokenId(id) {
-        const resp = await this.exists({ _id: new ObjectId(id) }).exec();
+      async validateTokenId(_id) {
+        if (!ObjectId.isValid(_id)) {
+          return null;
+        }
+        const resp = await this.exists({ _id: new ObjectId(_id) }).exec();
         if (resp == null) {
           return false;
         }
@@ -79,6 +82,9 @@ const userSchema = new mongoose.Schema(
         return ["Professor", "Administrador"].includes(type);
       },
       async single(_id) {
+        if (!ObjectId.isValid(_id)) {
+          return null;
+        }
         const user = await this.findById(_id)
           .populate({
             path: "course_id",
@@ -90,7 +96,7 @@ const userSchema = new mongoose.Schema(
         if (user == null) {
           return null;
         }
-        
+
         return {
           _id: user._id,
           register: user.register,
@@ -152,15 +158,15 @@ const userSchema = new mongoose.Schema(
           })
           .exec();
       },
-      async allFilter(filter) {
-        const users = await this.find(filter)
+      async allFilter(query) {
+        const users = await this.find(query)
           .populate({
             path: "course_id",
             model: "Course",
             select: "name",
           })
           .exec();
-
+          
         return users.map((user) => ({
           _id: user._id,
           register: user.register,
@@ -182,8 +188,8 @@ const userSchema = new mongoose.Schema(
           status: user.status,
         }));
       },
-      allFilterFields(filter, fields) {
-        return this.find(filter)
+      allFilterFields(query, fields) {
+        return this.find(query)
           .select(fields)
           .populate({
             path: "course_id",

@@ -1,14 +1,14 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  let filter = {};
+  let query = {};
   const userLogged = request.userLogged;
 
   if (userLogged.user_type == "Professor") {
-    filter = { supervisor_id: userLogged._id };
+    query = { supervisor_id: userLogged._id };
   }
 
-  Tcc.allFilter(filter)
+  Tcc.allFilter(query)
     .then((resolve) => {
       if (resolve.length == 0) {
         const arr = {

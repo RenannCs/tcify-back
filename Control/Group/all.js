@@ -1,14 +1,14 @@
 const Group = require("../../Schemas/Group");
 
 module.exports = async (request, response) => {
-  let filter = {};
+  let query = {};
 
   const userLogged = request.userLogged;
   if (userLogged.user_type == "Professor") {
-    filter = { supervisor_id: userLogged._id };
+    query = { supervisor_id: userLogged._id };
   }
 
-  Group.allFilter(filter)
+  Group.allFilter(query)
     .then((data) => {
       if (data == null) {
         return null;

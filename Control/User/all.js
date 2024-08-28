@@ -1,14 +1,21 @@
 const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
-  let filter = {};
+  let query = {};
   const userLogged = request.userLogged;
   if (userLogged.user_type == "Professor") {
-    filter = { course_id: userLogged.course_id };
+    query = { course_id: userLogged.course_id };
   }
-  
-  User.allFilter(filter)
+
+  User.allFilter(query)
     .then((resolve) => {
+      if (resolve.length == 0) {
+        const arr = {
+          status: "ERROR",
+          message: "Nenhum usuário encontrado!",
+        };
+        return response.status(404).send(arr);
+      }
       const arr = {
         status: "SUCCESS",
         message: "Dados recuperados com sucesso",
