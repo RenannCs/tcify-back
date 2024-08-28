@@ -4,33 +4,6 @@ module.exports = async (request, response) => {
   const _id = request.params._id;
 
   User.single(_id)
-    .then((data) => {
-      if (data == null) {
-        return null;
-      }
-
-      return {
-        _id: data.id,
-        name: data.name,
-        register: data.register,
-        email: data.email,
-
-        course_id: data.course_id ? data.course_id._id : "N/A",
-        course: data.course_id ? data.course_id.name : "N/A",
-
-        link: data.link,
-        linkedin: data.linkedin,
-
-        phone_number: data.phone_number,
-        user_type: data.user_type,
-
-        image: data.image
-          ? `${process.env.API_PATH}${data.image}`
-          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-        status: data.status,
-      };
-    })
     .then((resolve) => {
       if (resolve == null) {
         const arr = {

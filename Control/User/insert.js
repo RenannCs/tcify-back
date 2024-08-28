@@ -72,28 +72,7 @@ module.exports = async (request, response) => {
     .save()
     .then(async (result) => {
       let aux = await User.single(result._id);
-      return {
-        _id: aux._id,
-
-        name: aux.name,
-
-        course_id: aux.course_id ? aux.course_id._id : null,
-        course: aux.course_id ? aux.course_id.name : null,
-
-        register: aux.register,
-        email: aux.email,
-        password: aux.password,
-
-        phone_number: aux.phone_number,
-        link: aux.link,
-
-        user_type: aux.user_type,
-
-        image: `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-        status: aux.status,
-        date: aux.date,
-      };
+      return aux;
     })
     .then((data) => {
       const arr = {

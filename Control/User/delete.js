@@ -6,14 +6,10 @@ module.exports = async (request, response) => {
   const _id = request.params._id;
 
   try {
-    const JwtToken = new ModelJwtToken();
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    const token_id = tokenValidationResult.decoded.payload._id;
+    const userLogged = request.userLogged;
 
     //Verificar se os ids são iguais (usuario e adm/professor)
-    if (token_id == _id) {
+    if (userLogged._id == _id) {
       const arr = {
         status: "ERROR",
         message: "Você não pode excluir a si mesmo!",

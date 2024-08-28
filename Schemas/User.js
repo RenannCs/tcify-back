@@ -78,23 +78,69 @@ const userSchema = new mongoose.Schema(
       validatePermission(type) {
         return ["Professor", "Administrador"].includes(type);
       },
-      single(id) {
-        return this.findById(id)
+      async single(_id) {
+        const user = await this.findById(_id)
           .populate({
             path: "course_id",
             model: "Course",
             select: "name",
           })
           .exec();
+
+        if (user == null) {
+          return null;
+        }
+        
+        return {
+          _id: user._id,
+          register: user.register,
+          name: user.name,
+
+          course_id: user.course_id ? user.course_id._id : "N/A",
+          course: user.course_id ? user.course_id.name : "N/A",
+
+          email: user.email,
+          phone_number: user.phone_number,
+
+          link: user.link,
+          image: user.image
+            ? `${process.env.API_PATH}${user.image}`
+            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+          user_type: user.user_type,
+
+          status: user.status,
+        };
       },
-      all() {
-        return this.find({})
+      async all() {
+        const users = await this.find({})
           .populate({
             path: "course_id",
             model: "Course",
             select: "name",
           })
           .exec();
+
+        return users.map((user) => ({
+          _id: user._id,
+          register: user.register,
+          name: user.name,
+
+          course_id: user.course_id ? user.course_id._id : "N/A",
+          course: user.course_id ? user.course_id.name : "N/A",
+
+          email: user.email,
+          phone_number: user.phone_number,
+
+          link: user.link,
+          image: user.image
+            ? `${process.env.API_PATH}${user.image}`
+            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+          user_type: user.user_type,
+
+          status: user.status,
+        }));
       },
       allFields(fields) {
         return this.find({})
@@ -106,14 +152,35 @@ const userSchema = new mongoose.Schema(
           })
           .exec();
       },
-      allFilter(filter) {
-        return this.find(filter)
+      async allFilter(filter) {
+        const users = await this.find(filter)
           .populate({
             path: "course_id",
             model: "Course",
             select: "name",
           })
           .exec();
+
+        return users.map((user) => ({
+          _id: user._id,
+          register: user.register,
+          name: user.name,
+
+          course_id: user.course_id ? user.course_id._id : "N/A",
+          course: user.course_id ? user.course_id.name : "N/A",
+
+          email: user.email,
+          phone_number: user.phone_number,
+
+          link: user.link,
+          image: user.image
+            ? `${process.env.API_PATH}${user.image}`
+            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+          user_type: user.user_type,
+
+          status: user.status,
+        }));
       },
       allFilterFields(filter, fields) {
         return this.find(filter)
