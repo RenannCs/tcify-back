@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("./User");
 const Tcc = require("./Tcc");
 const Course = require("./Course");
+const { ObjectId } = require("mongodb");
 const groupSchema = new mongoose.Schema(
   {
     title: {
@@ -68,8 +69,11 @@ const groupSchema = new mongoose.Schema(
 
   {
     statics: {
-      single(id) {
-        return this.findById(id)
+      async single(_id) {
+        if (!ObjectId.isValid(_id)) {
+          return null;
+        }
+        const group = await this.findById(_id)
           .populate({
             path: "students",
             model: "User",
@@ -95,9 +99,30 @@ const groupSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return {
+          _id: group._id,
+
+          title: group.title ? group.title : null,
+
+          students: group.students,
+
+          course_id: group.course_id ? group.course_id._id : null,
+          course: group.course_id ? group.course_id.name : null,
+
+          supervisor: group.supervisor_id ? group.supervisor_id.name : null,
+          supervisor_id: group.supervisor_id ? group.supervisor_id._id : null,
+
+          project: group.tcc_id ? group.tcc_id : null,
+
+          leader: group.leader_id ? group.leader_id.name : null,
+          leader_id: group.leader_id ? group.leader_id._id : null,
+
+          status: group.status ? group.status : null,
+        };
       },
-      allFilter(filter) {
-        return this.find(filter)
+      async all() {
+        const groups = await this.find()
           .populate({
             path: "students",
             model: "User",
@@ -123,9 +148,30 @@ const groupSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return groups.map((group) => ({
+          _id: group._id,
+
+          title: group.title,
+
+          students: group.students,
+
+          course_id: group.course_id ? group.course_id._id : null,
+          course: group.course_id ? group.course_id.name : null,
+
+          supervisor: group.supervisor_id ? group.supervisor_id.name : null,
+          supervisor_id: group.supervisor_id ? group.supervisor_id._id : null,
+
+          project: group.tcc_id ? group.tcc_id : null,
+
+          leader: group.leader_id ? group.leader_id.name : null,
+          leader_id: group.leader_id ? group.leader_id._id : null,
+
+          status: group.status,
+        }));
       },
-      all() {
-        return this.find()
+      async allFilter(query) {
+        const groups = await this.find(query)
           .populate({
             path: "students",
             model: "User",
@@ -151,12 +197,34 @@ const groupSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return groups.map((group) => ({
+          _id: group._id,
+
+          title: group.title,
+
+          students: group.students,
+
+          course_id: group.course_id ? group.course_id._id : null,
+          course: group.course_id ? group.course_id.name : null,
+
+          supervisor: group.supervisor_id ? group.supervisor_id.name : null,
+          supervisor_id: group.supervisor_id ? group.supervisor_id._id : null,
+
+          project: group.tcc_id ? group.tcc_id : null,
+
+          leader: group.leader_id ? group.leader_id.name : null,
+          leader_id: group.leader_id ? group.leader_id._id : null,
+
+          status: group.status,
+        }));
       },
-      existsByStudent(id) {
-        return this.exists({ students: id }).exec();
+
+      existsByStudent(_id) {
+        return this.exists({ students: _id }).exec();
       },
-      findByStudent(id) {
-        return this.findOne({ students: id })
+      async findByStudent(_id) {
+        const groups = await this.find({students: _id})
           .populate({
             path: "students",
             model: "User",
@@ -182,6 +250,27 @@ const groupSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+
+        return groups.map((group) => ({
+          _id: group._id,
+
+          title: group.title,
+
+          students: group.students,
+
+          course_id: group.course_id ? group.course_id._id : null,
+          course: group.course_id ? group.course_id.name : null,
+
+          supervisor: group.supervisor_id ? group.supervisor_id.name : null,
+          supervisor_id: group.supervisor_id ? group.supervisor_id._id : null,
+
+          project: group.tcc_id ? group.tcc_id : null,
+
+          leader: group.leader_id ? group.leader_id.name : null,
+          leader_id: group.leader_id ? group.leader_id._id : null,
+
+          status: group.status,
+        }));
       },
     },
   }

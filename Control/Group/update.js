@@ -112,26 +112,7 @@ module.exports = async (request, response) => {
     .save()
     .then(async (group) => {
       const data = await Group.single(group.id);
-      return (format = {
-        _id: data._id,
-
-        title: data.title,
-
-        students: data.students,
-
-        course_id: data.course_id ? data.course_id._id : null,
-        course: data.course_id ? data.course_id.name : null,
-
-        supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
-        supervisor: data.supervisor_id ? data.supervisor_id.name : null,
-
-        project: data.tcc_id ? data.tcc_id : null,
-
-        leader: data.leader_id ? data.leader_id.name : null,
-        leader_id: data.leader_id ? data.leader_id._id : null,
-
-        status: data.status,
-      });
+      return data;
     })
     .then((resolve) => {
       const arr = {
@@ -168,6 +149,7 @@ module.exports = async (request, response) => {
           const arr = {
             status: "ERROR",
             message: "TCC não encontrado!",
+            data: reject
           };
           return response.status(404).send(arr);
         }

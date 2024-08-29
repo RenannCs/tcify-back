@@ -12,34 +12,12 @@ module.exports = async (request, response) => {
   let _id;
   let register;
   try {
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
-
-    const token_status = tokenValidationResult.status;
-
-    if (token_status) {
-      const token_id = tokenValidationResult.decoded.payload._id;
-      const token_user_type = tokenValidationResult.decoded.payload.user_type;
-
-      if ((await User.validateTokenId(token_id)) == false) {
-        const arr = {
-          status: "ERROR",
-          message: "Operação negada devido as permissões do usuário!",
-        };
-        return response.status(403).send(arr);
-      }
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Token de validação inválido!",
-      };
-      return response.status(403).send(arr);
-    }
-
     _id = request.body._id;
     register = request.body.register;
 
-    if ((await Group.exists({ _id: new ObjectId(_id) }).exec()) == null) {
+    const group = await Group.findById(_id).exec();
+
+    if (group == null) {
       const arr = {
         status: "ERROR",
         message: "Grupo não existe!",
@@ -47,16 +25,15 @@ module.exports = async (request, response) => {
       return response.status(404).send(arr);
     }
 
-    if ((await User.exists({ register: register }).exec()) == null) {
+    const student = await User.findOne({ register: register }).exec();
+
+    if (student == null) {
       const arr = {
         status: "ERROR",
         message: "Usuário não existe!",
       };
       return response.status(404).send(arr);
     }
-
-    const student = await User.findOne({ register: register }).exec();
-    const group = await Group.findById(_id).exec();
 
     if (group.students.length == 1 || group.leader_id == student.id) {
       try {
@@ -87,12 +64,9 @@ module.exports = async (request, response) => {
       return response.status(400).send(arr);
     }
     let newStudents = [];
-    let ver = false;
     for (let _student of group.students) {
       if (_student != student.id) {
         newStudents.push(_student);
-      } else {
-        ver = true;
       }
     }
 
@@ -101,41 +75,14 @@ module.exports = async (request, response) => {
     await group.save();
 
     const data = await Group.single(group.id);
-    const format = {
-      _id: data._id,
-
-      title: data.title ? data.title : null,
-
-      students: data.students,
-
-      course_id: data.course_id ? data.course_id._id : null,
-      course: data.course_id ? data.course_id.name : null,
-
-      supervisor: data.supervisor_id ? data.supervisor_id.name : null,
-      supervisor_id: data.supervisor_id ? data.supervisor_id._id : null,
-
-      project: data.tcc_id ? data.tcc_id : null,
-
-      leader: data.leader_id ? data.leader_id.name : null,
-      leader_id: data.leader_id ? data.leader_id._id : null,
-
-      status: data.status ? data.status : null,
-    };
 
     const arr = {
       status: "SUCCESS",
       message: "Aluno excluído com sucesso!",
-      data: format,
+      data: data,
     };
     return response.status(200).send(arr);
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Grupo inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro do servidor, tente novamente mais tarde!",

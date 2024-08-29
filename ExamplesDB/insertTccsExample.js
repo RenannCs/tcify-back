@@ -151,6 +151,6 @@ data.map((_tcc) => {
   tcc.status = _tcc.status;
   tcc.group_id = _tcc.group_id.$oid;
   tcc.course_id = _tcc.course_id.$oid;
-  tcc.supervisor = _tcc.supervisor.$oid;
+  tcc.supervisor = _tcc.supervisor_id.$oid;
   tcc.save();
 });

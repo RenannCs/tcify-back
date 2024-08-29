@@ -20,41 +20,72 @@ module.exports = async (request, response) => {
     }
     user_id = request.body.user_id;
     group_id = request.body.group_id;
-
-    if ((await User.exists({ _id: new ObjectId(user_id) }).exec()) == null) {
+    if (!ObjectId.isValid(user_id) || !ObjectId.isValid(group_id)) {
       const arr = {
         status: "ERROR",
-        message: "Aluno não existe!",
+        message: "Dados inválidos!",
       };
-      return response.status(404).send(arr);
+      return response.status(400).send(arr);
     }
+    // if ((await User.exists({ _id: new ObjectId(user_id) }).exec()) == null) {
+    //   const arr = {
+    //     status: "ERROR",
+    //     message: "Aluno não existe!",
+    //   };
+    //   return response.status(404).send(arr);
+    // }
 
-    if ((await Group.exists({ _id: new ObjectId(group_id) }).exec()) == null) {
+    // if ((await Group.exists({ _id: new ObjectId(group_id) }).exec()) == null) {
+    //   const arr = {
+    //     status: "ERROR",
+    //     message: "Grupo não encontrado!",
+    //   };
+    //   return response.status(404).send(arr);
+    // }
+    // if ((await Group.existsByStudent(user_id)) != null) {
+    //   const arr = {
+    //     status: "ERROR",
+    //     message: "Usuário já possui grupo!",
+    //   };
+    //   return response.status(404).send(arr);
+    // }
+
+    if ((await Group.existsByStudent(user_id)) != null) {
+      const arr = {
+        status: "ERROR",
+        message: "Aluno já possui grupo!",
+      };
+      return response.status(409).send(arr);
+    }
+    const group = await Group.findById(group_id);
+    if (group == null) {
       const arr = {
         status: "ERROR",
         message: "Grupo não encontrado!",
       };
       return response.status(404).send(arr);
     }
-    if ((await Group.existsByStudent(user_id)) != null) {
+
+    const user = await User.findById(user_id);
+    if (user == null) {
       const arr = {
         status: "ERROR",
-        message: "Usuário já possui grupo!",
+        message: "Usuário não encontrado!",
       };
       return response.status(404).send(arr);
     }
 
     if (accept == true) {
-      const group = await Group.findById(group_id);
       let students = group.students;
       students.push(new ObjectId(user_id));
       group.students = students;
 
       const resp = await group.save();
+      const data = await Group.single(group_id);
       const arr = {
         status: "SUCCESS",
         message: "Usuário inserido no grupo com sucesso!",
-        data: resp,
+        data: data,
       };
       return response.status(200).send(arr);
     } else {
@@ -65,13 +96,6 @@ module.exports = async (request, response) => {
       return response.status(400).send(arr);
     }
   } catch (error) {
-    if (error instanceof BSON.BSONError) {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário inválido!",
-      };
-      return response.status(400).send(arr);
-    }
     const arr = {
       status: "ERROR",
       message: "Erro do servidor, tente novamente mais tarde!",
