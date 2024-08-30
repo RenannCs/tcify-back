@@ -1,6 +1,7 @@
 const md5 = require("md5");
 const mongoose = require("mongoose");
 const Course = require("../Schemas/Course");
+const Group = require("../Schemas/Group");
 const { ObjectId } = require("mongodb");
 const userSchema = new mongoose.Schema(
   {
@@ -12,6 +13,7 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Course",
       validate: async (_id) => {
+        const Course = require("./Course");
         if (_id) {
           if ((await Course.findById(_id)) == null) {
             throw new Error("Curso não existe!");
@@ -82,6 +84,8 @@ const userSchema = new mongoose.Schema(
         return ["Professor", "Administrador"].includes(type);
       },
       async single(_id) {
+        const Group = require("./Group");
+
         if (!ObjectId.isValid(_id)) {
           return null;
         }
@@ -96,6 +100,12 @@ const userSchema = new mongoose.Schema(
         if (user == null) {
           return null;
         }
+        const group = await Group.findByStudent(_id);
+        let project_id = null;
+
+        if (group != null) {
+          project_id = group.project ? group.project._id : null;
+        }
 
         return {
           _id: user._id,
@@ -104,6 +114,9 @@ const userSchema = new mongoose.Schema(
 
           course_id: user.course_id ? user.course_id._id : "N/A",
           course: user.course_id ? user.course_id.name : "N/A",
+
+          group_id: group ? group._id : null,
+          project_id: project_id,
 
           email: user.email,
           phone_number: user.phone_number,
@@ -119,6 +132,8 @@ const userSchema = new mongoose.Schema(
         };
       },
       async all() {
+        const Group = require("./Group");
+
         const users = await this.find({})
           .populate({
             path: "course_id",
@@ -126,39 +141,43 @@ const userSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
+        const data = [];
 
-        return users.map((user) => ({
-          _id: user._id,
-          register: user.register,
-          name: user.name,
+        for (let user of users) {
+          let group = await Group.findOne({ students: user._id });
+          let project_id = null;
+          if (group != null) {
+            project_id = group.tcc_id ? group.tcc_id : null;
+          }
 
-          course_id: user.course_id ? user.course_id._id : "N/A",
-          course: user.course_id ? user.course_id.name : "N/A",
+          data.push({
+            _id: user._id,
+            register: user.register,
+            name: user.name,
 
-          email: user.email,
-          phone_number: user.phone_number,
+            course_id: user.course_id ? user.course_id._id : "N/A",
+            course: user.course_id ? user.course_id.name : "N/A",
 
-          link: user.link,
-          image: user.image
-            ? `${process.env.API_PATH}${user.image}`
-            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+            group_id: group ? group._id : null,
+            project_id: project_id,
 
-          user_type: user.user_type,
+            email: user.email,
+            phone_number: user.phone_number,
 
-          status: user.status,
-        }));
-      },
-      allFields(fields) {
-        return this.find({})
-          .select(fields)
-          .populate({
-            path: "course_id",
-            model: "Course",
-            select: "name",
-          })
-          .exec();
+            link: user.link,
+            image: user.image
+              ? `${process.env.API_PATH}${user.image}`
+              : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+            user_type: user.user_type,
+
+            status: user.status,
+          });
+        }
+        return data;
       },
       async allFilter(query) {
+        const Group = require("./Group")
         const users = await this.find(query)
           .populate({
             path: "course_id",
@@ -166,37 +185,40 @@ const userSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
-          
-        return users.map((user) => ({
-          _id: user._id,
-          register: user.register,
-          name: user.name,
+        const data = [];
 
-          course_id: user.course_id ? user.course_id._id : "N/A",
-          course: user.course_id ? user.course_id.name : "N/A",
+        for (let user of users) {
+          let group = await Group.findOne({ students: user._id });
+          let project_id = null;
+          if (group != null) {
+            project_id = group.tcc_id ? group.tcc_id : null;
+          }
 
-          email: user.email,
-          phone_number: user.phone_number,
+          data.push({
+            _id: user._id,
+            register: user.register,
+            name: user.name,
 
-          link: user.link,
-          image: user.image
-            ? `${process.env.API_PATH}${user.image}`
-            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+            course_id: user.course_id ? user.course_id._id : "N/A",
+            course: user.course_id ? user.course_id.name : "N/A",
 
-          user_type: user.user_type,
+            group_id: group ? group._id : null,
+            project_id: project_id,
 
-          status: user.status,
-        }));
-      },
-      allFilterFields(query, fields) {
-        return this.find(query)
-          .select(fields)
-          .populate({
-            path: "course_id",
-            model: "Course",
-            select: "name",
-          })
-          .exec();
+            email: user.email,
+            phone_number: user.phone_number,
+
+            link: user.link,
+            image: user.image
+              ? `${process.env.API_PATH}${user.image}`
+              : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+            user_type: user.user_type,
+
+            status: user.status,
+          });
+        }
+        return data;
       },
       login(user, password) {
         const newPassword = md5(password);

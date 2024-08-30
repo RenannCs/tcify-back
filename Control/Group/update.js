@@ -128,6 +128,7 @@ module.exports = async (request, response) => {
           const arr = {
             status: "ERROR",
             message: "Professor não encontrado!",
+            data: reject
           };
           return response.status(404).send(arr);
         }

@@ -29,6 +29,8 @@ const groupSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
       validate: async (_id) => {
+        const User = require("../Schemas/User");
+
         if (
           (await User.exists({
             $and: [{ _id: _id }, { user_type: "Professor" }],
@@ -43,6 +45,7 @@ const groupSchema = new mongoose.Schema(
       ref: "TCC",
       default: null,
       validate: async (_id) => {
+        const Tcc = require("./Tcc");
         if (_id) {
           if ((await Tcc.findById(_id)) == null) {
             throw new Error("TCC não existe!");
@@ -54,6 +57,8 @@ const groupSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
       validate: async (_id) => {
+        const User = require("../Schemas/User");
+
         if (_id) {
           if ((await User.findById(_id)) == null) {
             throw new Error("Líder não existe!");
@@ -99,7 +104,9 @@ const groupSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
-
+        if (group == null) {
+          return null;
+        }
         return {
           _id: group._id,
 
@@ -224,7 +231,7 @@ const groupSchema = new mongoose.Schema(
         return this.exists({ students: _id }).exec();
       },
       async findByStudent(_id) {
-        const groups = await this.find({students: _id})
+        const group = await this.findOne({ students: _id })
           .populate({
             path: "students",
             model: "User",
@@ -251,10 +258,14 @@ const groupSchema = new mongoose.Schema(
           })
           .exec();
 
-        return groups.map((group) => ({
+        if (group == null) {
+          return null;
+        }
+
+        return {
           _id: group._id,
 
-          title: group.title,
+          title: group.title ? group.title : null,
 
           students: group.students,
 
@@ -269,8 +280,8 @@ const groupSchema = new mongoose.Schema(
           leader: group.leader_id ? group.leader_id.name : null,
           leader_id: group.leader_id ? group.leader_id._id : null,
 
-          status: group.status,
-        }));
+          status: group.status ? group.status : null,
+        };
       },
     },
   }

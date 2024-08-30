@@ -30,21 +30,12 @@ module.exports = function (app) {
 
   /* ************** Autenticação de Token ********************* */
 
-  app.post("/repository/users/auth", token, (request, response) => {
+  app.post("/repository/users/auth", token, (request, response) => {    
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
       data: {
-        user: {
-          _id: request.userLogged._id,
-          name: request.userLogged.name,
-          register: request.userLogged.register,
-          user_type: request.userLogged.user_type,
-          image: request.userLogged.image,
-          group_id: request.userLogged.group_id,
-          project_id: request.userLogged.tcc_id,
-          course_id: request.userLogged.course_id,
-        },
+        user: request.userLogged,
       },
     };
     return response.status(200).send(arr);
