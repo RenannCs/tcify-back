@@ -5,9 +5,11 @@ module.exports = async (request, response) => {
   const userLogged = request.userLogged;
   if (userLogged.user_type == "Professor") {
     query = { course_id: userLogged.course_id };
+  }else if (userLogged.user_type == "Estudante"){
+    query = {$and: [{course_id: userLogged.course_id}, {user_type: "Professor"}]}
   }
 
-  User.allFilter(query)
+  User.allFilter(query) 
     .then((resolve) => {
       if (resolve.length == 0) {
         const arr = {

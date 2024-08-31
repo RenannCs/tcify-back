@@ -48,7 +48,9 @@ module.exports = async (request, response) => {
     if (course_id) {
       user.course_id = course_id;
     }
-
+    if (course_id == "" || course_id == "N/A") {
+      user.course_id = null;
+    }
     if (register != undefined) {
       user.register = register;
     }

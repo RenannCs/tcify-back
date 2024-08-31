@@ -144,7 +144,7 @@ module.exports = function (app) {
 
   app.get(
     "/repository/users",
-    tokenAdminTeacher,
+    token,
     require("../Control/User/all")
   );
 
@@ -330,7 +330,7 @@ module.exports = function (app) {
   /* ************* PUT  ********** */
   app.put(
     "/repository/groups/:_id",
-    tokenAdminTeacher,
+    token,
     require("../Control/Group/update")
   );
 };

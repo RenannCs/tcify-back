@@ -177,7 +177,7 @@ const userSchema = new mongoose.Schema(
         return data;
       },
       async allFilter(query) {
-        const Group = require("./Group")
+        const Group = require("./Group");
         const users = await this.find(query)
           .populate({
             path: "course_id",
@@ -188,35 +188,63 @@ const userSchema = new mongoose.Schema(
         const data = [];
 
         for (let user of users) {
-          let group = await Group.findOne({ students: user._id });
+          let group = null;
           let project_id = null;
-          if (group != null) {
-            project_id = group.tcc_id ? group.tcc_id : null;
+          if (user.user_type == "Estudante") {
+            group = await Group.findOne({ students: user._id });
+
+            if (group != null) {
+              project_id = group.tcc_id ? group.tcc_id : null;
+            }
+
+            data.push({
+              _id: user._id,
+              register: user.register,
+              name: user.name,
+
+              course_id: user.course_id ? user.course_id._id : "N/A",
+              course: user.course_id ? user.course_id.name : "N/A",
+
+              group_id: group ? group._id : null,
+              project_id: project_id,
+
+              email: user.email,
+              phone_number: user.phone_number,
+
+              link: user.link,
+              image: user.image
+                ? `${process.env.API_PATH}${user.image}`
+                : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+              user_type: user.user_type,
+
+              status: user.status,
+            });
+          } else {
+            data.push({
+              _id: user._id,
+              register: user.register,
+              name: user.name,
+
+              course_id: user.course_id ? user.course_id._id : "N/A",
+              course: user.course_id ? user.course_id.name : "N/A",
+
+              group_id: null,
+              project_id: null,
+
+              email: user.email,
+              phone_number: user.phone_number,
+
+              link: user.link,
+              image: user.image
+                ? `${process.env.API_PATH}${user.image}`
+                : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+              user_type: user.user_type,
+
+              status: user.status,
+            });
           }
-
-          data.push({
-            _id: user._id,
-            register: user.register,
-            name: user.name,
-
-            course_id: user.course_id ? user.course_id._id : "N/A",
-            course: user.course_id ? user.course_id.name : "N/A",
-
-            group_id: group ? group._id : null,
-            project_id: project_id,
-
-            email: user.email,
-            phone_number: user.phone_number,
-
-            link: user.link,
-            image: user.image
-              ? `${process.env.API_PATH}${user.image}`
-              : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-            user_type: user.user_type,
-
-            status: user.status,
-          });
         }
         return data;
       },
