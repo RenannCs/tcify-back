@@ -13,7 +13,7 @@ module.exports = async (request, response) => {
   const user = new User();
   let course;
 
-  try {
+  // try {
     const name = request.body.name;
     const course_id = request.body.course_id;
     const emailUser = request.body.email;
@@ -22,51 +22,48 @@ module.exports = async (request, response) => {
     const phone_number = request.body.phone_number;
     const link = request.body.link;
 
-    const strAll =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
-    let password = "";
-
-    for (let i = 0; i < 6; i++) {
-      const n = Math.floor(Math.random() * strAll.length);
-      password += strAll[n];
-    }
-
     user.name = name;
     user.course_id = course_id;
     user.email = emailUser;
-    user.password = password;
+    user.password = register;
     user.user_type = user_type;
     user.register = register;
     user.phone_number = phone_number;
     user.link = link;
     user.status = "1";
 
-    /*
+    course = await Course.findById(course_id).exec();
+    if (course == null && user_type != "Adminstrador") {
+      const arr = {
+        status: "ERROR",
+        message: "Curso não encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
+
     const email = new Email();
     email.dest = emailUser;
     email.subject = "Conectado ao repositório de TCC's da Univap Centro";
     email.message = `
-  <br><p> Parabéns ${
-    user.name
-  }! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+  <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
   <br>Seus dados:<br>
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
-  Curso: ${user_type != "Administrador" ? course.name : "Administrador"}<br>
-  Tipo de usuário: ${user_type}<br>
+  Curso: ${course.name}<br>
+  Tipo de usuário: ${user.user_type}<br>
   Email: ${user.email}<br>
-  Senha: ${password}<br>
+  Senha: ${register}<br>
   `;
 
-    email.send();*/
-  } catch (error) {
-    const arr = {
-      status: "ERROR",
-      message: "Erro do servidor, tente novamente mais tarde!",
-      data: error,
-    };
-    return response.status(500).send(arr);
-  }
+    email.send();
+  // } catch (error) {
+  //   const arr = {
+  //     status: "ERROR",
+  //     message: "Erro do servidor, tente novamente mais tarde!",
+  //     data: error,
+  //   };
+  //   return response.status(500).send(arr);
+  // }
 
   user
     .save()

@@ -100,19 +100,11 @@ module.exports = async (request, response) => {
               user.phone_number = _user["Telefone"];
               user.link = _user["Link Externo"];
               user.status = "1";
-
+              user.password = register;
+              
               if (_user["Registro"] == "") {
                 throw new Error("Registro não pode ser vazio");
               }
-
-              const strAll =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
-              let password = "";
-              for (let i = 0; i < 6; i++) {
-                const n = Math.floor(Math.random() * strAll.length);
-                password += strAll[n];
-              }
-              user.password = password;
 
               if (
                 (await User.exists({ register: _user["Registro"] }).exec()) !=
@@ -133,7 +125,7 @@ module.exports = async (request, response) => {
               ) {
                 throw new Error("Tipo de usário inválido!");
               }
-              
+
               let course;
               if (_user["Tipo de Usuário"] != "Administrador") {
                 if (
