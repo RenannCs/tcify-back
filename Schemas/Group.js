@@ -44,14 +44,6 @@ const groupSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "TCC",
       default: null,
-      validate: async (_id) => {
-        const Tcc = require("./Tcc");
-        if (_id) {
-          if ((await Tcc.findById(_id)) == null) {
-            throw new Error("TCC não existe!");
-          }
-        }
-      },
     },
     leader_id: {
       type: mongoose.Types.ObjectId,
