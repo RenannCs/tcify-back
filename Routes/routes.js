@@ -30,7 +30,7 @@ module.exports = function (app) {
 
   /* ************** Autenticação de Token ********************* */
 
-  app.post("/repository/users/auth", token, (request, response) => {    
+  app.post("/repository/users/auth", token, (request, response) => {
     const arr = {
       status: "SUCCESS",
       message: "Token validado com sucesso!",
@@ -142,11 +142,7 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get(
-    "/repository/users",
-    token,
-    require("../Control/User/all")
-  );
+  app.get("/repository/users", token, require("../Control/User/all"));
 
   app.get(
     "/repository/users/administrator",
@@ -293,6 +289,10 @@ module.exports = function (app) {
     require("../Control/Group/insertAdmin")
   );
 
+  app.post(
+    "/repository/groups/invite/:_id",
+    require("../Control/Group/inviteStudent")
+  );
   /* ************** DELETE ************** */
 
   app.delete(
@@ -328,9 +328,5 @@ module.exports = function (app) {
     require("../Control/Group/updateStatus")
   );
   /* ************* PUT  ********** */
-  app.put(
-    "/repository/groups/:_id",
-    token,
-    require("../Control/Group/update")
-  );
+  app.put("/repository/groups/:_id", token, require("../Control/Group/update"));
 };
