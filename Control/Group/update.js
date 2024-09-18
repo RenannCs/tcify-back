@@ -81,8 +81,8 @@ module.exports = async (request, response) => {
     }
 
     if (students != undefined) {
-      User.removeGroupIds(group.students);
-      User.addGroupIds(_id, students);
+      await User.removeGroupIds(group.students);
+       User.addGroupIds(_id, students);
       group.students = students;
     }
 

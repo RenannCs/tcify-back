@@ -1,7 +1,15 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  Tcc.allFilter({ status: "1" })
+
+  const title = request.body.title;
+  Tcc.allPublic(title)
+    /*.then((data) => {
+      let newTcss
+      for(let tcc of data){
+
+      }
+    })*/
     .then((resolve) => {
       const arr = {
         status: "SUCCESS",
