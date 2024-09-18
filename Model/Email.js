@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
-const { parseConnectionUrl } = require("nodemailer/lib/shared");
-
+const User = require("../Schemas/User");
+const Group = require("../Schemas/Group");
 module.exports = class Email {
   constructor(
     message = "",
@@ -127,6 +127,57 @@ module.exports = class Email {
     } catch {}
   }
 
+  static async sendGroupInvites(group_id, students) {
+    try {
+      const group = await Group.single(group_id);
+      for (let _student of students) {
+        let student = await User.findById(_student).exec();
+
+        let email = new Email();
+        email.dest = student.email;
+        email.subject = "Convite de grupo!";
+        email.message = `
+      <br><p>Você foi convidado para participar de um grupo no Repositório de TCC's da Univap Centro!</p>
+      <br>Dados do grupo:<br>
+      Título: ${group.title}<br>
+      Líder: ${group.leader}<br>
+      Para aceitar, acesse: ${
+        "http://localhost:5173/" +
+        "authorization/group/" +
+        group._id +
+        "/user/" +
+        student.id
+      }
+      `;
+        await email.send();
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  static async sendGroupAdds(group_id, students) {
+    try {
+      const group = await Group.single(group_id);
+      for (let _student of students) {
+        let student = await User.findById(_student).exec();
+
+        let email = new Email();
+        email.dest = student.email;
+        email.subject = "Adicionado à um grupo!";
+        email.message = `
+      <br><p>Você foi adicionado à um grupo por um professor no Repositório de TCC's da Univap Centro!</p>
+      <br>Dados do grupo:<br>
+      Título: ${group.title}<br>
+      Líder: ${group.leader}<br>
+      Acesse nosso site para acompanhar o seu grupo!
+      `;
+        await email.send();
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
   get message() {
     return this._message;
   }

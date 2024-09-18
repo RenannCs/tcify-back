@@ -1,6 +1,7 @@
 const { ObjectId, BSON } = require("mongodb");
 const Group = require("../../Schemas/Group");
 const Tcc = require("../../Schemas/Tcc");
+const User= require("../../Schemas/User");
 /**
  * DELETAR O TCC JUNTO
  */
@@ -23,6 +24,14 @@ module.exports = async (request, response) => {
     if (group.project != null) {
       await Tcc.findByIdAndDelete( group.project._id ).exec();
     }
+
+    let arrIds = [];
+    for(let _student of group.students){
+      arrIds.push(_student._id);
+    }
+
+    User.removeGroupIds(arrIds);
+    
   } catch (error) {
     const arr = {
       status: "ERROR",
@@ -50,4 +59,6 @@ module.exports = async (request, response) => {
       };
       return response.status(400).send(arr);
     });
+
+    
 };

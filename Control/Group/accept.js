@@ -80,6 +80,8 @@ module.exports = async (request, response) => {
       students.push(new ObjectId(user_id));
       group.students = students;
 
+      user.group_id = group_id;
+      user.save();
       const resp = await group.save();
       const data = await Group.single(group_id);
       const arr = {

@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema(
       },
       default: null,
     },
+    group_id: {
+      type: mongoose.Types.ObjectId,
+      ref: "Group",
+      default: null,
+    },
     register: {
       type: String,
       required: true,
@@ -84,8 +89,6 @@ const userSchema = new mongoose.Schema(
         return ["Professor", "Administrador"].includes(type);
       },
       async single(_id) {
-        const Group = require("./Group");
-
         if (!ObjectId.isValid(_id)) {
           return null;
         }
@@ -100,12 +103,6 @@ const userSchema = new mongoose.Schema(
         if (user == null) {
           return null;
         }
-        const group = await Group.findByStudent(_id);
-        let project_id = null;
-
-        if (group != null) {
-          project_id = group.project ? group.project._id : null;
-        }
 
         return {
           _id: user._id,
@@ -115,8 +112,7 @@ const userSchema = new mongoose.Schema(
           course_id: user.course_id ? user.course_id._id : "N/A",
           course: user.course_id ? user.course_id.name : "N/A",
 
-          group_id: group ? group._id : null,
-          project_id: project_id,
+          group_id: user.group_id,
 
           email: user.email,
           phone_number: user.phone_number,
@@ -132,8 +128,6 @@ const userSchema = new mongoose.Schema(
         };
       },
       async all() {
-        const Group = require("./Group");
-
         const users = await this.find({})
           .populate({
             path: "course_id",
@@ -141,43 +135,31 @@ const userSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
-        const data = [];
 
-        for (let user of users) {
-          let group = await Group.findOne({ students: user._id });
-          let project_id = null;
-          if (group != null) {
-            project_id = group.tcc_id ? group.tcc_id : null;
-          }
+        return users.map((user) => ({
+          _id: user._id,
+          register: user.register,
+          name: user.name,
 
-          data.push({
-            _id: user._id,
-            register: user.register,
-            name: user.name,
+          course_id: user.course_id ? user.course_id._id : "N/A",
+          course: user.course_id ? user.course_id.name : "N/A",
 
-            course_id: user.course_id ? user.course_id._id : "N/A",
-            course: user.course_id ? user.course_id.name : "N/A",
+          group_id: user.group_id,
 
-            group_id: group ? group._id : null,
-            project_id: project_id,
+          email: user.email,
+          phone_number: user.phone_number,
 
-            email: user.email,
-            phone_number: user.phone_number,
+          link: user.link,
+          image: user.image
+            ? `${process.env.API_PATH}${user.image}`
+            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
 
-            link: user.link,
-            image: user.image
-              ? `${process.env.API_PATH}${user.image}`
-              : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+          user_type: user.user_type,
 
-            user_type: user.user_type,
-
-            status: user.status,
-          });
-        }
-        return data;
+          status: user.status,
+        }));
       },
       async allFilter(query) {
-        const Group = require("./Group");
         const users = await this.find(query)
           .populate({
             path: "course_id",
@@ -185,68 +167,29 @@ const userSchema = new mongoose.Schema(
             select: "name",
           })
           .exec();
-        const data = [];
 
-        for (let user of users) {
-          let group = null;
-          let project_id = null;
-          if (user.user_type == "Estudante") {
-            group = await Group.findOne({ students: user._id });
+        return users.map((user) => ({
+          _id: user._id,
+          register: user.register,
+          name: user.name,
 
-            if (group != null) {
-              project_id = group.tcc_id ? group.tcc_id : null;
-            }
+          course_id: user.course_id ? user.course_id._id : "N/A",
+          course: user.course_id ? user.course_id.name : "N/A",
 
-            data.push({
-              _id: user._id,
-              register: user.register,
-              name: user.name,
+          group_id: user.group_id,
 
-              course_id: user.course_id ? user.course_id._id : "N/A",
-              course: user.course_id ? user.course_id.name : "N/A",
+          email: user.email,
+          phone_number: user.phone_number,
 
-              group_id: group ? group._id : null,
-              project_id: project_id,
+          link: user.link,
+          image: user.image
+            ? `${process.env.API_PATH}${user.image}`
+            : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
 
-              email: user.email,
-              phone_number: user.phone_number,
+          user_type: user.user_type,
 
-              link: user.link,
-              image: user.image
-                ? `${process.env.API_PATH}${user.image}`
-                : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-              user_type: user.user_type,
-
-              status: user.status,
-            });
-          } else {
-            data.push({
-              _id: user._id,
-              register: user.register,
-              name: user.name,
-
-              course_id: user.course_id ? user.course_id._id : "N/A",
-              course: user.course_id ? user.course_id.name : "N/A",
-
-              group_id: null,
-              project_id: null,
-
-              email: user.email,
-              phone_number: user.phone_number,
-
-              link: user.link,
-              image: user.image
-                ? `${process.env.API_PATH}${user.image}`
-                : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-              user_type: user.user_type,
-
-              status: user.status,
-            });
-          }
-        }
-        return data;
+          status: user.status,
+        }));
       },
       login(user, password) {
         const newPassword = md5(password);
@@ -255,6 +198,47 @@ const userSchema = new mongoose.Schema(
           password: newPassword,
           status: "1",
         }).exec();
+      },
+      async addGroupId(group_id, student) {
+        try {
+          const _student = await this.findById(student);
+          _student.group_id = group_id;
+          _student.save();
+        } catch (error) {
+          console.error(error.messsage);
+        }
+      },
+      async addGroupIds(group_id, students) {
+        try {
+          for (let _student of students) {
+            let student = await this.findById(_student).exec();
+            student.group_id = group_id;
+            student.save();
+          }
+        } catch (error) {
+          console.error(error.message);
+        }
+      },
+      async removeGroupId(student){
+        try{
+          const _student = await this.findById(student).exec();
+
+          _student.course_id = null;
+          _student.save();
+        }catch(error){
+          console.error(error.message)
+        }
+      },
+      async removeGroupIds(students) {
+        try {
+          for (let _student of students) {
+            let student = await this.findById(_student).exec();
+            student.group_id = null;
+            student.save();
+          }
+        } catch (error) {
+          console.error(error.message);
+        }
       },
     },
   }

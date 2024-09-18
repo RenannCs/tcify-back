@@ -1,6 +1,6 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
-const Course = require("../../Schemas/Course");
+//const Course = require("../../Schemas/Course");
 const Email = require("../../Model/Email");
 const { ObjectId, BSON } = require("mongodb");
 
@@ -20,7 +20,16 @@ module.exports = async (request, response) => {
     title = request.body.title;
     course_id = request.body.course_id;
 
-    if ((await Group.existsByStudent(leader_id)) != null) {
+    const leader = await User.findById(leader_id).exec();
+
+    if (leader == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Líder não encontrado!",
+      };
+      return response.status(404).send(arr);
+    }
+    if (leader.group_id != null) {
       const arr = {
         status: "ERROR",
         message: "Líder já possui grupo!",
@@ -29,7 +38,9 @@ module.exports = async (request, response) => {
     }
 
     for (let _student of students) {
-      if ((await User.exists({ _id: _student }).exec()) == null) {
+      const student = await User.findById(_student).exec();
+
+      if (student == null) {
         const arr = {
           status: "ERROR",
           message: "Um ou mais alunos não foram encontrados!",
@@ -37,8 +48,7 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
       }
 
-      const student = await User.findOne({ _id: _student }).exec();
-      if ((await Group.existsByStudent(student.id)) != null) {
+      if (student.group_id != null) {
         const arr = {
           status: "ERROR",
           message: "Aluno " + student.name + " já adicionado a um grupo!",
@@ -67,9 +77,11 @@ module.exports = async (request, response) => {
     .save()
     .then(async (group) => {
       const data = await Group.single(group.id);
-      return data
+      return data;
     })
     .then((resolve) => {
+      Email.sendGroupInvites(resolve._id, students);
+      User.addGroupId(resolve._id, leader_id);
       const arr = {
         status: "SUCCESS",
         message: "Grupo inserido com sucesso!",

@@ -1,5 +1,5 @@
 const Group = require("../../Schemas/Group");
-// const User = require("../../Schemas/User");
+const User = require("../../Schemas/User");
 // const Tcc = require("../../Schemas/Tcc");
 // const Course = require("../../Schemas/Course");
 
@@ -81,18 +81,8 @@ module.exports = async (request, response) => {
     }
 
     if (students != undefined) {
-      for (let _student of students) {
-        let _group = await Group.existsByStudent(_student);
-        if (_group != null) {
-          if (_group._id != _id) {
-            const arr = {
-              status: "ERROR",
-              message: "Um dos alunos já possui grupo!",
-            };
-            return response.status(409).send(arr);
-          }
-        }
-      }
+      User.removeGroupIds(group.students);
+      User.addGroupIds(_id, students);
       group.students = students;
     }
 
@@ -128,7 +118,7 @@ module.exports = async (request, response) => {
           const arr = {
             status: "ERROR",
             message: "Professor não encontrado!",
-            data: reject
+            data: reject,
           };
           return response.status(404).send(arr);
         }
@@ -150,7 +140,7 @@ module.exports = async (request, response) => {
           const arr = {
             status: "ERROR",
             message: "TCC não encontrado!",
-            data: reject
+            data: reject,
           };
           return response.status(404).send(arr);
         }

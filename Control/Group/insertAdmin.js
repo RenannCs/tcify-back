@@ -1,6 +1,6 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
-
+const Email = require("../../Model/Email");
 module.exports = async (request, response) => {
   let group;
 
@@ -16,8 +16,17 @@ module.exports = async (request, response) => {
     supervisor_id = request.body.supervisor_id;
     title = request.body.title;
     course_id = request.body.course_id;
+    
+    const leader = await User.findById(leader_id).exec();
 
-    if ((await Group.existsByStudent(leader_id)) != null) {
+    if(leader == null){
+      const arr = {
+        status: "ERROR",
+        message: "Líder não encontrado!"
+      }
+      return response.status(404).send(arr);
+    }
+    if (leader.group_id != null) {
       const arr = {
         status: "ERROR",
         message: "Líder já possui a um grupo!",
@@ -26,7 +35,9 @@ module.exports = async (request, response) => {
     }
 
     for (let _student of students) {
-      if ((await User.exists({ _id: _student }).exec()) == null) {
+      const student = await User.findById(_student).exec();
+
+      if (student == null) {
         const arr = {
           status: "ERROR",
           message: "Um ou mais alunos não foram encontrados!",
@@ -34,8 +45,7 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
       }
 
-      const student = await User.findOne({ _id: _student }).exec();
-      if ((await Group.existsByStudent(student.id)) != null) {
+      if (student.group_id != null) {
         const arr = {
           status: "ERROR",
           message: "Aluno " + student.name + " já adicionado a um grupo!",
@@ -67,6 +77,9 @@ module.exports = async (request, response) => {
       return data;
     })
     .then((resolve) => {
+
+      User.addGroupIds(resolve._id , students);
+      Email.sendGroupAdds(resolve._id , students);
       const arr = {
         status: "SUCCESS",
         message: "Grupo inserido com sucesso!",
