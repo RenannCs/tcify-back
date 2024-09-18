@@ -203,8 +203,9 @@ const userSchema = new mongoose.Schema(
         try {
           const _student = await this.findById(student);
           _student.group_id = group_id;
-          _student.save();
+          await _student.save();
         } catch (error) {
+          console.log("Erro em Schemas/User/removeGroupId:");
           console.error(error.messsage);
         }
       },
@@ -213,9 +214,10 @@ const userSchema = new mongoose.Schema(
           for (let _student of students) {
             let student = await this.findById(_student).exec();
             student.group_id = group_id;
-            student.save();
+            await student.save();
           }
         } catch (error) {
+          console.log("Erro em Schemas/User/addGroupIds:");
           console.error(error.message);
         }
       },
@@ -223,20 +225,25 @@ const userSchema = new mongoose.Schema(
         try{
           const _student = await this.findById(student).exec();
 
-          _student.course_id = null;
-          _student.save();
+          _student.group_id = null;
+          await _student.save();
         }catch(error){
+          console.log("Erro em Schemas/User/removeGroupId:");
           console.error(error.message)
         }
       },
       async removeGroupIds(students) {
         try {
           for (let _student of students) {
+
             let student = await this.findById(_student).exec();
+            console.log(student.name)
             student.group_id = null;
-            student.save();
+            await student.save();
+            console.log("aqyu")
           }
         } catch (error) {
+          console.log("Erro em Schemas/User/removeGroupIds:");
           console.error(error.message);
         }
       },

@@ -1,5 +1,6 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
+const { ObjectId } = require("mongodb");
 // const Tcc = require("../../Schemas/Tcc");
 // const Course = require("../../Schemas/Course");
 
@@ -15,6 +16,7 @@ module.exports = async (request, response) => {
   let status;
   let students;
   let leader_id;
+  let students_antigo;
   try {
     _id = request.params._id;
 
@@ -81,8 +83,32 @@ module.exports = async (request, response) => {
     }
 
     if (students != undefined) {
-      await User.removeGroupIds(group.students);
-       User.addGroupIds(_id, students);
+      for (let student_id of students) {
+        if (!ObjectId.isValid(student_id)) {
+          const arr = {
+            status: "ERROR",
+            message: "Um ou mais alunos não existe!",
+          };
+          return response.status(404).send(arr);
+        }
+
+        let student = await User.findById(student_id).exec();
+        if (student == null) {
+          const arr = {
+            status: "ERROR",
+            message: "Um ou mais alunos não existe!",
+          };
+          return response.status(404).send(arr);
+        }
+        if (student.group_id != null && student.group_id != group.id) {
+          const arr = {
+            status: "ERROR",
+            message: `Aluno ${student.name} já possui grupo!`,
+          };
+          return response.status(409).send(arr);
+        }
+      }
+      students_antigo = group.students;
       group.students = students;
     }
 
@@ -151,5 +177,9 @@ module.exports = async (request, response) => {
         data: reject,
       };
       return response.status(500).send(arr);
+    })
+    .finally(async () => {
+      await User.removeGroupIds(students_antigo);
+      await User.addGroupIds(_id, students);
     });
 };
