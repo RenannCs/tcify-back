@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { BSON, ObjectId } = require("mongodb");
-const User = require("./User");
+
 const tccSchema = new mongoose.Schema(
   {
     title: {
@@ -64,6 +64,37 @@ const tccSchema = new mongoose.Schema(
   },
   {
     statics: {
+      async addNamesString(_id) {
+        const User = require("./User");
+        const Group = require("./Group");
+        try {
+          const tcc = await this.findById(_id).exec();
+          const group_id = tcc.group_id;
+          const group = await Group.findById(group_id).exec();
+
+          const students = group.students;
+          let names_string = "";
+          let primeiro = true;
+
+          for (let student_id of students) {
+            let student = await User.findById(student_id).exec();
+            let name = student.name;
+            if (primeiro) {
+              names_string += name;
+              primeiro = false;
+            } else {
+              names_string += ", " + name;
+            }
+          }
+
+          tcc.names_string = names_string;
+
+          tcc.save();
+        } catch (error) {
+          console.log("Erro em Schemas/Tcc/post.save");
+          console.error(error.message);
+        }
+      },
       async single(_id) {
         if (!ObjectId.isValid(_id)) {
           return null;
@@ -292,7 +323,7 @@ const tccSchema = new mongoose.Schema(
 
           group_id: tcc.group_id ? tcc.group_id._id : null,
           students: tcc.group_id ? tcc.group_id.students : null,
-
+          names_string: tcc.names_string,
           course_id: tcc.course_id ? tcc.course_id._id : null,
           course: tcc.course_id ? tcc.course_id.name : null,
 
@@ -300,14 +331,23 @@ const tccSchema = new mongoose.Schema(
         }));
       },
 
-      async allPublic(title, date, course_id, supervisor_id) {
+      async allPublic(title, students, date, course_id, supervisor_id) {
         let query = { status: "1" };
+        let lista_filtro = []
 
         if (title) {
-          const regex = `(?i).*${title}.*(?-i)`;
-          query.title = { $regex: regex };
+          const regex_title = `(?i).*${title}.*(?-i)`;
+          lista_filtro.push({title: { $regex: regex_title }});
         }
-        console.log(query);
+        if(students){
+          const regex_students = `(?i).*${students}.*(?-i)`;
+          lista_filtro.push({names_string: {$regex: regex_students}});
+        }
+        if(lista_filtro.length>0){
+          query.$or = lista_filtro;
+        }
+
+        
         const tccs = await this.find(query)
           .populate({
             path: "group_id",
@@ -468,11 +508,40 @@ tccSchema.pre("save", function (next) {
   tcc.title = tcc.title ? tcc.title.trim() : undefined;
   tcc.summary = tcc.summary ? tcc.summary.trim() : undefined;
 
-  for(let student_id of tcc.students){
-
-  }
   next();
 });
+/*
+tccSchema.post("save", async function (tcc) {
+  const User = require("./User");
+  const Group = require("./Group");
+  try {
+    const group_id = tcc.group_id;
+    const group = await Group.findById(group_id).exec();
+
+    const students = group.students;
+    let names_string = "";
+    let primeiro = true;
+
+    for (let student_id of students) {
+      let student = await User.findById(student_id).exec();
+      let name = student.name;
+      if (primeiro) {
+        names_string += name;
+        primeiro= false;
+      } else {
+        names_string += ", " + name;
+      }
+    }
+
+    tcc.names_string = names_string;
+
+    tcc.save();
+    console.log("aqui")
+  } catch (error) {
+    console.log("Erro em Schemas/Tcc/post.save");
+    console.error(error.message);
+  }
+});*/
 
 const tccModel = mongoose.model("TCC", tccSchema, "TCCs");
 

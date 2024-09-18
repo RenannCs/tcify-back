@@ -1,5 +1,6 @@
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
+const Tcc = require("../../Schemas/Tcc");
 const { ObjectId } = require("mongodb");
 // const Tcc = require("../../Schemas/Tcc");
 // const Course = require("../../Schemas/Course");
@@ -181,5 +182,6 @@ module.exports = async (request, response) => {
     .finally(async () => {
       await User.removeGroupIds(students_antigo);
       await User.addGroupIds(_id, students);
+      await Tcc.addNamesString(group.tcc_id);
     });
 };

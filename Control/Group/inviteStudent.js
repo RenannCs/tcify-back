@@ -16,14 +16,13 @@ module.exports = async (request, response) => {
       return response.status(404).send(arr);
     }
     let arrIds = [];
-    for(let _student of students_register){
-      let student = await User.findOne({register: _student}).exec();
-      if(student != null && student.group_id == null){
+    for (let _student of students_register) {
+      let student = await User.findOne({ register: _student }).exec();
+      if (student != null) {
         arrIds.push(student.id);
       }
-        
     }
-    Email.sendGroupInvites(group._id , arrIds);
+    Email.sendGroupInvites(group._id, arrIds);
 
     const arr = {
       status: "SUCCESS",

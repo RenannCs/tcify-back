@@ -1,6 +1,6 @@
 const User = require("../../Schemas/User");
 const Group = require("../../Schemas/Group");
-
+const Tcc = require("../../Schemas/Tcc");
 const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
@@ -84,6 +84,7 @@ module.exports = async (request, response) => {
       user.save();
       const resp = await group.save();
       const data = await Group.single(group_id);
+      Tcc.addNamesString(group.tcc_id);
       const arr = {
         status: "SUCCESS",
         message: "Usuário inserido no grupo com sucesso!",

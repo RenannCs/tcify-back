@@ -1,9 +1,10 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-
   const title = request.body.title;
-  Tcc.allPublic(title)
+  const students = request.body.students;
+  
+  Tcc.allPublic(title, students)
     /*.then((data) => {
       let newTcss
       for(let tcc of data){
@@ -12,6 +13,7 @@ module.exports = async (request, response) => {
     })*/
     .then((resolve) => {
       const arr = {
+        count: resolve.length,
         status: "SUCCESS",
         message: "Projetos recuperados com sucesso!",
         data: resolve,

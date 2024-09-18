@@ -15,7 +15,7 @@ const fs = require("fs");
 const fs_extra = require("fs-extra");
 module.exports = async (request, response) => {
   let tcc;
-
+  let group;
   let title;
   let summary;
   let supervisor;
@@ -38,7 +38,7 @@ module.exports = async (request, response) => {
     summary = request.body.summary;
     group_id = request.body.group_id;
 
-    const group = await Group.findById(new ObjectId(group_id)).exec();
+    group = await Group.findById(new ObjectId(group_id)).exec();
 
     if (group == null) {
       await fs_extra.emptyDir("Temp");
@@ -48,7 +48,7 @@ module.exports = async (request, response) => {
       };
       return response.status(404).send(arr);
     }
-    if ((await Tcc.findOne({ group_id: group_id }).exec()) != null) {
+    if (group.tcc_id != null) {
       await fs_extra.emptyDir("Temp");
       const arr = {
         status: "ERROR",
@@ -68,22 +68,21 @@ module.exports = async (request, response) => {
     tcc.group_id = group_id;
     tcc.supervisor_id = supervisor;
     tcc.course_id = course_id;
+    //const resp = await tcc.save();
 
-    const resp = await tcc.save();
+    //group.tcc_id = resp._id;
+    //await group.save();
 
-    group.tcc_id = resp._id;
-    await group.save();
-
-    const aux = await Tcc.single(resp._id);
-
+    //const aux = await Tcc.single(resp._id);
+    /*
     const arr = {
       status: "SUCCESS",
       message: "TCC inserido com sucesso!",
       data: aux,
     };
-    return response.status(200).send(arr);
+    return response.status(200).send(arr);*/
   } catch (error) {
-    await fs_extra.emptyDir("Temp");
+    //await fs_extra.emptyDir("Temp");
     const arr = {
       status: "ERROR",
       message: "Erro de servidor, tente novamente mais tarde!",
@@ -91,6 +90,32 @@ module.exports = async (request, response) => {
     };
     return response.status(500).send(arr);
   }
+
+  tcc
+    .save()
+    .then(async (data) => {
+      const aux = await Tcc.single(data._id);
+      group.tcc_id = data._id;
+      group.save();
+      Tcc.addNamesString(data._id);
+      return aux;
+    })
+    .then((resolve) => {
+      const arr = {
+        status: "SUCCESS",
+        message: "Projeto inserido com sucesso!",
+        data: resolve,
+      };
+      return response.status(200).send(arr);
+    })
+    .catch((reject) => {
+      const arr = {
+        status: "ERROR",
+        message: "Ocorreu um erro ao inserir o projeto!",
+        data: reject,
+      };
+      return response.status(500).send(arr);
+    });
 };
 /*
   tcc
