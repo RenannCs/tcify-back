@@ -7,14 +7,14 @@ const { ObjectId, BSON } = require("mongodb");
 module.exports = async (request, response) => {
   let group;
 
-  let students;
+  //let students;
   let leader_id;
   let supervisor_id;
   let title;
   let course_id;
 
   try {
-    students = request.body.students;
+    //students = request.body.students;
     leader_id = request.body.leader_id;
     supervisor_id = request.body.supervisor_id;
     title = request.body.title;
@@ -36,7 +36,7 @@ module.exports = async (request, response) => {
       };
       return response.status(409).send(arr);
     }
-
+    /*
     for (let _student of students) {
       const student = await User.findById(_student).exec();
 
@@ -55,7 +55,7 @@ module.exports = async (request, response) => {
         };
         return response.status(409).send(arr);
       }
-    }
+    }*/
 
     group = new Group();
     group.title = title;
@@ -80,7 +80,7 @@ module.exports = async (request, response) => {
       return data;
     })
     .then((resolve) => {
-      Email.sendGroupInvites(resolve._id, students);
+      //Email.sendGroupInvites(resolve._id, students);
       User.addGroupId(resolve._id, leader_id);
       const arr = {
         status: "SUCCESS",

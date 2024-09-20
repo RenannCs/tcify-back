@@ -331,23 +331,30 @@ const tccSchema = new mongoose.Schema(
         }));
       },
 
-      async allPublic(title, students, date, course_id, supervisor_id) {
+      async allPublic(title, students, date, course_id, supervisor_id, limit , page) {
         let query = { status: "1" };
-        let lista_filtro = []
 
         if (title) {
           const regex_title = `(?i).*${title}.*(?-i)`;
-          lista_filtro.push({title: { $regex: regex_title }});
+          query.title = { $regex: regex_title };
         }
-        if(students){
+        if (students) {
           const regex_students = `(?i).*${students}.*(?-i)`;
-          lista_filtro.push({names_string: {$regex: regex_students}});
+          query.names_string = { $regex: regex_students };
         }
-        if(lista_filtro.length>0){
-          query.$or = lista_filtro;
+        if (date) {
+          const query_year = {
+            $eq: [{ $year: "$date" }, date],
+          };
+          query.$expr = query_year;
+        }
+        if (course_id) {
+          query.course_id = course_id;
+        }
+        if (supervisor_id) {
+          query.supervisor_id = supervisor_id;
         }
 
-        
         const tccs = await this.find(query)
           .populate({
             path: "group_id",
@@ -379,6 +386,8 @@ const tccSchema = new mongoose.Schema(
             model: "User",
             select: "name",
           })
+          .limit(limit)
+          .skip((page - 1) * limit)
           .exec();
 
         return tccs.map((tcc) => ({

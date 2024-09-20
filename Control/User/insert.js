@@ -13,7 +13,7 @@ module.exports = async (request, response) => {
   const user = new User();
   let course;
 
-  // try {
+  try {
     const name = request.body.name;
     const course_id = request.body.course_id;
     const emailUser = request.body.email;
@@ -22,6 +22,13 @@ module.exports = async (request, response) => {
     const phone_number = request.body.phone_number;
     const link = request.body.link;
 
+    if (name == null || register == null || user_type == null) {
+      const arr = {
+        status: "ERROR",
+        message: "Não foi possível adicionar o usuário!",
+      };
+      return response.status(400).send(arr);
+    }
     user.name = name;
     user.course_id = course_id;
     user.email = emailUser;
@@ -56,14 +63,14 @@ module.exports = async (request, response) => {
   `;
 
     email.send();
-  // } catch (error) {
-  //   const arr = {
-  //     status: "ERROR",
-  //     message: "Erro do servidor, tente novamente mais tarde!",
-  //     data: error,
-  //   };
-  //   return response.status(500).send(arr);
-  // }
+  } catch (error) {
+    const arr = {
+      status: "ERROR",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
+    };
+    return response.status(500).send(arr);
+  }
 
   user
     .save()

@@ -1,18 +1,11 @@
-const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const fs = require("fs");
 
 module.exports = async (request, response) => {
   try {
-    const JwtToken = new ModelJwtToken();
-    const authorizationHeader = request.headers.authorization;
-    const tokenValidationResult = JwtToken.validateToken(authorizationHeader);
+    const userLogged = request.userLogged;
 
-    const token_id = tokenValidationResult.decoded.payload._id;
-
-    const _id_list = request.body;
-
-    if (_id_list.includes(token_id)) {
+    if (_id_list.includes(userLogged._id)) {
       const arr = {
         status: "ERROR",
         message: "Você não pode excluir a si mesmo!",

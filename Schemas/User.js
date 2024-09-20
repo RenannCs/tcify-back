@@ -221,27 +221,26 @@ const userSchema = new mongoose.Schema(
           console.error(error.message);
         }
       },
-      async removeGroupId(student){
+      async removeGroupId(student_id){
         try{
-          const _student = await this.findById(student).exec();
+          const student = await this.updateOne({_id: student_id} , {group_id: null}).exec();
 
-          _student.group_id = null;
-          await _student.save();
+          console.log("Id de grupo removido de um usuário: " + student.modifiedCount);
         }catch(error){
           console.log("Erro em Schemas/User/removeGroupId:");
           console.error(error.message)
         }
       },
-      async removeGroupIds(students) {
+      async removeGroupIds(students_ids) {
         try {
-          for (let _student of students) {
-
-            let student = await this.findById(_student).exec();
-            console.log(student.name)
-            student.group_id = null;
-            await student.save();
-            console.log("aqyu")
+          let count = 0
+          for (let _student of students_ids) {
+            let student = await this.updateOne({_id: _student} , {group_id: null}).exec();
+            count += student.modifiedCount;
           }
+
+          console.log("Id's de grupo removidos dos usuários: " + count);
+
         } catch (error) {
           console.log("Erro em Schemas/User/removeGroupIds:");
           console.error(error.message);

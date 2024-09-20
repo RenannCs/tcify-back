@@ -1,4 +1,3 @@
-const ModelJwtToken = require("../../Model/JwtToken");
 const User = require("../../Schemas/User");
 const fs = require("fs");
 
@@ -27,7 +26,7 @@ module.exports = async (request, response) => {
 
   User.findByIdAndDelete(_id)
     .exec()
-    .then(async (data) => {
+    .then( (data) => {
       if (data == null) {
         return null;
       }
@@ -40,27 +39,7 @@ module.exports = async (request, response) => {
       //Menos uma requisição sem popular
       //return data;
       //Adiciona mais uma requisição mas popula o curso
-      data = await data.populate("course_id");
-      return {
-        _id: data.id,
-        name: data.name,
-        register: data.register,
-        email: data.email,
-
-        course_id: data.course_id ? data.course_id._id : "N/A",
-        course: data.course_id ? data.course_id.name : "N/A",
-
-        link: data.link,
-
-        phone_number: data.phone_number,
-        user_type: data.user_type,
-
-        image: data.image
-          ? `${process.env.API_PATH}${data.image}`
-          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-        status: data.status,
-      };
+      return data;
     })
     .then((resolve) => {
       if (resolve == null) {
@@ -78,13 +57,6 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
-      if (reject.name == "CastError") {
-        const arr = {
-          status: "ERROR",
-          message: "Usuário inválido!",
-        };
-        return response.status(400).send(arr);
-      }
       const arr = {
         status: "ERROR",
         message: "Erro de servidor, tente novamente mais tarde!",
