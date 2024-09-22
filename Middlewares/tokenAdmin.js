@@ -12,7 +12,7 @@ module.exports = async (request, response, next) => {
       const token_id = tokenResult.decoded.payload._id;
       const token_user_type = tokenResult.decoded.payload.user_type;
 
-      const user = await User.findById(token_id).exec();
+      const user = await User.single(token_id);
       if (user != null) {
         if (
           (user.user_type == "Administrador") &

@@ -12,14 +12,14 @@ const userSchema = new mongoose.Schema(
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
-      validate: async (_id) => {
+      /*validate: async (_id) => {
         const Course = require("./Course");
         if (_id) {
           if ((await Course.findById(_id)) == null) {
             throw new Error("Curso não existe!");
           }
         }
-      },
+      },*/
       default: null,
     },
     group_id: {
@@ -52,10 +52,10 @@ const userSchema = new mongoose.Schema(
     user_type: {
       type: String,
       default: "Estudante",
-      enum: {
+      /*enum: {
         values: ["Administrador", "Professor", "Estudante"],
         message: "Tipo de usuário não suportado!",
-      },
+      },*/
     },
     image: {
       type: String,

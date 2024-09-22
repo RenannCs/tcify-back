@@ -139,6 +139,11 @@ module.exports = async (request, response) => {
       };
       return response.status(200).send(arr);
     })
+    .then(async () => {
+      await User.removeGroupIds(students_antigo);
+      await User.addGroupIds(_id, students);
+      await Tcc.addNamesString(group.tcc_id);
+    })
     .catch((reject) => {
       if (reject.errors) {
         if (reject.errors.supervisor_id) {
@@ -179,9 +184,5 @@ module.exports = async (request, response) => {
       };
       return response.status(500).send(arr);
     })
-    .finally(async () => {
-      await User.removeGroupIds(students_antigo);
-      await User.addGroupIds(_id, students);
-      await Tcc.addNamesString(group.tcc_id);
-    });
+    
 };

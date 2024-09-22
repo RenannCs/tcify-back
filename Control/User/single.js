@@ -21,13 +21,6 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
-      if (reject.name == "CastError") {
-        const arr = {
-          status: "ERROR",
-          message: "Usuário inválido!",
-        };
-        return response.status(400).send(arr);
-      }
       const arr = {
         status: "ERROR",
         message: "Erro de servidor, tente novamente mais tarde!",

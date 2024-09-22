@@ -128,6 +128,7 @@ try{
         student.password = "123";
         student.email = cont + "@"
         student.user_type = "Estudante"
+        student.status = "1"
         cont+=1;
         numeroCurso+=1;
         if(numeroCurso == 6){

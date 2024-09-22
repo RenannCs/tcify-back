@@ -29,6 +29,15 @@ module.exports = async (request, response) => {
       };
       return response.status(400).send(arr);
     }
+
+    if (!["Estudante", "Professor", "Administrador"].includes(user_type)) {
+      const arr = {
+        status: "ERROR",
+        message: "Tipo de usuário inválido!",
+      };
+      return response.status(400).send(arr);
+    }
+
     user.name = name;
     user.course_id = course_id;
     user.email = emailUser;
@@ -44,6 +53,7 @@ module.exports = async (request, response) => {
       const arr = {
         status: "ERROR",
         message: "Curso não encontrado!",
+        course_id: course_id,
       };
       return response.status(404).send(arr);
     }
@@ -52,11 +62,13 @@ module.exports = async (request, response) => {
     email.dest = emailUser;
     email.subject = "Conectado ao repositório de TCC's da Univap Centro";
     email.message = `
-  <br><p> Parabéns ${user.name}! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
+  <br><p> Parabéns ${
+    user.name
+  }! Você foi conectado ao Repositório de TCC's da Univap Centro!</p>
   <br>Seus dados:<br>
   Nome: ${user.name}<br>
   Registro: ${user.register}<br>
-  Curso: ${course.name}<br>
+  Curso: ${course ? course.name : "Administrador"}<br>
   Tipo de usuário: ${user.user_type}<br>
   Email: ${user.email}<br>
   Senha: ${register}<br>
@@ -74,9 +86,29 @@ module.exports = async (request, response) => {
 
   user
     .save()
-    .then(async (result) => {
-      let aux = await User.single(result._id);
-      return aux;
+    .then((user) => {
+      return {
+        _id: user._id,
+        register: user.register,
+        name: user.name,
+
+        course_id: course ? course._id : "N/A",
+        course: course ? course.name : "N/A",
+
+        group_id: user.group_id,
+
+        email: user.email,
+        phone_number: user.phone_number,
+
+        link: user.link,
+        image: user.image
+          ? `${process.env.API_PATH}${user.image}`
+          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
+
+        user_type: user.user_type,
+
+        status: user.status,
+      };
     })
     .then((data) => {
       const arr = {
@@ -87,24 +119,6 @@ module.exports = async (request, response) => {
       response.status(200).send(arr);
     })
     .catch((reject) => {
-      //Verifica se o erro veio das verificações do Schema de User
-      if (reject.errors) {
-        //Verifica de qual das verificações o erro veio
-        if (reject.errors.user_type) {
-          const arr = {
-            status: "ERROR",
-            message: "Tipo de usuário inválido!",
-          };
-          return response.status(400).send(arr);
-        } else if (reject.errors.course_id) {
-          const arr = {
-            status: "ERROR",
-            message: "Curso inválido!",
-          };
-          return response.status(400).send(arr);
-        }
-      }
-
       //Verifica se o codigo de erro é de chave duplicada do mongoDB
       if (reject.code == 11000) {
         const arr = {

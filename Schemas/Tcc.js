@@ -65,9 +65,9 @@ const tccSchema = new mongoose.Schema(
   {
     statics: {
       async addNamesString(_id) {
-        const User = require("./User");
-        const Group = require("./Group");
         try {
+          const User = require("./User");
+          const Group = require("./Group");
           const tcc = await this.findById(_id).exec();
           const group_id = tcc.group_id;
           const group = await Group.findById(group_id).exec();
@@ -331,7 +331,15 @@ const tccSchema = new mongoose.Schema(
         }));
       },
 
-      async allPublic(title, students, date, course_id, supervisor_id, limit , page) {
+      async allPublic(
+        title,
+        students,
+        date,
+        course_id,
+        supervisor_id,
+        limit,
+        page
+      ) {
         let query = { status: "1" };
 
         if (title) {

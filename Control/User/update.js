@@ -38,20 +38,12 @@ module.exports = async (request, response) => {
       user.linkedin = linkedin;
     }
   } catch (error) {
-    if (error.name == "CastError") {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário inválido!",
-      };
-      return response.status(400).send(arr);
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Erro do servidor, tente novamente mais tarde!",
-        data: error,
-      };
-      return response.status(500).send(arr);
-    }
+    const arr = {
+      status: "ERROR",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
+    };
+    return response.status(500).send(arr);
   }
 
   user

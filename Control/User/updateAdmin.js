@@ -1,5 +1,5 @@
 const User = require("../../Schemas/User");
-
+const Course = require("../../Schemas/Course");
 module.exports = async (request, response) => {
   const _id = request.params._id;
 
@@ -40,12 +40,27 @@ module.exports = async (request, response) => {
       user.link = link;
     }
     if (user_type != undefined) {
+      if (!["Administrador", "Professor", "Estudante"].includes(user_type)) {
+        const arr = {
+          status: "ERROR",
+          message: "Tipo de usuário inválido!",
+        };
+        return response.status(400).send(arr);
+      }
       user.user_type = user_type;
     }
     if (status != undefined) {
       user.status = status;
     }
     if (course_id) {
+      const course = Course.findById(course_id).exec();
+      if (course == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Curso não existe!",
+        };
+        return response.status(404).send(arr);
+      }
       user.course_id = course_id;
     }
     if (course_id == "" || course_id == "N/A") {
@@ -55,20 +70,12 @@ module.exports = async (request, response) => {
       user.register = register;
     }
   } catch (error) {
-    if (error.name == "CastError") {
-      const arr = {
-        status: "ERROR",
-        message: "Usuário inválido!",
-      };
-      return response.status(400).send(arr);
-    } else {
-      const arr = {
-        status: "ERROR",
-        message: "Erro do servidor, tente novamente mais tarde!",
-        data: error,
-      };
-      return response.status(500).send(arr);
-    }
+    const arr = {
+      status: "ERROR",
+      message: "Erro do servidor, tente novamente mais tarde!",
+      data: error,
+    };
+    return response.status(500).send(arr);
   }
 
   user
@@ -107,24 +114,6 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .catch((reject) => {
-      //Verifica se o erro veio das verificações do Schema de User
-      if (reject.errors) {
-        //Verifica de qual das verificações o erro veio
-        if (reject.errors.user_type) {
-          const arr = {
-            status: "ERROR",
-            message: "Tipo de usuário inválido!",
-          };
-          return response.status(400).send(arr);
-        } else if (reject.errors.course_id) {
-          const arr = {
-            status: "ERROR",
-            message: "Curso inválido!",
-          };
-          return response.status(400).send(arr);
-        }
-      }
-
       //Verifica se o codigo de erro é de chave duplicada do mongoDB
       if (reject.code == 11000) {
         const arr = {
