@@ -1,12 +1,12 @@
 const Tcc = require("../../Schemas/Tcc");
 
 module.exports = async (request, response) => {
-  const page = request.body.page;
-  const title = request.body.title;
-  const students = request.body.students;
-  const date = request.body.date;
-  const course_id = request.body.course_id;
-  const supervisor_id = request.body.supervisor_id;
+  const page = request.query.page;
+  const title = request.query.title;
+  const students = request.query.students;
+  const date = request.query.date;
+  const course_id = request.query.course_id;
+  const supervisor_id = request.query.supervisor_id;
 
   Tcc.allPublic(title, students, date, course_id, supervisor_id, 10, page)
     /*.then((data) => {

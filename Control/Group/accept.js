@@ -26,7 +26,7 @@ module.exports = async (request, response) => {
       };
       return response.status(404).send(arr);
     }
-    if (user.course_id != null) {
+    if (user.group_id != null) {
       const arr = {
         status: "ERROR",
         message: "Aluno já possui grupo!",
