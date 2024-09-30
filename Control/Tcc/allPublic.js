@@ -15,6 +15,7 @@ module.exports = async (request, response) => {
     .then((resolve) => {
       const arr = {
         count: resolve.count,
+        pages: resolve.pages,
         status: "SUCCESS",
         message: "Projetos recuperados com sucesso!",
         data: resolve.projetcs,

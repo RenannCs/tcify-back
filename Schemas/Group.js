@@ -19,11 +19,6 @@ const groupSchema = new mongoose.Schema(
     course_id: {
       type: mongoose.Types.ObjectId,
       ref: "Course",
-      validate: async (_id) => {
-        if ((await Course.findById(_id)) == null) {
-          throw new Error("Curso não existe!");
-        }
-      },
     },
     supervisor_id: {
       type: mongoose.Types.ObjectId,

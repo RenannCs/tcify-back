@@ -364,7 +364,10 @@ const tccSchema = new mongoose.Schema(
         }
 
         const count = await this.countDocuments(query).exec();
-
+        let pages = parseInt(count / 10);
+        if (count % 10 != 0) [
+          pages += 1
+        ]
         const tccs = await this.find(query)
           .populate({
             path: "group_id",
@@ -399,7 +402,7 @@ const tccSchema = new mongoose.Schema(
           .limit(limit)
           .skip((page - 1) * limit)
           .exec();
-          console.log(query)
+        console.log(query)
         const projetcs = tccs.map((tcc) => ({
           _id: tcc.id,
 
@@ -435,7 +438,7 @@ const tccSchema = new mongoose.Schema(
           date: new Date(tcc.date).getFullYear().toString(),
         }));
 
-        return {projetcs: projetcs , count: count}
+        return { projetcs: projetcs, count: count, pages: pages }
       },
       existsByGroup(id) {
         return this.exists({ group_id: id }).exec();
