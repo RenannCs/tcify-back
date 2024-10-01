@@ -13,12 +13,19 @@ module.exports = async (request, response, next) => {
       const token_id = tokenResult.decoded.payload._id;
       const token_user_type = tokenResult.decoded.payload.user_type;
 
-      const user = await User.single(token_id);
+      let user = await User.single(token_id);
       if (user != null) {
         if (
           ["Professor", "Administrador", "Estudante"].includes(user.user_type) &
           (user.user_type == token_user_type)
         ) {
+
+          if(user.group_id != null){
+            let group = await Group.findById(user.group_id).exec();
+            user.project_id = group.tcc_id;
+          }else{
+            user.project_id = null
+          }
           request.userLogged = user;
 
           next();
