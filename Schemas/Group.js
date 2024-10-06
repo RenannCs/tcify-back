@@ -69,7 +69,7 @@ const groupSchema = new mongoose.Schema(
           .populate({
             path: "students",
             model: "User",
-            select: ["name", "email", "link", "linkedin", "image"],
+            select: ["register", "name", "email", "link", "linkedin", "image"],
           })
           .populate({
             path: "leader_id",
@@ -96,6 +96,7 @@ const groupSchema = new mongoose.Schema(
         }
         return {
           _id: group._id,
+          register: group.register,
 
           title: group.title ? group.title : null,
 
