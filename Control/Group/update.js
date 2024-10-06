@@ -143,6 +143,9 @@ module.exports = async (request, response) => {
       await User.removeGroupIds(students_antigo);
       await User.addGroupIds(_id, students);
       await Tcc.addNamesString(group.tcc_id);
+      if (title) {
+        await Tcc.updateOne({ _id: group.tcc_id }, { title: title }).exec();
+      }
     })
     .catch((reject) => {
       if (reject.errors) {
@@ -183,6 +186,5 @@ module.exports = async (request, response) => {
         data: reject,
       };
       return response.status(500).send(arr);
-    })
-    
+    });
 };

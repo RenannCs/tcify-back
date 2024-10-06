@@ -90,7 +90,7 @@ module.exports = async (request, response) => {
           }
 
           for (const _user of results.data) {
-            try {
+            try { 
               const user = new User();
 
               user.name = _user["Nome"];
@@ -100,7 +100,7 @@ module.exports = async (request, response) => {
               user.phone_number = _user["Telefone"];
               user.link = _user["Link Externo"];
               user.status = "1";
-              user.password = register;
+              user.password = user.register;
               
               if (_user["Registro"] == "") {
                 throw new Error("Registro não pode ser vazio");

@@ -116,6 +116,11 @@ module.exports = async (request, response) => {
       };
       response.status(200).send(arr);
     })
+    .then(async () => {
+      if (title) {
+        await Group.updateOne({ _id: tcc.group_id }, { title: title }).exec();
+      }
+    })
     .catch((reject) => {
       const arr = {
         data: reject,

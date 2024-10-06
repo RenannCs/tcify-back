@@ -3,7 +3,7 @@
  * Pode alterar titulo, sumario
  */
 const Tcc = require("../../Schemas/Tcc");
-
+const Group = require("../../Schemas/Group");
 const { ObjectId, BSON } = require("mongodb");
 
 module.exports = async (request, response) => {
@@ -55,6 +55,11 @@ module.exports = async (request, response) => {
         message: "TCC atualizado com sucesso!",
       };
       response.status(200).send(arr);
+    })
+    .then(async () => {
+      if (title) {
+        await Group.updateOne({ _id: tcc.group_id }, { title: title }).exec();
+      }
     })
     .catch((reject) => {
       const arr = {
