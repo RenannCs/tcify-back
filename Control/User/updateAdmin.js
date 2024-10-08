@@ -6,7 +6,6 @@ module.exports = async (request, response) => {
   const name = request.body.name;
   const email = request.body.email;
   const register = request.body.register;
-  const password = request.body.password;
   const phone_number = request.body.phone_number;
   const link = request.body.link;
   const user_type = request.body.user_type;
@@ -24,22 +23,20 @@ module.exports = async (request, response) => {
       };
       return response.status(404).send(arr);
     }
-    if (name != undefined) {
+    if (name) {
       user.name = name;
     }
-    if (email != undefined) {
+    if (email) {
       user.email = email;
     }
-    if (password != undefined) {
-      user.password = password;
-    }
-    if (phone_number != undefined) {
+    if (phone_number) {
+
       user.phone_number = phone_number;
     }
-    if (link != undefined) {
+    if (link) {
       user.link = link;
     }
-    if (user_type != undefined) {
+    if (user_type) {
       if (!["Administrador", "Professor", "Estudante"].includes(user_type)) {
         const arr = {
           status: "ERROR",
@@ -49,11 +46,11 @@ module.exports = async (request, response) => {
       }
       user.user_type = user_type;
     }
-    if (status != undefined) {
+    if (status) {
       user.status = status;
     }
-    if (course_id) {
-      const course = Course.findById(course_id).exec();
+    if (course_id && course_id != "N/A") {
+      const course = await Course.findById(course_id).exec();
       if (course == null) {
         const arr = {
           status: "ERROR",
@@ -64,9 +61,9 @@ module.exports = async (request, response) => {
       user.course_id = course_id;
     }
     if (course_id == "" || course_id == "N/A") {
-      user.course_id = null;
+      user.course_id = undefined;
     }
-    if (register != undefined) {
+    if (register) {
       user.register = register;
     }
   } catch (error) {
@@ -83,27 +80,7 @@ module.exports = async (request, response) => {
     .then(async (data) => {
       //Popula o curso, mas adiciona mais uma requisição
 
-      data = await data.populate("course_id");
-      return {
-        _id: data.id,
-        name: data.name,
-        register: data.register,
-        email: data.email,
-
-        course_id: data.course_id ? data.course_id._id : "N/A",
-        course: data.course_id ? data.course_id.name : "N/A",
-
-        link: data.link,
-
-        phone_number: data.phone_number,
-        user_type: data.user_type,
-
-        image: data.image
-          ? `${process.env.API_PATH}${data.image}`
-          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-        status: data.status,
-      };
+      return await User.single(_id);
     })
     .then((resolve) => {
       const arr = {
