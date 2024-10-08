@@ -3,6 +3,7 @@ const fs = require("fs");
 
 module.exports = async (request, response) => {
   try {
+    const _id_list = request.body;
     const userLogged = request.userLogged;
 
     if (_id_list.includes(userLogged._id)) {
