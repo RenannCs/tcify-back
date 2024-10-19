@@ -31,7 +31,7 @@ module.exports = async (request, response) => {
     let newStudents = [];
 
     for (let _student of students) {
-      if (_student != student._id) {
+      if (_student != student.id) {
         newStudents.push(_student);
       }
     }
