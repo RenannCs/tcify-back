@@ -309,6 +309,12 @@ module.exports = function (app) {
 
   /* ************** PATCH ************** */
   app.patch(
+    "/repository/groups/exit/:group_id",
+    token,
+    require("../Control/Group/exitGroup")
+  );
+
+  app.patch(
     "/repository/groups/insertStudent",
     token,
     require("../Control/Group/insertStudent")
