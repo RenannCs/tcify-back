@@ -1,5 +1,5 @@
 const Tcc = require("../../Schemas/Tcc");
-
+const Group = require("../../Schemas/Group");
 const { ObjectId, BSON } = require("mongodb");
 const fs = require("fs");
 module.exports = async (request, response) => {
@@ -55,6 +55,9 @@ module.exports = async (request, response) => {
         data: tcc,
       };
       return response.status(200).send(arr);
+    })
+    .then(async () => {
+      await Group.updateOne({ _id: tcc.group_id }, { tcc_id: null }).exec();
     })
     .catch((reject) => {
       const arr = {

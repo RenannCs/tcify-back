@@ -8,7 +8,6 @@ const courseSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    default: null,
   },
   status: {
     type: String,
@@ -19,10 +18,10 @@ const courseSchema = new mongoose.Schema({
 courseSchema.pre("save", function (next) {
   const course = this;
   course.name = course.name ? course.name.trim() : undefined;
-  course.description = course.description
-    ? course.description.trim()
-    : undefined;
-
+  if(course.description){
+    course.description = course.description.trim();
+  }
+  
   next();
 });
 

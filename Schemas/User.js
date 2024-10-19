@@ -20,12 +20,10 @@ const userSchema = new mongoose.Schema(
           }
         }
       },*/
-      default: null,
     },
     group_id: {
       type: mongoose.Types.ObjectId,
       ref: "Group",
-      default: null,
     },
     register: {
       type: String,
@@ -34,7 +32,6 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
-      default: null,
     },
     password: {
       type: String,
@@ -42,13 +39,10 @@ const userSchema = new mongoose.Schema(
     },
     phone_number: {
       type: String,
-      default: null,
     },
     link: {
       type: String,
-      default: null,
     },
-    linkedin: String,
     user_type: {
       type: String,
       default: "Estudante",
@@ -59,7 +53,6 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: null,
     },
     status: {
       type: String,
@@ -105,19 +98,19 @@ const userSchema = new mongoose.Schema(
         }
 
         return {
-          _id: user._id,
+          _id: user.id,
           register: user.register,
           name: user.name,
 
           course_id: user.course_id ? user.course_id._id : "N/A",
           course: user.course_id ? user.course_id.name : "N/A",
 
-          group_id: user.group_id,
+          group_id: user.group_id ? user.group_id : null,
 
-          email: user.email,
-          phone_number: user.phone_number,
+          email: user.email ? user.email : null,
+          phone_number: user.phone_number ? user.phone_number : null,
 
-          link: user.link,
+          link: user.link ? user.link : null,
           image: user.image
             ? `${process.env.API_PATH}${user.image}`
             : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
@@ -144,12 +137,12 @@ const userSchema = new mongoose.Schema(
           course_id: user.course_id ? user.course_id._id : "N/A",
           course: user.course_id ? user.course_id.name : "N/A",
 
-          group_id: user.group_id,
+          group_id: user.group_id ? user.group_id : null,
 
-          email: user.email,
-          phone_number: user.phone_number,
+          email: user.email ? user.email : null,
+          phone_number: user.phone_number ? user.phone_number : null,
 
-          link: user.link,
+          link: user.link ? user.link : null,
           image: user.image
             ? `${process.env.API_PATH}${user.image}`
             : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
@@ -176,12 +169,12 @@ const userSchema = new mongoose.Schema(
           course_id: user.course_id ? user.course_id._id : "N/A",
           course: user.course_id ? user.course_id.name : "N/A",
 
-          group_id: user.group_id,
+          group_id: user.group_id ? user.group_id : null,
 
-          email: user.email,
-          phone_number: user.phone_number,
+          email: user.email ? user.email : null,
+          phone_number: user.phone_number ? user.phone_number : null,
 
-          link: user.link,
+          link: user.link ? user.link : null,
           image: user.image
             ? `${process.env.API_PATH}${user.image}`
             : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
@@ -221,26 +214,33 @@ const userSchema = new mongoose.Schema(
           console.error(error.message);
         }
       },
-      async removeGroupId(student_id){
-        try{
-          const student = await this.updateOne({_id: student_id} , {group_id: null}).exec();
+      async removeGroupId(student_id) {
+        try {
+          const student = await this.updateOne(
+            { _id: student_id },
+            { group_id: null }
+          ).exec();
 
-          console.log("Id de grupo removido de um usuário: " + student.modifiedCount);
-        }catch(error){
+          console.log(
+            "Id de grupo removido de um usuário: " + student.modifiedCount
+          );
+        } catch (error) {
           console.log("Erro em Schemas/User/removeGroupId:");
-          console.error(error.message)
+          console.error(error.message);
         }
       },
       async removeGroupIds(students_ids) {
         try {
-          let count = 0
+          let count = 0;
           for (let _student of students_ids) {
-            let student = await this.updateOne({_id: _student} , {group_id: null}).exec();
+            let student = await this.updateOne(
+              { _id: _student },
+              { group_id: null }
+            ).exec();
             count += student.modifiedCount;
           }
 
           console.log("Id's de grupo removidos dos usuários: " + count);
-
         } catch (error) {
           console.log("Erro em Schemas/User/removeGroupIds:");
           console.error(error.message);
@@ -252,15 +252,15 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", function (next) {
   const user = this;
-  user.name = user.name ? user.name.trim() : null;
-  user.register = user.register ? user.register.trim() : null;
-  user.email = user.email ? user.email.trim() : null;
-  user.password = user.password ? user.password.trim() : null;
-  user.phone_number = user.phone_number ? user.phone_number.trim() : null;
-  user.link = user.link ? user.link.trim() : null;
-  user.linkedin = user.linkedin ? user.linkedin.trim() : null;
-  user.user_type = user.user_type ? user.user_type.trim() : null;
-  user.image = user.image ? user.image.trim() : null;
+  user.name = user.name ? user.name.trim() : undefined;
+  user.register = user.register ? user.register.trim() : undefined;
+  user.email = user.email ? user.email.trim() : undefined;
+  user.password = user.password ? user.password.trim() : undefined;
+  user.phone_number = user.phone_number ? user.phone_number.trim() : undefined;
+  user.link = user.link ? user.link.trim() : undefined;
+  user.linkedin = user.linkedin ? user.linkedin.trim() : undefined;
+  user.user_type = user.user_type ? user.user_type.trim() : undefined;
+  user.image = user.image ? user.image.trim() : undefined;
 
   if (user.isModified("password") || user.isNew) {
     user.password = md5(user.password);

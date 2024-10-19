@@ -48,16 +48,27 @@ module.exports = async (request, response) => {
     user.link = link;
     user.status = "1";
 
-    course = await Course.findById(course_id).exec();
-    if (course == null && user_type != "Adminstrador") {
+    if (course_id && course_id != "N/A") {
+      course = await Course.findById(course_id).exec();
+      if (course == null) {
+        const arr = {
+          status: "ERROR",
+          message: "Curso não encontrado!",
+          course_id: course_id,
+        };
+        return response.status(404).send(arr);
+      }
+    } else if (user_type != "Administrador") {
       const arr = {
         status: "ERROR",
         message: "Curso não encontrado!",
         course_id: course_id,
       };
       return response.status(404).send(arr);
+    }else{
+      user.course_id = undefined;
     }
-
+    
     const email = new Email();
     email.dest = emailUser;
     email.subject = "Conectado ao repositório de TCC's da Univap Centro";

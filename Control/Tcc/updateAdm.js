@@ -17,7 +17,6 @@ module.exports = async (request, response) => {
   let summary;
   let grade;
   let status;
-  let group_id;
   let course_id;
   let supervisor_id;
   try {
@@ -37,7 +36,6 @@ module.exports = async (request, response) => {
     summary = request.body.summary;
     grade = request.body.grade;
     status = request.body.status;
-    group_id = request.body.group_id;
     course_id = request.body.course_id;
     supervisor_id = request.body.supervisor_id;
 
@@ -52,18 +50,6 @@ module.exports = async (request, response) => {
     }
     if (status != undefined) {
       tcc.status = status;
-    }
-    if (group_id != undefined) {
-      if (
-        (await Group.exists({ _id: new ObjectId(group_id) }).exec()) == null
-      ) {
-        const arr = {
-          status: "ERROR",
-          message: "Grupo não existe!",
-        };
-        return response.status(404).send(arr);
-      }
-      tcc.group_id = group_id;
     }
     if (course_id != undefined) {
       if (

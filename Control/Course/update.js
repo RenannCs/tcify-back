@@ -19,9 +19,15 @@ module.exports = async (request, response) => {
       };
       return response.status(404).send(arr);
     }
-    course.name = name;
-    course.description = description;
-    course.status = status;
+    if (name) {
+      course.name = name;
+    }
+    if (description) {
+      course.description = description;
+    }
+    if (status) {
+      course.status = status;
+    }
   } catch (error) {
     if (error instanceof BSON.BSONError) {
       const arr = {

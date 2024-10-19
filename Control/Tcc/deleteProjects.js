@@ -1,4 +1,5 @@
 const Tcc = require("../../Schemas/Tcc");
+const Group = require("../../Schemas/Group");
 const fs = require("fs");
 module.exports = async (request, response) => {
   try {
@@ -36,7 +37,7 @@ module.exports = async (request, response) => {
         }
 
         const resp = await Tcc.findByIdAndDelete(_id).exec();
-
+        await Group.updateOne({ _id: tcc.group_id }, { tcc_id: null }).exec();
         if (resp != 1) {
           deletedCount += 1;
           tccsExcluidos.push(tcc);

@@ -7,7 +7,6 @@ module.exports = async (request, response) => {
   try {
     const userLogged = request.userLogged;
 
-    //Verificar se os ids são iguais (usuario e adm/professor)
     if (userLogged._id == _id) {
       const arr = {
         status: "ERROR",
@@ -36,9 +35,7 @@ module.exports = async (request, response) => {
           fs.unlink(data.image, (error) => {});
         }
       }
-      //Menos uma requisição sem popular
-      //return data;
-      //Adiciona mais uma requisição mas popula o curso
+      
       return data;
     })
     .then((resolve) => {

@@ -55,27 +55,8 @@ module.exports = async (request, response) => {
     .then(async (data) => {
       //Popula o curso, mas adiciona mais uma requisição
 
-      data = await data.populate("course_id");
-      return {
-        _id: data.id,
-        name: data.name,
-        register: data.register,
-        email: data.email,
-
-        course_id: data.course_id ? data.course_id._id : "N/A",
-        course: data.course_id ? data.course_id.name : "N/A",
-
-        link: data.link,
-
-        phone_number: data.phone_number,
-        user_type: data.user_type,
-
-        image: data.image
-          ? `${process.env.API_PATH}${data.image}`
-          : `${process.env.API_PATH}${process.env.USER_PROFILE_PICTURE_DEFAULT}`,
-
-        status: data.status,
-      };
+      return await User.single(_id);
+  
     })
     .then((resolve) => {
       const arr = {

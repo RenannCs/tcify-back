@@ -1,4 +1,5 @@
-const User = require("../Schemas/User");
+async function adicionar() {
+  const User = require("../Schemas/User");
 
 const Database = require("../Model/Database");
 const db = new Database();
@@ -140,3 +141,5 @@ try{
 }catch(error){
     console.error(error.message)
 }
+}
+adicionar(); 
