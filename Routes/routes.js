@@ -49,7 +49,7 @@ module.exports = function (app) {
   app.get(
     "/repository/projects",
     tokenAdminTeacher,
-    require("../Control/Tcc/All")
+    require("../Control/Tcc/all")
   );
 
   app.get(
