@@ -49,22 +49,22 @@ module.exports = function (app) {
   app.get(
     "/repository/projects",
     tokenAdminTeacher,
-    require("../Control/Tcc/all")
+    require("../Control/tcc/all")
   );
 
   app.get(
     "/repository/projects/professor/:_id",
     tokenAdminTeacher,
-    require("../Control/Tcc/allTeacher")
+    require("../Control/tcc/allTeacher")
   );
 
-  app.get("/repository/projects/public", require("../Control/Tcc/allPublic"));
+  app.get("/repository/projects/public", require("../Control/tcc/allPublic"));
 
-  app.get("/repository/projects/:_id", require("../Control/Tcc/single"));
+  app.get("/repository/projects/:_id", require("../Control/tcc/single"));
 
   app.get(
     "/repository/projects/student/:_id",
-    require("../Control/Tcc/singleByStudent")
+    require("../Control/tcc/singleByStudent")
   );
 
   /* ************** POST ************** */
@@ -78,7 +78,7 @@ module.exports = function (app) {
       { name: "zip", maxCount: 1 },
       { name: "image", maxCount: 1 },
     ]),
-    require("../Control/Tcc/insert")
+    require("../Control/tcc/insert")
   );
 
   /* ************** PATCH ************** */
@@ -86,55 +86,55 @@ module.exports = function (app) {
   app.patch(
     "/repository/projects/:_id",
     token,
-    require("../Control/Tcc/update")
+    require("../Control/tcc/update")
   );
 
   app.patch(
     "/repository/projects/monography/:_id",
     token,
     uploadTemp.single("monography"),
-    require("../Control/Tcc/updateMonography")
+    require("../Control/tcc/updateMonography")
   );
 
   app.patch(
     "/repository/projects/image/:_id",
     token,
     uploadTemp.single("image"),
-    require("../Control/Tcc/updateImage")
+    require("../Control/tcc/updateImage")
   );
 
   app.patch(
     "/repository/projects/document/:_id",
     token,
     uploadTemp.single("document"),
-    require("../Control/Tcc/updateDocument")
+    require("../Control/tcc/updateDocument")
   );
 
   app.patch(
     "/repository/projects/zip/:_id",
     token,
     uploadTemp.single("zip"),
-    require("../Control/Tcc/updateZip")
+    require("../Control/tcc/updateZip")
   );
 
   /* ************** DELETE ************** */
   app.delete(
     "/repository/projects/:_id",
     tokenAdminTeacher,
-    require("../Control/Tcc/Delete")
+    require("../Control/tcc/Delete")
   );
 
   app.delete(
     "/repository/projects",
     tokenAdminTeacher,
-    require("../Control/Tcc/deleteProjects")
+    require("../Control/tcc/deleteProjects")
   );
 
   /*****************PUT *********** */
   app.put(
     "/repository/projects/:_id",
     tokenAdminTeacher,
-    require("../Control/Tcc/updateAdm")
+    require("../Control/tcc/updateAdm")
   );
   /*
    * ---------------------------------------ROTAS USERS----------------------------------------------------------
@@ -142,74 +142,74 @@ module.exports = function (app) {
 
   /* ************** GETS ************** */
 
-  app.get("/repository/users", token, require("../Control/User/all"));
+  app.get("/repository/users", token, require("../Control/user/all"));
 
   app.get(
     "/repository/users/administrator",
     tokenAdminTeacher,
-    require("../Control/User/allAdm")
+    require("../Control/user/allAdm")
   );
 
   app.get(
     "/repository/users/students",
     tokenAdminTeacher,
-    require("../Control/User/allStudent")
+    require("../Control/user/allStudent")
   );
 
   app.get(
     "/repository/users/teachers",
     tokenAdmin,
-    require("../Control/User/allTeachers")
+    require("../Control/user/allTeachers")
   );
 
-  app.get("/repository/users/:_id", require("../Control/User/single"));
+  app.get("/repository/users/:_id", require("../Control/user/single"));
 
   /* ************** POST ************** */
-  app.post("/repository/users", tokenAdmin, require("../Control/User/insert"));
+  app.post("/repository/users", tokenAdmin, require("../Control/user/insert"));
 
-  app.post("/repository/users/login", require("../Control/User/login"));
+  app.post("/repository/users/login", require("../Control/user/login"));
 
   app.post(
     "/repository/users/csv",
     tokenAdmin,
     uploadsCsv.single("data"),
-    require("../Control/User/insertUsers")
+    require("../Control/user/insertUsers")
   );
 
   /* ************** PATCH ************** */
 
-  app.patch("/repository/users/:_id", token, require("../Control/User/update"));
+  app.patch("/repository/users/:_id", token, require("../Control/user/update"));
 
   app.patch(
     "/repository/users/image/:_id",
     token,
     uploadsUserImages.single("image"),
-    require("../Control/User/updateImage")
+    require("../Control/user/updateImage")
   );
 
   app.patch(
     "/repository/users/password/:_id",
     token,
-    require("../Control/User/updatePassword")
+    require("../Control/user/updatePassword")
   );
 
   app.patch(
     "/repository/users/status/:status",
     tokenAdmin,
-    require("../Control/User/updateStatus")
+    require("../Control/user/updateStatus")
   );
 
   /* ************** DELETE ************** */
   app.delete(
     "/repository/users/:_id",
     tokenAdmin,
-    require("../Control/User/delete")
+    require("../Control/user/delete")
   );
 
   app.delete(
     "/repository/users",
     tokenAdmin,
-    require("../Control/User/deleteUsers")
+    require("../Control/user/deleteUsers")
   );
 
   /* ************** PUT ************** */
@@ -217,7 +217,7 @@ module.exports = function (app) {
   app.put(
     "/repository/users/:_id",
     tokenAdmin,
-    require("../Control/User/updateAdmin")
+    require("../Control/user/updateAdmin")
   );
 
   /*
@@ -225,35 +225,35 @@ module.exports = function (app) {
    */
 
   /* ************** GETS ************** */
-  app.get("/repository/courses", require("../Control/Course/all"));
+  app.get("/repository/courses", require("../Control/course/all"));
 
-  app.get("/repository/courses/:_id", require("../Control/Course/single"));
+  app.get("/repository/courses/:_id", require("../Control/course/single"));
 
   /* ************** POST ************** */
   app.post(
     "/repository/courses",
     tokenAdmin,
-    require("../Control/Course/insert")
+    require("../Control/course/insert")
   );
 
   /* ************** PUT ************** */
   app.put(
     "/repository/courses/:_id",
     tokenAdminTeacher,
-    require("../Control/Course/update")
+    require("../Control/course/update")
   );
 
   /* ************** DELETE ************** */
   app.delete(
     "/repository/courses/:_id",
     tokenAdmin,
-    require("../Control/Course/delete")
+    require("../Control/course/delete")
   );
 
   app.delete(
     "/repository/courses",
     tokenAdmin,
-    require("../Control/Course/deleteCourses")
+    require("../Control/course/deleteCourses")
   );
 
   /*
@@ -265,74 +265,74 @@ module.exports = function (app) {
   app.get(
     "/repository/groups",
     tokenAdminTeacher,
-    require("../Control/Group/all")
+    require("../Control/group/all")
   );
 
   app.get(
     "/repository/groups/student/:_id",
-    require("../Control/Group/SingleByStudent")
+    require("../Control/group/SingleByStudent")
   );
 
-  app.get("/repository/groups/:_id", require("../Control/Group/Single"));
+  app.get("/repository/groups/:_id", require("../Control/group/Single"));
 
   app.get(
     "/repository/groups/professor/:_id",
-    require("../Control/Group/allByTeacher")
+    require("../Control/group/allByTeacher")
   );
 
   /* ************** POST ************** */
-  app.post("/repository/groups", token, require("../Control/Group/insert"));
+  app.post("/repository/groups", token, require("../Control/group/insert"));
 
   app.post(
     "/repository/groups/administrator",
     tokenAdminTeacher,
-    require("../Control/Group/insertAdmin")
+    require("../Control/group/insertAdmin")
   );
 
   app.post(
     "/repository/groups/invite/:_id",
-    require("../Control/Group/inviteStudent")
+    require("../Control/group/inviteStudent")
   );
   /* ************** DELETE ************** */
 
   app.delete(
     "/repository/groups/:_id",
     tokenAdminTeacher,
-    require("../Control/Group/delete")
+    require("../Control/group/delete")
   );
 
   app.delete(
     "/repository/groups",
     tokenAdminTeacher,
-    require("../Control/Group/deleteGroups")
+    require("../Control/group/deleteGroups")
   );
 
   /* ************** PATCH ************** */
   app.patch(
     "/repository/groups/leave/:group_id",
     token,
-    require("../Control/Group/leaveGroup")
+    require("../Control/group/leaveGroup")
   );
 
   app.patch(
     "/repository/groups/insertStudent",
     token,
-    require("../Control/Group/insertStudent")
+    require("../Control/group/insertStudent")
   );
 
   app.patch(
     "/repository/groups/deleteStudent",
     token,
-    require("../Control/Group/deleteStudent")
+    require("../Control/group/deleteStudent")
   );
 
-  app.patch("/repository/groups/accept", require("../Control/Group/accept"));
+  app.patch("/repository/groups/accept", require("../Control/group/accept"));
 
   app.patch(
     "/repository/groups/update/status",
     tokenAdminTeacher,
-    require("../Control/Group/updateStatus")
+    require("../Control/group/updateStatus")
   );
   /* ************* PUT  ********** */
-  app.put("/repository/groups/:_id", token, require("../Control/Group/update"));
+  app.put("/repository/groups/:_id", token, require("../Control/group/update"));
 };
