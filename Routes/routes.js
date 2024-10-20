@@ -2,6 +2,9 @@ module.exports = function (app) {
   const express = require("express");
   app.use(express.json());
 
+  const path = require('path');
+
+
   /**
    * Criação de pastas: temporária, documentos, monografias, documentos, imagens, zips
    */
@@ -49,7 +52,7 @@ module.exports = function (app) {
   app.get(
     "/repository/projects",
     tokenAdminTeacher,
-    require("../control/tcc/all")
+    require(path.join(__dirname, '../control/tcc/all'))
   );
 
   app.get(
