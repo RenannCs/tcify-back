@@ -309,9 +309,9 @@ module.exports = function (app) {
 
   /* ************** PATCH ************** */
   app.patch(
-    "/repository/groups/exit/:group_id",
+    "/repository/groups/leave/:group_id",
     token,
-    require("../Control/Group/exitGroup")
+    require("../Control/Group/leaveGroup")
   );
 
   app.patch(

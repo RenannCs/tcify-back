@@ -1,9 +1,11 @@
+
 const Group = require("../../Schemas/Group");
 const User = require("../../Schemas/User");
 
 module.exports = async (request, response) => {
   const group_id = request.params.group_id;
   const student_id = request.body.student_id;
+
 
   try {
     const group = await Group.findById(group_id).exec();

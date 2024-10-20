@@ -17,22 +17,22 @@ module.exports = async (request, response) => {
 
         if (tcc.monography != null) {
           if (fs.existsSync(tcc.monography)) {
-            fs.unlink(tcc.monography, (error) => {});
+            fs.unlink(tcc.monography, (error) => { });
           }
         }
         if (tcc.document != null) {
           if (fs.existsSync(tcc.document)) {
-            fs.unlink(tcc.document, (error) => {});
+            fs.unlink(tcc.document, (error) => { });
           }
         }
         if (tcc.zip != null) {
           if (fs.existsSync(tcc.zip)) {
-            fs.unlink(tcc.zip, (error) => {});
+            fs.unlink(tcc.zip, (error) => { });
           }
         }
         if (tcc.image != null) {
           if (fs.existsSync(tcc.image)) {
-            fs.unlink(tcc.image, (error) => {});
+            fs.unlink(tcc.image, (error) => { });
           }
         }
 
@@ -54,12 +54,12 @@ module.exports = async (request, response) => {
 
     const data = {
       deletedCount: deletedCount,
-      tccsExcluidos: tccsExcluidos,
+      deletedProjects: tccsExcluidos,
     };
 
     const arr = {
       status: "SUCCESS",
-      message: "TCC's excluídos!",
+      message: deletedCount + " Projeto(s) excluído(s) com sucesso!",
       data: data,
     };
 
