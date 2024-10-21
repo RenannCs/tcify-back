@@ -18,10 +18,10 @@ module.exports = async (request, response) => {
           deletedCount += 1;
           gruposExcluidos.push(resp);
         }
-        for(let _student of resp.students){
+        for (let _student of resp.students) {
           arrIds.push(_student);
         }
-      } catch {}
+      } catch { }
     }
 
     User.removeGroupIds(arrIds);
@@ -31,7 +31,7 @@ module.exports = async (request, response) => {
     };
     const arr = {
       status: "SUCCES",
-      message: "Grupos excluídos!",
+      message: deletedCount + " Grupo(s) excluído(s) com sucesso!",
       data: data,
     };
 
