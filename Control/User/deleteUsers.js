@@ -39,7 +39,7 @@ module.exports = async (request, response) => {
     };
     const arr = {
       status: "SUCCESS",
-      message: "Usuários excluídos!",
+      message: deletedCount + " Usuário(s) excluído(s) com sucesso!",
       data: data,
     };
 
