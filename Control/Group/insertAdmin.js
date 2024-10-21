@@ -60,7 +60,7 @@ module.exports = async (request, response) => {
     group.leader_id = leader_id;
     group.course_id = course_id;
     group.supervisor_id = supervisor_id;
-    group.status = "1";
+    group.status = "0";
   } catch (error) {
     const arr = {
       status: "ERROR",
