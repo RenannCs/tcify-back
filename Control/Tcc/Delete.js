@@ -57,7 +57,7 @@ module.exports = async (request, response) => {
       return response.status(200).send(arr);
     })
     .then(async () => {
-      await Group.updateOne({ _id: tcc.group_id }, { tcc_id: null }).exec();
+      await Group.updateOne({ _id: tcc.group_id }, { tcc_id: undefined }).exec();
     })
     .catch((reject) => {
       const arr = {
