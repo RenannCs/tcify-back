@@ -136,7 +136,7 @@ module.exports = async (request, response) => {
                   throw new Error("Curso não existe!");
                 }
                 course = await Course.findOne({ name: _user["Curso"] }).exec();
-                user.course_id = course.id;
+                user.course_id = course._id;
               }
 
               const resp = await user.save();
