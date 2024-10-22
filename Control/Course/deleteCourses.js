@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
     };
     const arr = {
       status: "SUCCESS",
-      message: "Cursos excluídos!",
+      message: deletedCount + "Curso(s) excluído(s) com sucesso!",
       data: data,
     };
     return response.status(200).send(arr);

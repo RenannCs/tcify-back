@@ -11,7 +11,7 @@ module.exports = async (request, response) => {
   if (page == null) {
     page = 1;
   }
-  Tcc.allPublic(title, students, date, course_id, supervisor_id, 10, page)
+  Tcc.allPublic(title, students, date, course_id, supervisor_id, 6, page)
     .then((resolve) => {
       const arr = {
         count: resolve.count,

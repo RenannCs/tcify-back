@@ -134,7 +134,7 @@ module.exports = async (request, response) => {
       const arr = {
         data: resolve,
         status: "SUCCESS",
-        message: "TCC atualizado com sucesso!",
+        message: "Projeto atualizado com sucesso!",
       };
       response.status(200).send(arr);
     })
