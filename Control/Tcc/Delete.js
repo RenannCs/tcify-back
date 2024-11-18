@@ -37,6 +37,10 @@ module.exports = async (request, response) => {
         fs.unlink(tcc.image, (error) => {});
       }
     }
+    const group = await Group.findById(tcc.group_id);
+    console.log(group);
+    group.tcc_id = undefined;
+    await group.save();
   } catch (error) {
     const arr = {
       status: "ERROR",
@@ -48,16 +52,16 @@ module.exports = async (request, response) => {
 
   Tcc.findByIdAndDelete(_id)
     .exec()
-    .then((resolve) => {
+    .then(async (resolve) => {
       const arr = {
         status: "SUCCESS",
         message: "Projeto excluído com sucesso!",
         data: tcc,
       };
+
+      //Group.updateOne({ _id: tcc.group_id }, { tcc_id: undefined }).exec();
+
       return response.status(200).send(arr);
-    })
-    .then(async () => {
-      await Group.updateOne({ _id: tcc.group_id }, { tcc_id: undefined }).exec();
     })
     .catch((reject) => {
       const arr = {

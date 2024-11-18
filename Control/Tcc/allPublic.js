@@ -6,12 +6,13 @@ module.exports = async (request, response) => {
   const students = request.query.students;
   const date = request.query.date;
   const course_id = request.query.course_id;
-  const supervisor_id = request.query.supervisor_id;
+  const supervisor = request.query.supervisor;
 
   if (page == null) {
     page = 1;
   }
-  Tcc.allPublic(title, students, date, course_id, supervisor_id, 6, page)
+  
+  Tcc.allPublic(title, students, date, course_id, supervisor, 6, page)
     .then((resolve) => {
       const arr = {
         count: resolve.count,

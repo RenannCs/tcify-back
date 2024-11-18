@@ -141,13 +141,13 @@ module.exports = class Email {
       <br>Dados do grupo:<br>
       Título: ${group.title}<br>
       Líder: ${group.leader}<br>
-      Para aceitar, acesse: ${
+      Para aceitar <a href= "${
         "http://localhost:5173/" +
         "authorization/group/" +
         group._id +
         "/user/" +
         student.id
-      }
+      }">clique aqui</a> 
       `;
         await email.send();
       }

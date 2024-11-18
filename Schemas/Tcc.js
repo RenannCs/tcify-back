@@ -59,8 +59,12 @@ const tccSchema = new mongoose.Schema(
     },
     names_string: {
       type: String,
-      default: null,
+      default: undefined,
     },
+    supervisor_name:{
+      type: String,
+      default: undefined
+    }
   },
   {
     statics: {
@@ -88,6 +92,11 @@ const tccSchema = new mongoose.Schema(
           }
 
           tcc.names_string = names_string;
+
+          const supervisor = await User.findById(tcc.supervisor_id).exec();
+          if(supervisor != null){
+            tcc.supervisor_name = supervisor.name;
+          }
 
           tcc.save();
         } catch (error) {
@@ -336,7 +345,7 @@ const tccSchema = new mongoose.Schema(
         students,
         date,
         course_id,
-        supervisor_id,
+        supervisor,
         limit,
         page
       ) {
@@ -359,8 +368,9 @@ const tccSchema = new mongoose.Schema(
         if (course_id) {
           query.course_id = course_id;
         }
-        if (supervisor_id) {
-          query.supervisor_id = supervisor_id;
+        if (supervisor) {
+          const regex_supervisor =  `(?i).*${supervisor}.*(?-i)`
+          query.supervisor_name = {$regex: regex_supervisor};
         }
 
         const count = await this.countDocuments(query).exec();

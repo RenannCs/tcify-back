@@ -79,6 +79,7 @@ module.exports = async (request, response) => {
         return response.status(404).send(arr);
       }
       tcc.supervisor_id = supervisor_id;
+      Tcc.addNamesString(_id)
     }
   } catch (error) {
     const arr = {
